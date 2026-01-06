@@ -1,0 +1,51 @@
+body {
+    background-color: #f4f6f9;
+    padding: 20px;
+}
+.panel {
+    border-radius: 6px;
+}
+.panel-heading {
+    font-weight: bold;
+    font-size: 20px;
+    background: #f5f5f5;
+}
+.nav-tabs {
+    border-bottom: 1px solid #ddd;
+}
+.nav-tabs > li > a {
+    color: #337ab7;
+    font-weight: 500;
+    border-radius: 4px 4px 0 0;
+}
+.nav-tabs > li.active > a,
+.nav-tabs > li.active > a:hover {
+    background-color: #337ab7;
+    color: #fff;
+}
+.tab-content {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-top: none;
+    padding: 20px;
+}
+.form-group label {
+    font-weight: 600;
+}
+.form-control {
+    border-radius: 4px;
+}
+.petugas-row {
+    background: #f9f9f9;
+    padding: 15px;
+    border: 1px solid #e5e5e5;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+.btn-next {
+    margin-top: 20px;
+}
+.text-note {
+    font-size: 12px;
+    color: #777;
+}
