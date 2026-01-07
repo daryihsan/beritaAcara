@@ -17,7 +17,7 @@
         <input type="text" name="dalam_rangka" class="form-control" placeholder="Pemeriksaan rutin...">
     </div>
     <div style="display:flex; justify-content:flex-end; margin-top:15px;">
-        <button type="button" class="btn btn-primary btn-next pull-right" data-next="#kepala">
+        <button type="button" class="btn btn-primary btn-next pull-right" data-next="#hasil">
             Next →
         </button>
     </div>

@@ -122,25 +122,25 @@
             <tr>
                 <td width="25%">Nama</td>
                 <td width="3%">:</td>
-                <td><?= $data['objek_nama'] ?></td>
+                <td>{{ $data['objek_nama'] }}</td>
             </tr>
             <td height="1%"></td>
             <tr>
                 <td>Alamat</td>
                 <td>:</td>
-                <td><?= $data['objek_alamat'] ?></td>
+                <td>{{ $data['objek_alamat'] }}</td>
             </tr>
             <td height="1%"></td>
             <tr>
                 <td>Kab/Kota</td>
                 <td>:</td>
-                <td><?= $data['objek_kota'] ?></td>
+                <td>{{ $data['objek_kota'] }}</td>
             </tr>
             <td height="1%"></td>
             <tr>
                 <td>Dalam rangka</td>
                 <td>:</td>
-                <td><?= $data['dalam_rangka'] ?></td>
+                <td>{{ $data['dalam_rangka'] }}</td>
             </tr>
         </table>
 

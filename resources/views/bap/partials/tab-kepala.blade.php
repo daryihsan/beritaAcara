@@ -11,8 +11,8 @@
     <hr>
     <p class="text-danger">*Pastikan semua tab sudah terisi sebelum memproses.</p>
     <div style="display:flex; justify-content:flex-end; margin-top:15px;">
-        <button type="button" class="btn btn-primary btn-next pull-right" data-next="#kepala">
-            Next →
+        <button type="submit" class="btn btn-primary btn-lg btn-block">
+            PROSES & CETAK BAP
         </button>
     </div>
 </div>

@@ -65,7 +65,7 @@ $("#btn-tambah-petugas").click(function () {
                     </div>
                     <div class="col-md-3">
                         <label>NIP</label>
-                        <input type="text" name="petugas_nip[]" class="form-control">
+                        <input type="text" name="petugas_nip[]" class="form-control" required>
                     </div>
                     <div class="col-md-2">
                         <label>Aksi</label><br>

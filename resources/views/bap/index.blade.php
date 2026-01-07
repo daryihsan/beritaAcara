@@ -23,9 +23,7 @@
                 <td class="p-3">{{ $ba->no_surat }}</td>
                 <td class="p-3">{{ $ba->objek }}</td>
                 <td class="p-3">
-                    <span class="text-blue-600">
-                        PDF
-                    </span>
+<a href="{{ url('/berita-acara/'.$ba->id.'/pdf') }}" class="text-blue-600">PDF</a>
                 </td>
             </tr>
         @empty

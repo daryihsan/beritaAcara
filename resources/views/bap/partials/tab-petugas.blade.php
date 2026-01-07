@@ -34,7 +34,7 @@
     </button>
 
     <div style="display:flex; justify-content:flex-end; margin-top:15px;">
-        <button type="button" class="btn btn-primary btn-next pull-right" data-next="#kepala">
+        <button type="button" class="btn btn-primary btn-next pull-right" data-next="#objek">
             Next →
         </button>
     </div>

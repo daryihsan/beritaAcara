@@ -67,7 +67,7 @@
         </div>
 
         @foreach([2025, 2024, 2023] as $year)
-            <a href="/berita-acara?tahun={{ $year }}"
+            <a href="{{ route('dashboard', ['tahun' => $year]) }}"
                class="block px-3 py-2 rounded hover:bg-gray-100">
                 {{ $year }}
             </a>
