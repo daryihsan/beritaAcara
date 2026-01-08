@@ -166,6 +166,28 @@
                 display: block;
                 clear: both;
             }
+            .nav-tabs > li.tab-error > a {
+        color: #f43f5e !important; 
+        font-weight: bold;
+    }
+
+    /* Saat Tab Error sedang AKTIF (Background Merah, Tulisan Putih) */
+    .nav-tabs > li.tab-error.active > a {
+        background-color: #f43f5e !important;
+        color: #ffffff !important;
+        border: 1px solid #f43f5e !important;
+    }
+
+    /* Indikator Tab Sukses (Hijau) */
+    .nav-tabs > li.tab-success > a {
+        color: #10b981 !important;
+        font-weight: bold;
+    }
+
+    /* Transisi halus saat berubah warna */
+    .nav-tabs > li > a {
+        transition: all 0.2s ease-in-out;
+    }
         </style>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
         <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>

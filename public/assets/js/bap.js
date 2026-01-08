@@ -1,86 +1,110 @@
-$(document).on("click", ".btn-next", function () {
-    var currentTab = $(this).closest(".tab-pane");
-    var isValid = true;
+function validateTab(tabId) {
+    let isValid = true;
+    let tabPane = $(tabId);
+    let tabLink = $('.nav-tabs a[href="' + tabId + '"]').parent();
 
-    currentTab
+    tabPane
         .find("input[required], textarea[required], select[required]")
         .each(function () {
-            if ($(this).val().trim() === "") {
+            if ($(this).val() === null || $(this).val().trim() === "") {
                 isValid = false;
-                $(this).focus();
-                return false;
+                $(this).css("border-color", "#fb7185"); // Warna merah pada input
+            } else {
+                $(this).css("border-color", "#e2e8f0"); // Reset warna
             }
         });
-    if (!isValid) {
-        $("#formAlert").fadeIn();
 
+    if (isValid) {
+        // Hilangkan merah, ganti hijau
+        tabLink.removeClass("tab-error").addClass("tab-success");
+    } else {
+        // Hilangkan hijau, ganti merah
+        tabLink.removeClass("tab-success").addClass("tab-error");
+    }
+
+    return isValid;
+}
+
+$(document).on("click", ".btn-next", function () {
+    var currentTabId = "#" + $(this).closest(".tab-pane").attr("id");
+
+    // Gunakan fungsi validateTab yang sudah ada
+    if (validateTab(currentTabId)) {
+        $("#formAlert").hide();
+        var nextTab = $(this).data("next");
+        $('.nav-tabs a[href="' + nextTab + '"]').tab("show");
+    } else {
+        $("#formAlert").fadeIn();
         setTimeout(function () {
             $("#formAlert").fadeOut();
         }, 3000);
-        return;
+
+        // Fokus ke input pertama yang kosong di tab ini
+        $(currentTabId)
+            .find("input[required], textarea[required]")
+            .filter(function () {
+                return !$(this).val();
+            })
+            .first()
+            .focus();
     }
-    var nextTab = $(this).data("next");
-    $('.nav-tabs a[href="' + nextTab + '"]').tab("show");
 });
 
 $("form").on("submit", function (e) {
-    $("#formAlertGlobal").hide();
-    var firstInvalid = null;
-    $(this)
-        .find("[required]")
-        .each(function () {
-            if ($(this).val().trim() === "") {
-                firstInvalid = $(this);
-                return false;
-            }
-        });
+    let formIsValid = true;
+    let firstErrorTab = null;
 
-    if (firstInvalid) {
+    // Cek validasi semua tab
+    $(".tab-pane").each(function () {
+        let id = "#" + $(this).attr("id");
+        if (!validateTab(id)) {
+            formIsValid = false;
+            if (!firstErrorTab) firstErrorTab = id;
+        }
+    });
+
+    if (!formIsValid) {
         e.preventDefault();
-        // Tampilkan alert
         $("#formAlertGlobal").fadeIn();
-        // Cari tab tempat field kosong
-        var tabPane = firstInvalid.closest(".tab-pane").attr("id");
-        // Pindah ke tab tersebut
-        $('.nav-tabs a[href="#' + tabPane + '"]').tab("show");
-        // Fokus ke field
-        setTimeout(function () {
-            firstInvalid.focus();
-        }, 300);
+        $('.nav-tabs a[href="' + firstErrorTab + '"]').tab("show");
         return false;
     }
 });
 
-$("#btn-tambah-petugas").click(function () {
-    var html = `
-            <div class="petugas-row">
-                <div class="row">
-                    <div class="col-md-4">
-                        <label>Nama Petugas</label>
-                        <input type="text" name="petugas_nama[]" class="form-control" required>
-                    </div>
-                    <div class="col-md-3">
-                        <label>Pangkat/Gol</label>
-                        <input type="text" name="petugas_pangkat[]" class="form-control">
-                    </div>
-                    <div class="col-md-3">
-                        <label>NIP</label>
-                        <input type="text" name="petugas_nip[]" class="form-control" required>
-                    </div>
-                    <div class="col-md-2">
-                        <label>Aksi</label><br>
-                        <button type="button" class="btn btn-danger btn-sm btn-hapus">Hapus</button>
-                    </div>
-                </div>
-                <div class="row" style="margin-top:5px;">
-                    <div class="col-md-12">
-                        <input type="text" name="petugas_jabatan[]" class="form-control" placeholder="Jabatan">
-                    </div>
-                </div>
-            </div>`;
-    $("#petugas-container").append(html);
-});
-
 $(document).on("click", ".btn-hapus", function () {
     $(this).closest(".petugas-row").remove();
+});
+
+$(document).ready(function () {
+    $(document).on("input", ".input-nama", function () {
+        var val = $(this).val();
+        var row = $(this).closest(".petugas-row");
+
+        // Cari data di datalist yang namanya cocok dengan yang diketik
+        var option = $("#list-petugas option").filter(function () {
+            return $(this).val() === val;
+        });
+
+        if (option.length) {
+            // Jika ketemu, isi semua kolom secara otomatis
+            row.find(".input-nip").val(option.data("nip"));
+            row.find(".input-pangkat").val(option.data("pangkat"));
+            row.find(".input-jabatan").val(option.data("jabatan"));
+        } else {
+            // Jika nama dihapus atau tidak cocok, kosongkan kolom lainnya
+            row.find(".input-nip, .input-pangkat, .input-jabatan").val("");
+        }
+    });
+
+    // Logika tambah & hapus baris tetap sama seperti sebelumnya
+    $("#btn-tambah-petugas").click(function () {
+        var newRow = $("#row-0").clone();
+        newRow.find("input").val("");
+        newRow.find(".btn-hapus").removeAttr("disabled");
+        $("#petugas-container").append(newRow);
+    });
+
+    $(document).on("click", ".btn-hapus", function () {
+        $(this).closest(".petugas-row").remove();
+    });
 });

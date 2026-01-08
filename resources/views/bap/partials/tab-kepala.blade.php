@@ -3,16 +3,23 @@
     <div class="form-group">
         <label>Jabatan Penandatangan (Surat Tugas)</label>
         <select name="kepala_balai_text" class="form-control" required>
-            <option value="Balai Besar POM di Semarang">Kepala Balai</option>
-            <option value="Plh. Kepala Balai">Plh. Kepala Balai</option>
-            <option value="Plt. Kepala Balai">Plt. Kepala Balai</option>
+        <option value="" disabled {{ old('kepala_balai_text') ? '' : 'selected' }}>-- Silahkan Pilih Jabatan --</option>    
+        <option value="Balai Besar POM di Semarang" {{ old('kepala_balai_text') == 'Balai Besar POM di Semarang' ? 'selected' : '' }}>Kepala Balai</option>
+            <option value="Plh. Kepala Balai" {{ old('kepala_balai_text') == 'Plh. Kepala Balai' ? 'selected' : '' }}>Plh.
+                Kepala Balai</option>
+            <option value="Plt. Kepala Balai" {{ old('kepala_balai_text') == 'Plt. Kepala Balai' ? 'selected' : '' }}>Plt.
+                Kepala Balai</option>
         </select>
     </div>
     <hr>
-    <p class="text-danger">*Pastikan semua tab sudah terisi sebelum memproses.</p>
-    <div style="display:flex; justify-content:flex-end; margin-top:15px;">
-        <button type="submit" class="btn btn-primary btn-lg btn-block">
-            PROSES & CETAK BAP
+    <div class="alert alert-info">
+        <p><span class="glyphicon glyphicon-info-sign"></span> Pastikan semua data sudah benar sebelum menekan tombol
+            Simpan & Cetak.</p>
+    </div>
+    <div style="display:flex; justify-content:space-between; margin-top:15px;">
+        <button type="button" class="btn btn-default btn-next" data-next="#hasil">← Back</button>
+        <button type="submit" class="btn btn-success font-bold">
+            <span class="glyphicon glyphicon-floppy-disk"></span> Simpan & Cetak BAP
         </button>
     </div>
 </div>

@@ -13,8 +13,8 @@
         <thead class="bg-slate-50">
             <tr class="text-slate-700">
                 <th style="min-width: 180px;" class="text-xl font-bold uppercase tracking-wider border-r border-slate-100">No. Surat Tugas</th>
-                <th style="min-width: 200px;" class="text-xl font-bold uppercase tracking-wider border-r border-slate-100">Nama Petugas</th>
-                <th style="min-width: 300px;" class="text-xl font-bold uppercase tracking-wider border-r border-slate-100">Objek</th>
+                <th style="min-width: 300px;" class="text-xl font-bold uppercase tracking-wider border-r border-slate-100">Nama Petugas</th>
+                <th style="min-width: 200px;" class="text-xl font-bold uppercase tracking-wider border-r border-slate-100">Objek</th>
                 <th style="min-width: 120px;" class="text-xl font-bold uppercase tracking-wider border-r border-slate-100">Tanggal Periksa</th>
                 <th style="min-width: 120px;" class="text-xl font-bold uppercase tracking-wider border-r border-slate-100">Tanggal BAP</th>
                 <th style="min-width: 100px;" class="text-xl font-bold uppercase tracking-wider">Aksi</th>

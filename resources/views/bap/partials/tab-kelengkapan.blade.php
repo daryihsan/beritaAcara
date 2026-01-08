@@ -4,14 +4,14 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label>No. Surat Tugas</label>
-                <input type="text" name="no_surat_tugas" class="form-control" placeholder="Contoh: ST-123/BPOM/..."
+                <input type="text" name="no_surat_tugas" class="form-control" required value="{{ old('no_surat_tugas') }}" placeholder="Contoh: ST-123/BPOM/..."
                     required>
             </div>
         </div>
         <div class="col-md-6">
             <div class="form-group">
                 <label>Tanggal Surat Tugas</label>
-                <input type="date" name="tgl_surat_tugas" class="form-control" required>
+                <input type="date" name="tgl_surat_tugas" class="form-control" required value="{{ old('tgl_surat_tugas') }}">
             </div>
         </div>
     </div>
@@ -19,13 +19,13 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label>Hari Pemeriksaan</label>
-                <input type="text" name="hari" class="form-control" placeholder="Senin" required>
+                <input type="text" name="hari" class="form-control" required value="{{ old('hari') }}" placeholder="Senin" required>
             </div>
         </div>
         <div class="col-md-6">
             <div class="form-group">
                 <label>Tanggal Pemeriksaan (Hari H)</label>
-                <input type="date" name="tanggal" class="form-control" required>
+                <input type="date" name="tanggal" class="form-control" required value="{{ old('tanggal') }}">
             </div>
         </div>
     </div>

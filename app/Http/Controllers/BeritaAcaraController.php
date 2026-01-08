@@ -143,7 +143,15 @@ class BeritaAcaraController extends Controller
             'created_by' => auth()->id(),
         ]);
 
-        $ba->petugas()->sync($request->petugas_nip);
+        $syncData = [];
+        foreach ($request->petugas_nip as $i => $nip) {
+            $syncData[$nip] = [
+                'pangkat' => $request->petugas_pangkat[$i] ?? '-',
+                'jabatan' => $request->petugas_jabatan[$i] ?? '-',
+            ];
+        }
+        
+        $ba->petugas()->sync($syncData);
 
         return $this->cetak($request);
     }
