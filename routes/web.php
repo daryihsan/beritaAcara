@@ -17,7 +17,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/berita-acara/create', [BeritaAcaraController::class, 'create']);
     Route::post('/berita-acara/cetak', [BeritaAcaraController::class, 'cetak'])
         ->name('bap.cetak');
-    Route::get('/berita-acara/{id}/pdf', [BeritaAcaraController::class, 'pdf'])->name('bap.pdf');
+    Route::delete('/berita-acara/{id}', [BeritaAcaraController::class, 'destroy'])->name('berita-acara.destroy');
+Route::get('/berita-acara/{id}/pdf', [BeritaAcaraController::class, 'pdf'])->name('berita-acara.pdf');
 
     Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
         Route::get('/berita-acara', [BeritaAcaraAdminController::class, 'index']);

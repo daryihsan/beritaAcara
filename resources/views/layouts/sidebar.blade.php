@@ -1,96 +1,73 @@
-<!-- <aside class="w-64 min-h-screen bg-white border-r">
-    <div class="p-4 font-bold text-lg">
-        ADIT'S
-    </div>
+<aside class="w-72 min-h-screen bg-white text-gray-700 border-r border-gray-200 shadow-sm">
 
-    <nav class="px-4 space-y-2 text-sm">
-
-        <a href="/dashboard" class="block px-3 py-2 rounded hover:bg-gray-100">
-            Dashboard
-        </a>
-
-        <a href="/berita-acara/create" class="block px-3 py-2 rounded hover:bg-gray-100">
-            Berita Acara Baru
-        </a>
-
-        <div class="mt-4 text-gray-500 text-xs uppercase">
-            List Berita Acara
-        </div>
-
-        @foreach([2025, 2024, 2023] as $tahun)
-            <a href="/berita-acara?tahun={{ $tahun }}"
-               class="block px-3 py-2 rounded hover:bg-gray-100">
-                {{ $tahun }}
-            </a>
-        @endforeach
-
-        @if(auth()->user()->role === 'admin')
-            <div class="mt-4 text-gray-500 text-xs uppercase">
-                Admin
-            </div>
-
-            <a href="/admin/berita-acara"
-               class="block px-3 py-2 rounded hover:bg-gray-100 text-red-600">
-                Semua Berita Acara
-            </a>
-        @endif
-
-        <form method="POST" action="/logout" class="mt-6">
-            @csrf
-            <button class="text-left w-full px-3 py-2 rounded hover:bg-gray-100">
-                Logout
-            </button>
-        </form>
-
-    </nav>
-</aside> -->
-<aside class="w-64 bg-white border-r">
-
-    <div class="p-6 font-bold text-xl">
+    <!-- LOGO -->
+    <div class="h-20 flex items-center pl-25 px-6 text-4xl font-semibold tracking-wide text-blue-800 border-gray-200 bg-gradient-to-r from-blue-300 to-white">
         BAP
     </div>
 
-    <nav class="px-4 space-y-1 text-sm">
+    <nav class="px-4 py-6 space-y-2 text-base">
 
+        <!-- DASHBOARD -->
         <a href="/dashboard"
-           class="block px-3 py-2 rounded hover:bg-gray-100">
-            Dashboard
+           class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 no-underline
+           {{ request()->is('dashboard') && !request()->has('tahun') 
+                ? 'bg-blue-50 border-l-4 border-blue-500 font-semibold text-blue-700' 
+                : 'text-gray-700 hover:!bg-blue-200 hover:!text-blue-900 hover:font-medium hover:no-underline' }}">
+            <span class="glyphicon glyphicon-home text-xl"></span>
+            <span class="text-xl">Dashboard</span>
         </a>
 
+        <!-- BERITA ACARA -->
         <a href="/berita-acara/create"
-           class="block px-3 py-2 rounded hover:bg-gray-100">
-            Berita Acara Baru
+           class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 no-underline
+           {{ request()->is('berita-acara/create') 
+                ? 'bg-blue-50 border-l-4 border-blue-500 font-semibold text-blue-700' 
+                : 'text-gray-700 hover:!bg-blue-200 hover:!text-blue-900 hover:font-medium hover:no-underline' }}">
+            <span class="glyphicon glyphicon-plus-sign text-xl"></span>
+            <span class="text-xl">Berita Acara Baru</span>
         </a>
 
-        <div class="mt-4 text-xs text-gray-400 uppercase">
-            Arsip
+        <!-- SECTION -->
+        <div class="mt-8 px-4 text-m font-semibold text-gray-500 uppercase tracking-widest">
+            Arsip Pemeriksaan
         </div>
 
-        @foreach([2025, 2024, 2023] as $year)
+        @foreach([2026, 2025, 2024, 2023] as $year)
             <a href="{{ route('dashboard', ['tahun' => $year]) }}"
-               class="block px-3 py-2 rounded hover:bg-gray-100">
-                {{ $year }}
+               class="flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-200 no-underline
+               {{ request('tahun') == $year 
+                    ? 'bg-blue-50 border-l-4 border-blue-500 font-semibold text-blue-700' 
+                    : 'text-gray-600 hover:!bg-blue-200 hover:!text-blue-900 hover:font-medium hover:no-underline' }}">
+                <span class="glyphicon glyphicon-folder-open text-xl"></span>
+                <span class="text-xl">BAP Tahun {{ $year }}</span>
             </a>
         @endforeach
 
         @if(auth()->user()->isAdmin())
-            <div class="mt-4 text-xs text-gray-400 uppercase">
-                Admin
+            <div class="mt-8 px-4 text-m font-semibold text-gray-500 uppercase tracking-widest">
+                Panel Kontrol Admin
             </div>
 
             <a href="/admin/berita-acara"
-               class="block px-3 py-2 rounded hover:bg-gray-100 text-red-600">
-                Semua Berita Acara
+               class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 no-underline
+               {{ request()->is('admin/*') 
+                    ? 'bg-amber-50 border-l-4 border-amber-500 font-semibold text-amber-700' 
+                    : 'text-gray-700 hover:!bg-amber-200 hover:!text-amber-900 hover:font-medium hover:no-underline' }}">
+                <span class="glyphicon glyphicon-lock text-xl"></span>
+                <span class="text-xl">Semua Berita Acara</span>
             </a>
         @endif
 
-        <form method="POST" action="/logout" class="mt-6">
-            @csrf
-            <button class="w-full text-left px-3 py-2 rounded hover:bg-gray-100 text-gray-600">
-                Logout
-            </button>
-        </form>
+        <!-- LOGOUT -->
+        <div class="pt-10">
+            <form method="POST" action="/logout">
+                @csrf
+                <button class="flex items-center gap-3 w-full px-4 py-3 rounded-lg text-gray-600 hover:bg-red-200 hover:text-red-900 hover:font-medium transition-all duration-200">
+                    <span class="glyphicon glyphicon-log-out text-xl"></span>
+                    <span class="text-xl text-red-400 hover:text-red-900">Keluar Aplikasi</span>
+                </button>
+            </form>
+        </div>
 
     </nav>
-
 </aside>

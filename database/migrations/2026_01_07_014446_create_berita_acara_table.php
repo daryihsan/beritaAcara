@@ -16,9 +16,13 @@ return new class extends Migration {
             $table->date('tgl_surat_tugas');
             $table->date('tanggal_pemeriksaan');
             $table->string('hari');
+            $table->text('kepala_balai_text')->nullable();
             $table->string('objek_nama');
             $table->text('objek_alamat');
+            $table->string('objek_kota')->nullable();
+            $table->text('dalam_rangka')->nullable();
             $table->text('hasil_pemeriksaan');
+            $table->string('yang_diperiksa')->nullable();
             $table->foreignId('created_by')->constrained('users')->cascadeOnDelete();
             $table->timestamps();
         });

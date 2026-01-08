@@ -2,89 +2,53 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
 {
     public function run()
     {
+        // Admin Utama
         User::create([
             'nip' => 'admin',
-            'name' => 'Admin',
+            'name' => 'Administrator Utama',
             'password' => bcrypt('password'),
+            'pangkat' => 'Pembina / IVa',
+            'jabatan' => 'Kepala Balai Besar POM',
             'role' => 'admin'
         ]);
 
-        User::create([
-            'nip' => 'petugas1',
-            'name' => 'Petugas A',
-            'password' => bcrypt('password'),
-            'role' => 'petugas'
-        ]);
+        // Daftar Jabatan & Pangkat Variasi untuk Petugas
+        $jabatanList = [
+            ['pangkat' => 'Penata / IIIc', 'jabatan' => 'Pengawas Farmasi dan Makanan Ahli Muda'],
+            ['pangkat' => 'Penata Muda Tk. I / IIIb', 'jabatan' => 'Pengawas Farmasi dan Makanan Ahli Pertama'],
+            ['pangkat' => 'Penata Muda / IIIa', 'jabatan' => 'Pengawas Farmasi dan Makanan Ahli Pertama'],
+            ['pangkat' => 'Penata / IIIc', 'jabatan' => 'Analisis Kebijakan Ahli Muda'],
+            ['pangkat' => 'Pengatur / IIc', 'jabatan' => 'Pelaksana'],
+        ];
 
-        User::create([
-            'nip' => 'petugas2',
-            'name' => 'Petugas B',
-            'password' => bcrypt('password'),
-            'role' => 'petugas'
-        ]);
+        // Buat Petugas A - I dengan variasi jabatan
+        $petugasNames = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'];
+        foreach ($petugasNames as $index => $char) {
+            $val = $jabatanList[$index % count($jabatanList)];
+            User::create([
+                'nip' => 'petugas' . ($index + 1),
+                'name' => 'Petugas ' . $char,
+                'password' => bcrypt('password'),
+                'pangkat' => $val['pangkat'],
+                'jabatan' => $val['jabatan'],
+                'role' => 'petugas'
+            ]);
+        }
 
-        User::create([
-            'nip' => 'petugas3',
-            'name' => 'Petugas C',
-            'password' => bcrypt('password'),
-            'role' => 'petugas'
-        ]);
-
-        User::create([
-            'nip' => 'petugas4',
-            'name' => 'Petugas D',
-            'password' => bcrypt('password'),
-            'role' => 'petugas'
-        ]);
-
-        User::create([
-            'nip' => 'petugas5',
-            'name' => 'Petugas E',
-            'password' => bcrypt('password'),
-            'role' => 'petugas'
-        ]);
-
-        User::create([
-            'nip' => 'petugas6',
-            'name' => 'Petugas F',
-            'password' => bcrypt('password'),
-            'role' => 'petugas'
-        ]);
-
-        User::create([
-            'nip' => 'petugas7',
-            'name' => 'Petugas G',
-            'password' => bcrypt('password'),
-            'role' => 'petugas'
-        ]);
-
-        User::create([
-            'nip' => 'petugas8',
-            'name' => 'Petugas H',
-            'password' => bcrypt('password'),
-            'role' => 'petugas'
-        ]);
-
-        User::create([
-            'nip' => 'petugas9',
-            'name' => 'Petugas I',
-            'password' => bcrypt('password'),
-            'role' => 'petugas'
-        ]);
-
+        // Petugas J sebagai Admin (Sesuai kode awal kamu)
         User::create([
             'nip' => 'petugas10',
             'name' => 'Petugas J',
             'password' => bcrypt('password'),
+            'pangkat' => 'Penata Muda / IIIa',
+            'jabatan' => 'Pengawas Farmasi dan Makanan Ahli Pertama',
             'role' => 'admin'
         ]);
     }

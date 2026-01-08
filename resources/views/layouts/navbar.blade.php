@@ -1,17 +1,8 @@
-<header class="h-14 bg-white border-b flex items-center justify-between px-6">
-
-    <div class="font-medium">
+<header class="h-20 bg-white border-b flex justify-between px-6">
+    <div class="h-full flex text-l items-center font-medium">
         {{ auth()->user()->name }}
-        <span class="text-xs text-gray-400">
+        <span class="ml-1 text-m text-gray-400">
             ({{ auth()->user()->role }})
         </span>
     </div>
-
-    <form method="POST" action="/logout">
-        @csrf
-        <button class="text-sm text-red-600 hover:underline">
-            Logout
-        </button>
-    </form>
-
 </header>
