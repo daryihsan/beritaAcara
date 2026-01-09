@@ -106,7 +106,9 @@ class BeritaAcaraController extends Controller
 
     public function create()
     {
-        $petugas = User::where('role', 'petugas')->get();
+        $petugas = User::whereNotNull('pangkat')
+            ->whereNotNull('jabatan')
+            ->get();
         return view('bap.form', compact('petugas'));
     }
 
@@ -150,7 +152,7 @@ class BeritaAcaraController extends Controller
                 'jabatan' => $request->petugas_jabatan[$i] ?? '-',
             ];
         }
-        
+
         $ba->petugas()->sync($syncData);
 
         return $this->cetak($request);

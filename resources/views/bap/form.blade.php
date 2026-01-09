@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<form method="POST" action="{{ route('bap.store') }}" novalidate>
+<form method="POST" action="{{ route('bap.store') }}" id="formBeritaAcara" novalidate>
 @csrf
 
 @include('bap.partials.alert')

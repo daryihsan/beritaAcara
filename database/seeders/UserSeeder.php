@@ -14,8 +14,8 @@ class UserSeeder extends Seeder
             'nip' => 'admin',
             'name' => 'Administrator Utama',
             'password' => bcrypt('password'),
-            'pangkat' => 'Pembina / IVa',
-            'jabatan' => 'Kepala Balai Besar POM',
+            'pangkat' => null,
+            'jabatan' => null,
             'role' => 'admin'
         ]);
 

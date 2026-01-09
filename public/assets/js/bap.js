@@ -50,12 +50,19 @@ $(document).on("click", ".btn-next", function () {
     }
 });
 
-$("form").on("submit", function (e) {
+$("#formBeritaAcara").on("submit", function (e) {
     let formIsValid = true;
     let firstErrorTab = null;
 
-    // Cek validasi semua tab
-    $(".tab-pane").each(function () {
+    let isAnyFilled = false;
+    $(this).find("input[required], textarea[required]").each(function() {
+        if ($(this).val().trim() !== "") {
+            isAnyFilled = true;
+            return false; 
+        }
+    });
+
+    $(".tab-pane").each(function() {
         let id = "#" + $(this).attr("id");
         if (!validateTab(id)) {
             formIsValid = false;
@@ -107,4 +114,37 @@ $(document).ready(function () {
     $(document).on("click", ".btn-hapus", function () {
         $(this).closest(".petugas-row").remove();
     });
+});
+
+var formChanged = false;
+
+$(document).on("input change", "#formBeritaAcara input, #formBeritaAcara textarea, #formBeritaAcara select", function() {
+    formChanged = true;
+});
+
+window.onbeforeunload = function(e) {
+    if (formChanged) {
+        e.preventDefault();
+        return "Data belum disimpan!"; 
+    }
+};
+
+$('form[action="/logout"]').on("submit", function(e) {
+    let pesan = "";
+    
+    if (formChanged) {
+        pesan = "⚠️ PERINGATAN: Anda sedang mengisi Berita Acara. \n\nJika keluar sekarang, data yang sudah diketik akan hilang.\n\nYakin ingin keluar aplikasi?";
+    } else {
+        pesan = "Apakah Anda yakin ingin keluar dari aplikasi?";
+    }
+
+    if (!confirm(pesan)) {
+        e.preventDefault();
+    } else {
+        window.onbeforeunload = null; 
+    }
+});
+
+$("#formBeritaAcara").on("submit", function() {
+    window.onbeforeunload = null;
 });
