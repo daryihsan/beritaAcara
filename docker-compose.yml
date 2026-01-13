@@ -1,0 +1,33 @@
+services:
+  # Container Laravel (PHP 8.2 + Apache)
+  bap-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: bap-laravel
+    ports:
+      - "8080:80" # Akses web lewat port 8080 di browser
+    volumes:
+      - .:/var/www/html # Mirroring file dari laptop ke dalam kontainer
+    depends_on:
+    - bap-db
+    networks:
+      - bap-network
+    restart: always
+
+  # Container Database (MySQL 8.0)
+  bap-db:
+    image: mysql:8.0
+    container_name: bap-mysql
+    ports:
+      - "4406:3306" # Agar tidak bentrok dengan MySQL XAMPP (3306)
+    environment:
+      MYSQL_DATABASE: db_bap
+      MYSQL_ROOT_PASSWORD: rootpassword
+    networks:
+      - bap-network
+    restart: always
+
+networks:
+  bap-network:
+    driver: bridge
