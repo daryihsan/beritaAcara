@@ -35,7 +35,7 @@ class BeritaAcara extends Model
             'user_nip',
             'id',
             'nip'
-        )->withPivot('pangkat', 'jabatan');
+        )->withPivot('pangkat', 'jabatan', 'ttd');
     }
 
     public function pembuat()

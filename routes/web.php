@@ -17,6 +17,8 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('berita-acara')->name('berita-acara.')->group(function() {
         Route::get('/create', [BeritaAcaraController::class, 'create'])->name('create');
         Route::post('/', [BeritaAcaraController::class, 'store'])->name('store');
+        Route::get('/{id}/edit', [BeritaAcaraController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [BeritaAcaraController::class, 'update'])->name('update');
         Route::get('/{id}/pdf', [BeritaAcaraController::class, 'pdf'])->name('pdf');
         
         // Admin Only Actions

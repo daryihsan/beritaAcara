@@ -160,10 +160,21 @@
                     Jawab<br><br><br><br><b>{{ $data['yang_diperiksa'] }}</b></td>
                 <td width="50%" align="left" valign="top">Yang Membuat Berita Acara:<br>
                     <table width="100%">
-                        @foreach($list_petugas as $i => $p)
+                        @foreach ($list_petugas as $i => $p)
                             <tr>
-                                <td height="35" style="vertical-align:bottom;">
-                                    {{ $i + 1 }}. {{ $p['nama'] }}<br>
+                                {{-- Kolom Nomor & Nama --}}
+                                <td width="60%" height="80" style="vertical-align:bottom;">
+                                    {{ $i + 1 }}. {{ $p['nama'] }}
+                                </td>
+
+                                {{-- Kolom Tanda Tangan --}}
+                                <td width="40%" style="vertical-align:bottom; padding-left: 20px;">
+                                    @if(isset($p['ttd']) && !empty($p['ttd']))
+                                        {{-- Render Base64 Image --}}
+                                        <img src="{{ $p['ttd'] }}" style="height: 60px; max-width: 150px;">
+                                    @else
+                                        <div style="height: 60px; border-bottom: 1px dotted #000; width: 150px;"></div>
+                                    @endif
                                 </td>
                             </tr>
                         @endforeach

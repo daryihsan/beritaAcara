@@ -76,13 +76,77 @@ class BeritaAcaraController extends Controller
         $petugasData = [
             'nip'     => $request->petugas_nip,
             'pangkat' => $request->petugas_pangkat,
-            'jabatan' => $request->petugas_jabatan
+            'jabatan' => $request->petugas_jabatan,
+            'ttd'     => $request->petugas_ttd,
         ];
 
         $ba = $this->beritaAcaraService->storeBap($dbData, $petugasData);
 
         // Redirect ke preview PDF atau kembali
         return redirect()->route('berita-acara.pdf', $ba->id);
+    }
+
+    public function edit($id)
+    {
+        $ba = $this->beritaAcaraService->getBapById($id);
+        
+        // Proteksi: Hanya admin atau pembuat dokumen/petugas terkait yang boleh edit
+        $isPetugasTerlibat = $ba->petugas->contains('nip', auth()->user()->nip);
+        
+        if (!auth()->user()->isAdmin() && !$isPetugasTerlibat) {
+             abort(403, 'Anda tidak memiliki akses untuk mengedit dokumen ini karena nama Anda tidak tercantum sebagai petugas.');
+        }
+
+        $petugas = User::whereNotNull('pangkat')->whereNotNull('jabatan')->get();
+        
+        // Kirim variabel $ba ke view agar form terisi otomatis
+        return view('bap.form', compact('petugas', 'ba'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        // Validasi (Sama persis dengan store)
+        $request->validate([
+            'no_surat_tugas'    => 'required',
+            'tgl_surat_tugas'   => 'required|date',
+            'tanggal'           => 'required|date',
+            'hari'              => 'required',
+            'objek_nama'        => 'required',
+            'objek_alamat'      => 'required',
+            'hasil_pemeriksaan' => 'required',
+            'petugas_nip'       => 'required|array',
+            'petugas_nip.*'     => 'exists:users,nip',
+            'kepala_balai_text' => 'required',
+            'objek_kota'        => 'required',
+            'dalam_rangka'      => 'required',
+            'yang_diperiksa'    => 'required',
+        ]);
+
+        $dbData = [
+            'no_surat_tugas'      => $request->no_surat_tugas,
+            'tgl_surat_tugas'     => $request->tgl_surat_tugas,
+            'tanggal_pemeriksaan' => $request->tanggal,
+            'hari'                => $request->hari,
+            'objek_nama'          => $request->objek_nama,
+            'objek_alamat'        => $request->objek_alamat,
+            'hasil_pemeriksaan'   => $request->hasil_pemeriksaan,
+            'kepala_balai_text'   => $request->kepala_balai_text,
+            'objek_kota'          => $request->objek_kota,
+            'dalam_rangka'        => $request->dalam_rangka,
+            'yang_diperiksa'      => $request->yang_diperiksa,
+            // 'created_by' TIDAK DIUPDATE agar history pembuat tetap ada
+        ];
+
+        $petugasData = [
+            'nip'     => $request->petugas_nip,
+            'pangkat' => $request->petugas_pangkat,
+            'jabatan' => $request->petugas_jabatan,
+            'ttd'     => $request->petugas_ttd,
+        ];
+
+        $this->beritaAcaraService->updateBap($id, $dbData, $petugasData);
+
+        return redirect()->route('berita-acara.pdf', $id)->with('success', 'Perubahan berhasil disimpan!');
     }
 
     // Menggantikan fungsi assign dari AdminController yang dihapus
@@ -117,7 +181,8 @@ class BeritaAcaraController extends Controller
                 'nama'    => $p->name, // Perbaiki 'nama' jadi 'name' sesuai view
                 'pangkat' => $p->pivot->pangkat ?? '-',
                 'jabatan' => $p->pivot->jabatan ?? '-',
-                'nip'     => $p->nip
+                'nip'     => $p->nip,
+                'ttd'     => $p->pivot->ttd ?? null,
             ];
         });
 

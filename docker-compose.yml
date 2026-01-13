@@ -28,6 +28,21 @@ services:
       - bap-network
     restart: always
 
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: bap-phpmyadmin
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: bap-db
+      PMA_USER: root
+      PMA_PASSWORD: rootpassword
+    depends_on:
+      - bap-db
+    networks:
+      - bap-network
+    restart: always
+
 networks:
   bap-network:
     driver: bridge

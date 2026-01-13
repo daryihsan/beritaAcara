@@ -40,17 +40,58 @@ class BeritaAcaraService
         // 2. Sync Data Petugas (Pivot Table)
         $syncData = [];
         foreach ($petugasData['nip'] as $i => $nip) {
-            if ($nip) { // Validasi nip tidak kosong
-                $syncData[$nip] = [
+            if ($nip) {
+                $dataPivot = [
                     'pangkat' => $petugasData['pangkat'][$i] ?? '-',
-                    'jabatan' => $petugasData['jabatan'][$i] ?? '-'
+                    'jabatan' => $petugasData['jabatan'][$i] ?? '-',
                 ];
+
+                // Cek apakah ada input TTD baru dari form?
+                if (isset($petugasData['ttd'][$i]) && !empty($petugasData['ttd'][$i])) {
+                    $dataPivot['ttd'] = $petugasData['ttd'][$i];
+                } 
+                $syncData[$nip] = $dataPivot;
             }
         }
         
         $ba->petugas()->sync($syncData);
 
         return $ba;
+    }
+    
+    public function updateBap($id, array $data, array $petugasData)
+    {
+        $ba = BeritaAcara::findOrFail($id);
+        
+        // 1. Update Data Utama
+        $ba->update($data);
+
+        // 2. Siapkan data pivot petugas
+        $syncData = [];
+        foreach ($petugasData['nip'] as $i => $nip) {
+            if ($nip) {
+                $dataPivot = [
+                    'pangkat' => $petugasData['pangkat'][$i] ?? '-',
+                    'jabatan' => $petugasData['jabatan'][$i] ?? '-',
+                ];
+
+                // Cek apakah ada input TTD baru dari form?
+                if (isset($petugasData['ttd'][$i]) && !empty($petugasData['ttd'][$i])) {
+                    $dataPivot['ttd'] = $petugasData['ttd'][$i];
+                } 
+                $syncData[$nip] = $dataPivot;
+            }
+        }
+        
+        // 3. Sync (Otomatis hapus yang lama, masukkan yang baru)
+        $ba->petugas()->sync($syncData);
+
+        return $ba;
+    }
+
+    public function getBapById($id)
+    {
+        return BeritaAcara::with('petugas')->findOrFail($id);
     }
 
     /**

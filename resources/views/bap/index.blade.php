@@ -45,6 +45,12 @@
                                     <span class="glyphicon glyphicon-print"></span> PDF
                                 </a>
 
+                                @if(auth()->user()->isAdmin() || $ba->petugas->contains('nip', auth()->user()->nip))
+                                    <a href="{{ route('berita-acara.edit', $ba->id) }}" class="btn btn-warning btn-sm text-white">
+                                        <span class="glyphicon glyphicon-edit"></span> Edit
+                                    </a>
+                                @endif
+
                                 @if(auth()->user()->isAdmin())
                                     <form action="{{ route('berita-acara.destroy', $ba->id) }}" method="POST"
                                         onsubmit="return confirm('Yakin ingin menghapus data rusak/palsu/rekayasa ini?')" class="m-0">
@@ -77,6 +83,9 @@
                 "columnDefs": [
                     { "orderable": false, "targets": [1, 5] }
                 ],
+                "search": {
+                    "smart": false
+                },
                 "language": {
                     "url": "//cdn.datatables.net/plug-ins/1.13.6/i18n/id.json"
                 }
