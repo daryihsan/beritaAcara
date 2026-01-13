@@ -2,27 +2,30 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BeritaAcaraController;
 use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\Admin\BeritaAcaraAdminController;
 
-Route::get('/', [LoginController::class, 'show'])->middleware('guest');
+// Auth Routes
+Route::get('/', [LoginController::class, 'show'])->middleware('guest')->name('login');
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LoginController::class, 'logout']);
 
-
-
+// Main Routes (Protected)
 Route::middleware(['auth'])->group(function () {
-
+    
     Route::get('/dashboard', [BeritaAcaraController::class, 'index'])->name('dashboard');
-    Route::post('/berita-acara', [BeritaAcaraController::class, 'store'])   ->name('bap.store') ;
-    Route::get('/berita-acara/create', [BeritaAcaraController::class, 'create']);
-    Route::post('/berita-acara/cetak', [BeritaAcaraController::class, 'cetak'])
-        ->name('bap.cetak');
-    Route::delete('/berita-acara/{id}', [BeritaAcaraController::class, 'destroy'])->name('berita-acara.destroy');
-Route::get('/berita-acara/{id}/pdf', [BeritaAcaraController::class, 'pdf'])->name('berita-acara.pdf');
-
-    Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
-        Route::get('/berita-acara', [BeritaAcaraAdminController::class, 'index']);
-        Route::post('/berita-acara/assign', [BeritaAcaraAdminController::class, 'assign']);
+    
+    // Grouping Berita Acara Routes
+    Route::prefix('berita-acara')->name('berita-acara.')->group(function() {
+        Route::get('/create', [BeritaAcaraController::class, 'create'])->name('create');
+        Route::post('/', [BeritaAcaraController::class, 'store'])->name('store');
+        Route::get('/{id}/pdf', [BeritaAcaraController::class, 'pdf'])->name('pdf');
+        
+        // Admin Only Actions
+        Route::middleware(['role:admin'])->group(function() {
+            Route::delete('/{id}', [BeritaAcaraController::class, 'destroy'])->name('destroy');
+            Route::post('/assign', [BeritaAcaraController::class, 'assignPetugas'])->name('assign'); // Route baru pengganti admin controller
+        });
     });
-
+    Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
+        Route::get('/berita-acara', [BeritaAcaraController::class, 'adminIndex'])->name('admin.bap.index');
+    });
 });
