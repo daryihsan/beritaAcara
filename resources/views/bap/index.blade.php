@@ -4,7 +4,7 @@
     <div class="flex justify-between items-center mb-8">
         <h1 class="text-5xl font-extrabold text-slate-800 tracking-tight">Daftar Berita Acara</h1>
         <a href="/berita-acara/create"
-            class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl shadow-lg transition-all transform hover:-translate-y-1 font-bold">
+            class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl shadow-lg ring-1 ring-black/5 hover:shadow-xl transition-all transform hover:-translate-y-1 font-bold">
             <span class="glyphicon glyphicon-plus mr-2"></span> Tambah Data
         </a>
     </div>
