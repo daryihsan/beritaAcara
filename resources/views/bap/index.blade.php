@@ -53,7 +53,8 @@
 
                                 @if(auth()->user()->isAdmin())
                                     <form action="{{ route('berita-acara.destroy', $ba->id) }}" method="POST"
-                                        onsubmit="return confirm('Yakin ingin menghapus data rusak/palsu/rekayasa ini?')" class="m-0">
+                                        onsubmit="return confirm('Yakin ingin menghapus data rusak/palsu/rekayasa ini?')"
+                                        class="m-0">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-danger btn-sm">
@@ -72,24 +73,3 @@
     </div>
 
 @endsection
-
-@push('scripts')
-    <script>
-        $(document).ready(function () {
-            $('#tableBap').DataTable({
-                "paging": true,
-                "ordering": true,
-                "info": true,
-                "columnDefs": [
-                    { "orderable": false, "targets": [1, 5] }
-                ],
-                "search": {
-                    "smart": false
-                },
-                "language": {
-                    "url": "//cdn.datatables.net/plug-ins/1.13.6/i18n/id.json"
-                }
-            });
-        });
-    </script>
-@endpush
