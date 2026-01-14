@@ -145,7 +145,7 @@
         </table>
 
         <p>Dengan hasil sebagai berikut :</p>
-        <div style="padding: 0px; min-height: 100px;">
+        <div style="padding: 0px; min-height: 50px;">
             {!! nl2br($data['hasil_pemeriksaan']) !!}
         </div>
 
@@ -158,25 +158,40 @@
             <tr>
                 <td width="50%" align="left" valign="top">Yang diperiksa,<br> Pemilik/ Penangggung
                     Jawab<br><br><br><br><b>{{ $data['yang_diperiksa'] }}</b></td>
+                    
                 <td width="50%" align="left" valign="top">Yang Membuat Berita Acara:<br>
                     <table width="100%">
                         @foreach ($list_petugas as $i => $p)
-                            <tr>
-                                {{-- Kolom Nomor & Nama --}}
-                                <td width="60%" height="80" style="vertical-align:bottom;">
-                                    {{ $i + 1 }}. {{ $p['nama'] }}
-                                </td>
+                        <tr style="height:80px;"> {{-- fixed row height --}}
+                            <td colspan="2" style="position: relative; vertical-align: top; overflow: visible;">
 
-                                {{-- Kolom Tanda Tangan --}}
-                                <td width="40%" style="vertical-align:bottom; padding-left: 20px;">
+                                {{-- Name with hanging indent so wrapped lines align --}}
+                                <div style="display: block;
+                                            width: 60%;
+                                            padding-left: 16px;
+                                            text-indent: -16px;
+                                            line-height: 1.2;
+                                            margin-bottom: 30px; ">
+                                    {{ $i + 1 }}. {{ $p['nama'] }}
+                                </div>
+
+                                <div style="position: absolute;
+                                            vertical-align: top;
+                                            top: 5px;              
+                                            right: -40px;         
+                                            z-index: {{ 100 + $i }};">
                                     @if(isset($p['ttd']) && !empty($p['ttd']))
-                                        {{-- Render Base64 Image --}}
-                                        <img src="{{ $p['ttd'] }}" style="height: 60px; max-width: 150px;">
+                                        <img src="{{ $p['ttd'] }}"
+                                            style="display: block;
+                                                    height: 60px;
+                                                    max-width: 150px;" />
                                     @else
-                                        <div style="height: 60px; border-bottom: 1px dotted #000; width: 150px;"></div>
+                                        <div style="height: 60px; width:150px; border-bottom: 1px dotted #000;"></div>
                                     @endif
-                                </td>
-                            </tr>
+                                </div>
+
+                            </td>
+                        </tr>
                         @endforeach
                     </table>
                 </td>
