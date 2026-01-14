@@ -5,12 +5,16 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 
 class LoginController extends Controller
 {
     public function show()
     {
-        return view('auth.login');
+        // Ambil data NIP dan Nama semua user untuk autocomplete
+        $users = User::select('nip', 'name')->orderBy('name')->get();
+
+        return view('auth.login', compact('users'));
     }
 
     public function login(Request $request)
@@ -34,6 +38,7 @@ class LoginController extends Controller
     {
         Auth::logout();
         $request->session()->invalidate();
+        $request->session()->regenerateToken();
         return redirect('/');
     }
 }
