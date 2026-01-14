@@ -1,12 +1,68 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="flex justify-between items-center mb-8">
-        <h1 class="text-5xl font-extrabold text-slate-800 tracking-tight">Daftar Berita Acara</h1>
-        <a href="/berita-acara/create"
-            class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl shadow-lg ring-1 ring-black/5 hover:shadow-xl transition-all transform hover:-translate-y-1 font-bold">
-            <span class="glyphicon glyphicon-plus mr-2"></span> Tambah Data
-        </a>
+    <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+        <div>
+            <h1 class="text-5xl font-extrabold text-slate-800 tracking-tight">Daftar Berita Acara</h1>
+        </div>
+
+        {{-- AREA TOMBOL & FILTER --}}
+        <div class="flex flex-wrap gap-2 items-center">
+            
+            {{-- FORM FILTER REKAP --}}
+            <form method="GET" class="flex gap-2 items-center bg-white p-1 rounded-xl shadow-lg border border-slate-200">
+                
+                {{-- Dropdown Pilih Tahun --}}
+                <select name="tahun" class="form-select border-0 focus:ring-0 text-sm font-semibold text-slate-600 bg-transparent py-2 pl-3 pr-8 cursor-pointer outline-none">
+                    <option value="{{ date('Y') }}" selected>Tahun Ini ({{ date('Y') }})</option>
+                    <option value="semua">Semua Data (Urut Waktu)</option>
+                    @foreach(range(date('Y')-1, 2020) as $y)
+                        <option value="{{ $y }}">{{ $y }}</option>
+                    @endforeach
+                </select>
+
+                <div class="w-px h-10 bg-slate-300 mx-1"></div>
+
+                {{-- 2. Dropdown Petugas (KHUSUS ADMIN) --}}
+                @if(auth()->user()->isAdmin())
+                    <div class="w-px h-6 bg-slate-200"></div> {{-- Pemisah kecil --}}
+                    <select name="filter_petugas" class="form-select border-0 focus:ring-0 text-sm font-semibold text-slate-600 bg-transparent py-2 pl-3 pr-8 cursor-pointer outline-none" style="max-width: 150px;">
+                        <option value="semua" selected>Semua Petugas</option>
+                        @foreach($allPetugas as $p)
+                            <option value="{{ $p->nip }}">{{ Str::limit($p->name, 15) }}</option>
+                        @endforeach
+                    </select>
+                @endif
+
+                {{-- Tombol Excel --}}
+                <button type="submit" formaction="{{ route('berita-acara.export.excel') }}" 
+                        style="color: #fff !important"
+                        class="bg-green-500 hover:bg-green-700 px-6 py-3 rounded-xl transition-all ring-1 ring-black/5 hover:shadow-xl transition-all transform hover:-translate-y-1 font-bold no-underline flex items-center gap-2" 
+                        title="Download Excel">
+                    <span class="glyphicon glyphicon-save-file" style="color: #fff !important"></span> 
+                    <span style="color: #fff !important;">Excel</span>
+                </button>
+
+                {{-- Tombol PDF --}}
+                <button type="submit" formaction="{{ route('berita-acara.export.pdflist') }}" formtarget="_blank"
+                        style="color: #fff !important"
+                        class="bg-red-600 hover:bg-red-700 px-6 py-3 rounded-xl transition-all ring-1 ring-black/5 hover:shadow-xl transition-all transform hover:-translate-y-1 font-bold no-underline flex items-center gap-2" 
+                        title="Download PDF">
+                    <span class="glyphicon glyphicon-print" style="color: #fff !important"></span> 
+                    <span style="color: #fff !important;">PDF</span>
+                </button>
+            </form>
+
+            {{-- PEMISAH --}}
+            <div class="w-px h-8 bg-slate-300 mx-1"></div>
+
+            {{-- TOMBOL TAMBAH DATA (UTAMA) --}}
+            <a href="/berita-acara/create"
+                class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl shadow-lg transition-all ring-1 ring-black/5 hover:shadow-xl transition-all transform hover:-translate-y-1 font-bold no-underline flex items-center gap-2">
+                <span class="glyphicon glyphicon-plus mr-2"></span> 
+                <span>Tambah</span>
+            </a>
+        </div>
     </div>
 
     <div class="bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
@@ -22,7 +78,7 @@
                     <th style="min-width: 120px;"
                         class="text-xl font-bold uppercase tracking-wider border-r border-slate-100">Tanggal Periksa</th>
                     <th style="min-width: 120px;"
-                        class="text-xl font-bold uppercase tracking-wider border-r border-slate-100">Tanggal BAP</th>
+                        class="text-xl font-bold uppercase tracking-wider border-r border-slate-100">Tanggal Surat Tugas</th>
                     <th style="min-width: 100px;" class="text-xl font-bold uppercase tracking-wider">Aksi</th>
                 </tr>
             </thead>
@@ -37,7 +93,7 @@
                         </td>
                         <td class="p-5 text-left">{{ $ba->objek_nama }}</td>
                         <td class="p-5 text-left">{{ \Carbon\Carbon::parse($ba->tanggal_pemeriksaan)->format('d M Y') }}</td>
-                        <td class="p-5 text-left">{{ \Carbon\Carbon::parse($ba->tanggal_berita_acara)->format('d M Y') }}</td>
+                        <td class="p-5 text-left">{{ \Carbon\Carbon::parse($ba->tgl_surat_tugas)->format('d M Y') }}</td>
                         <td class="p-5 text-center border-l border-slate-100">
                             <div class="flex items-center justify-center gap-2">
                                 <a href="{{ route('berita-acara.pdf', $ba->id) }}" target="_blank"

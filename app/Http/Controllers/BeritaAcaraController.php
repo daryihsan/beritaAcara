@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 use App\Models\BeritaAcara;
 use App\Models\User;
 use App\Services\BeritaAcaraService;
+use App\Exports\BeritaAcaraExport;
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
-use App\Helpers\DateHelper; 
+use App\Helpers\DateHelper;
 
 class BeritaAcaraController extends Controller
 {
@@ -26,8 +28,9 @@ class BeritaAcaraController extends Controller
 
         $data = $this->beritaAcaraService->getBapData($request->tahun, auth()->user());
         $tahun = $request->tahun;
+        $allPetugas = User::where('role', '!=', 'admin')->orderBy('name')->get();
 
-        return view('bap.index', compact('data', 'tahun'));
+        return view('bap.index', compact('data', 'tahun', 'allPetugas'));
     }
 
     public function create()
@@ -40,44 +43,44 @@ class BeritaAcaraController extends Controller
     {
         // Validasi tetap di controller (Best Practice: Pindahkan ke FormRequest terpisah jika ingin lebih pro)
         $validData = $request->validate([
-            'no_surat_tugas'    => 'required',
-            'tgl_surat_tugas'   => 'required|date',
-            'tanggal'           => 'required|date',
-            'hari'              => 'required',
-            'objek_nama'        => 'required',
-            'objek_alamat'      => 'required',
+            'no_surat_tugas' => 'required',
+            'tgl_surat_tugas' => 'required|date',
+            'tanggal' => 'required|date',
+            'hari' => 'required',
+            'objek_nama' => 'required',
+            'objek_alamat' => 'required',
             'hasil_pemeriksaan' => 'required',
-            'petugas_nip'       => 'required|array',
-            'petugas_nip.*'     => 'exists:users,nip',
+            'petugas_nip' => 'required|array',
+            'petugas_nip.*' => 'exists:users,nip',
             'kepala_balai_text' => 'required',
-            'objek_kota'        => 'required',
-            'dalam_rangka'      => 'required',
-            'yang_diperiksa'    => 'required',
+            'objek_kota' => 'required',
+            'dalam_rangka' => 'required',
+            'yang_diperiksa' => 'required',
         ], [
             'petugas_nip.*.exists' => 'NIP Petugas tidak terdaftar di sistem!'
         ]);
 
         // Mapping data untuk database
         $dbData = [
-            'no_surat_tugas'      => $request->no_surat_tugas,
-            'tgl_surat_tugas'     => $request->tgl_surat_tugas,
+            'no_surat_tugas' => $request->no_surat_tugas,
+            'tgl_surat_tugas' => $request->tgl_surat_tugas,
             'tanggal_pemeriksaan' => $request->tanggal,
-            'hari'                => $request->hari,
-            'objek_nama'          => $request->objek_nama,
-            'objek_alamat'        => $request->objek_alamat,
-            'hasil_pemeriksaan'   => $request->hasil_pemeriksaan,
-            'kepala_balai_text'   => $request->kepala_balai_text,
-            'objek_kota'          => $request->objek_kota,
-            'dalam_rangka'        => $request->dalam_rangka,
-            'yang_diperiksa'      => $request->yang_diperiksa,
-            'created_by'          => auth()->id(),
+            'hari' => $request->hari,
+            'objek_nama' => $request->objek_nama,
+            'objek_alamat' => $request->objek_alamat,
+            'hasil_pemeriksaan' => $request->hasil_pemeriksaan,
+            'kepala_balai_text' => $request->kepala_balai_text,
+            'objek_kota' => $request->objek_kota,
+            'dalam_rangka' => $request->dalam_rangka,
+            'yang_diperiksa' => $request->yang_diperiksa,
+            'created_by' => auth()->id(),
         ];
 
         $petugasData = [
-            'nip'     => $request->petugas_nip,
+            'nip' => $request->petugas_nip,
             'pangkat' => $request->petugas_pangkat,
             'jabatan' => $request->petugas_jabatan,
-            'ttd'     => $request->petugas_ttd,
+            'ttd' => $request->petugas_ttd,
         ];
 
         $ba = $this->beritaAcaraService->storeBap($dbData, $petugasData);
@@ -89,16 +92,16 @@ class BeritaAcaraController extends Controller
     public function edit($id)
     {
         $ba = $this->beritaAcaraService->getBapById($id);
-        
+
         // Proteksi: Hanya admin atau pembuat dokumen/petugas terkait yang boleh edit
         $isPetugasTerlibat = $ba->petugas->contains('nip', auth()->user()->nip);
-        
+
         if (!auth()->user()->isAdmin() && !$isPetugasTerlibat) {
-             abort(403, 'Anda tidak memiliki akses untuk mengedit dokumen ini karena nama Anda tidak tercantum sebagai petugas.');
+            abort(403, 'Anda tidak memiliki akses untuk mengedit dokumen ini karena nama Anda tidak tercantum sebagai petugas.');
         }
 
         $petugas = User::whereNotNull('pangkat')->whereNotNull('jabatan')->get();
-        
+
         // Kirim variabel $ba ke view agar form terisi otomatis
         return view('bap.form', compact('petugas', 'ba'));
     }
@@ -107,41 +110,41 @@ class BeritaAcaraController extends Controller
     {
         // Validasi (Sama persis dengan store)
         $request->validate([
-            'no_surat_tugas'    => 'required',
-            'tgl_surat_tugas'   => 'required|date',
-            'tanggal'           => 'required|date',
-            'hari'              => 'required',
-            'objek_nama'        => 'required',
-            'objek_alamat'      => 'required',
+            'no_surat_tugas' => 'required',
+            'tgl_surat_tugas' => 'required|date',
+            'tanggal' => 'required|date',
+            'hari' => 'required',
+            'objek_nama' => 'required',
+            'objek_alamat' => 'required',
             'hasil_pemeriksaan' => 'required',
-            'petugas_nip'       => 'required|array',
-            'petugas_nip.*'     => 'exists:users,nip',
+            'petugas_nip' => 'required|array',
+            'petugas_nip.*' => 'exists:users,nip',
             'kepala_balai_text' => 'required',
-            'objek_kota'        => 'required',
-            'dalam_rangka'      => 'required',
-            'yang_diperiksa'    => 'required',
+            'objek_kota' => 'required',
+            'dalam_rangka' => 'required',
+            'yang_diperiksa' => 'required',
         ]);
 
         $dbData = [
-            'no_surat_tugas'      => $request->no_surat_tugas,
-            'tgl_surat_tugas'     => $request->tgl_surat_tugas,
+            'no_surat_tugas' => $request->no_surat_tugas,
+            'tgl_surat_tugas' => $request->tgl_surat_tugas,
             'tanggal_pemeriksaan' => $request->tanggal,
-            'hari'                => $request->hari,
-            'objek_nama'          => $request->objek_nama,
-            'objek_alamat'        => $request->objek_alamat,
-            'hasil_pemeriksaan'   => $request->hasil_pemeriksaan,
-            'kepala_balai_text'   => $request->kepala_balai_text,
-            'objek_kota'          => $request->objek_kota,
-            'dalam_rangka'        => $request->dalam_rangka,
-            'yang_diperiksa'      => $request->yang_diperiksa,
+            'hari' => $request->hari,
+            'objek_nama' => $request->objek_nama,
+            'objek_alamat' => $request->objek_alamat,
+            'hasil_pemeriksaan' => $request->hasil_pemeriksaan,
+            'kepala_balai_text' => $request->kepala_balai_text,
+            'objek_kota' => $request->objek_kota,
+            'dalam_rangka' => $request->dalam_rangka,
+            'yang_diperiksa' => $request->yang_diperiksa,
             // 'created_by' TIDAK DIUPDATE agar history pembuat tetap ada
         ];
 
         $petugasData = [
-            'nip'     => $request->petugas_nip,
+            'nip' => $request->petugas_nip,
             'pangkat' => $request->petugas_pangkat,
             'jabatan' => $request->petugas_jabatan,
-            'ttd'     => $request->petugas_ttd,
+            'ttd' => $request->petugas_ttd,
         ];
 
         $this->beritaAcaraService->updateBap($id, $dbData, $petugasData);
@@ -153,11 +156,12 @@ class BeritaAcaraController extends Controller
     public function assignPetugas(Request $request)
     {
         // Pastikan hanya admin yang bisa akses via Middleware atau Gate
-        if(!auth()->user()->isAdmin()) abort(403);
+        if (!auth()->user()->isAdmin())
+            abort(403);
 
         $request->validate([
             'berita_acara_id' => 'required',
-            'user_ids'        => 'required|array'
+            'user_ids' => 'required|array'
         ]);
 
         $ba = BeritaAcara::findOrFail($request->berita_acara_id);
@@ -178,27 +182,27 @@ class BeritaAcaraController extends Controller
         // Format data agar sesuai dengan struktur view PDF
         $list_petugas = $ba->petugas->map(function ($p) {
             return [
-                'nama'    => $p->name, // Perbaiki 'nama' jadi 'name' sesuai view
+                'nama' => $p->name, // Perbaiki 'nama' jadi 'name' sesuai view
                 'pangkat' => $p->pivot->pangkat ?? '-',
                 'jabatan' => $p->pivot->jabatan ?? '-',
-                'nip'     => $p->nip,
-                'ttd'     => $p->pivot->ttd ?? null,
+                'nip' => $p->nip,
+                'ttd' => $p->pivot->ttd ?? null,
             ];
         });
 
         // Mapping Data untuk PDF
         $data = [
-            'tanggal'           => $ba->tanggal_pemeriksaan,
-            'hari'              => $ba->hari,
-            'no_surat_tugas'    => $ba->no_surat_tugas,
-            'tgl_surat_tugas'   => $ba->tgl_surat_tugas,
+            'tanggal' => $ba->tanggal_pemeriksaan,
+            'hari' => $ba->hari,
+            'no_surat_tugas' => $ba->no_surat_tugas,
+            'tgl_surat_tugas' => $ba->tgl_surat_tugas,
             'kepala_balai_text' => $ba->kepala_balai_text,
-            'objek_nama'        => $ba->objek_nama,
-            'objek_alamat'      => $ba->objek_alamat,
-            'objek_kota'        => $ba->objek_kota,
-            'dalam_rangka'      => $ba->dalam_rangka,
+            'objek_nama' => $ba->objek_nama,
+            'objek_alamat' => $ba->objek_alamat,
+            'objek_kota' => $ba->objek_kota,
+            'dalam_rangka' => $ba->dalam_rangka,
             'hasil_pemeriksaan' => $ba->hasil_pemeriksaan,
-            'yang_diperiksa'    => $ba->yang_diperiksa,
+            'yang_diperiksa' => $ba->yang_diperiksa,
         ];
 
         return $this->beritaAcaraService->generatePdf($data, $list_petugas);
@@ -206,7 +210,8 @@ class BeritaAcaraController extends Controller
 
     public function destroy($id)
     {
-        if (!auth()->user()->isAdmin()) abort(403);
+        if (!auth()->user()->isAdmin())
+            abort(403);
 
         $ba = BeritaAcara::findOrFail($id);
         $ba->petugas()->detach();
@@ -218,11 +223,76 @@ class BeritaAcaraController extends Controller
     public function adminIndex()
     {
         // Pastikan hanya admin
-        if (!auth()->user()->isAdmin()) abort(403);
+        if (!auth()->user()->isAdmin())
+            abort(403);
 
         // Ambil semua data lewat service (parameter tahun di-null-kan agar semua keluar)
         $data = $this->beritaAcaraService->getBapData(null, auth()->user());
+        $allPetugas = User::where('role', '!=', 'admin')->orderBy('name')->get();
 
-        return view('bap.index', compact('data'));
+        return view('bap.index', compact('data', 'allPetugas'));
+    }
+
+    // ==========================================
+    // FITUR REKAPITULASI (EXCEL & PDF LIST)
+    // ==========================================
+
+    public function exportExcel(Request $request)
+    {
+        $tahun = $request->tahun ?? date('Y');
+        $filterNip = $request->filter_petugas; // Ambil dari dropdown
+
+        // --- LOGIKA JUDUL & INFO ---
+        $judul = $tahun == 'semua'
+            ? "SEMUA DATA (TERBARU - TERLAMA)"
+            : "TAHUN " . $tahun;
+
+        $infoPetugas = null;
+
+        // Cek siapa yang request?
+        if (!auth()->user()->isAdmin()) {
+            // Kalau Petugas: Otomatis nama dia
+            $infoPetugas = "Petugas: " . auth()->user()->name;
+        } elseif ($filterNip && $filterNip !== 'semua') {
+            // Kalau Admin pilih filter: Cari nama petugas yang dipilih
+            $p = User::where('nip', $filterNip)->first();
+            if ($p)
+                $infoPetugas = "Filter Petugas: " . $p->name;
+        }
+
+        // Panggil Service dengan parameter baru ($filterNip)
+        $data = $this->beritaAcaraService->getBapData($tahun, auth()->user(), $filterNip);
+
+        $namaFile = 'Rekap_BAP_' . date('Ymd_His') . '.xlsx';
+
+        // Kirim $judul DAN $infoPetugas ke Class Export
+        return Excel::download(new BeritaAcaraExport($data, $judul, $infoPetugas), $namaFile);
+    }
+
+    public function exportPdfList(Request $request)
+    {
+        $tahun = $request->tahun ?? date('Y');
+        $filterNip = $request->filter_petugas;
+
+        $judul = $tahun == 'semua' ? "SEMUA DATA" : "TAHUN " . $tahun;
+        $infoPetugas = null;
+
+        if (!auth()->user()->isAdmin()) {
+            $infoPetugas = "Petugas: " . auth()->user()->name;
+        } elseif ($filterNip && $filterNip !== 'semua') {
+            $p = User::where('nip', $filterNip)->first();
+            if ($p)
+                $infoPetugas = "Filter Petugas: " . $p->name;
+        }
+
+        $data = $this->beritaAcaraService->getBapData($tahun, auth()->user(), $filterNip);
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('exports.bap_rekap', [
+            'data' => $data,
+            'labelHeader' => $judul,
+            'infoPetugas' => $infoPetugas // Kirim ke View PDF
+        ]);
+
+        return $pdf->setPaper('a4', 'landscape')->stream('Laporan.pdf');
     }
 }

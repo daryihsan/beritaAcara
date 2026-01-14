@@ -162,36 +162,22 @@
                 <td width="50%" align="left" valign="top">Yang Membuat Berita Acara:<br>
                     <table width="100%">
                         @foreach ($list_petugas as $i => $p)
-                        <tr style="height:80px;"> {{-- fixed row height --}}
-                            <td colspan="2" style="position: relative; vertical-align: top; overflow: visible;">
-
-                                {{-- Name with hanging indent so wrapped lines align --}}
-                                <div style="display: block;
-                                            width: 60%;
-                                            padding-left: 16px;
-                                            text-indent: -16px;
-                                            line-height: 1.2;
-                                            margin-bottom: 30px; ">
-                                    {{ $i + 1 }}. {{ $p['nama'] }}
-                                </div>
-
-                                <div style="position: absolute;
-                                            vertical-align: top;
-                                            top: 5px;              
-                                            right: -40px;         
-                                            z-index: {{ 100 + $i }};">
-                                    @if(isset($p['ttd']) && !empty($p['ttd']))
-                                        <img src="{{ $p['ttd'] }}"
-                                            style="display: block;
-                                                    height: 60px;
-                                                    max-width: 150px;" />
-                                    @else
-                                        <div style="height: 60px; width:150px; border-bottom: 1px dotted #000;"></div>
-                                    @endif
-                                </div>
-
-                            </td>
-                        </tr>
+                            <tr>
+                                {{-- Kolom Nomor & Nama --}}
+                                <td colspan="2" height="80" style="position: relative; vertical-align: top;">
+                                    <div style="display: block; width: 60%; padding-left: 16px; text-indent: -16px; vertical-align: top;">
+                                        {{ $i + 1 }}. {{ $p['nama'] }}
+                                    </div>
+                                    
+                                    <div style="position: absolute; right: -40px; top: 0; vertical-align: top;">
+                                        @if(isset($p['ttd']) && !empty($p['ttd']))
+                                            <img src="{{ $p['ttd'] }}" style="height: 60px; max-width: 150px;">
+                                        @else
+                                            <div style="height: 60px; border-bottom: 1px dotted #000; width: 150px;"></div>
+                                        @endif
+                                    </div>
+                                </td>
+                            </tr>
                         @endforeach
                     </table>
                 </td>

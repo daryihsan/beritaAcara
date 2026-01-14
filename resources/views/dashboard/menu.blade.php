@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="p-6">
-    <h1 class="text-4xl font-bold mb-10 text-gray-800">Dashboard</h1>
+    <h1 class="text-7xl font-extrabold text-slate-800 tracking-tight">Dashboard</h1>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
         
