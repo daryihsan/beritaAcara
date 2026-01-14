@@ -163,19 +163,36 @@
                     <table width="100%">
                         @foreach ($list_petugas as $i => $p)
                             <tr>
-                                {{-- Kolom Nomor & Nama --}}
-                                <td colspan="2" height="80" style="position: relative; vertical-align: top;">
-                                    <div style="display: block; width: 60%; padding-left: 16px; text-indent: -16px; vertical-align: top;">
+                                <td colspan="2"
+                                    height="55"
+                                    style="position: relative; vertical-align: top; padding-bottom: 6px;">
+
+                                    {{-- Nama (rapat tapi masih kebaca) --}}
+                                    <div style="
+                                        width: 60%;
+                                        padding-left: 16px;
+                                        text-indent: -16px;
+                                        line-height: 1.15;">
                                         {{ $i + 1 }}. {{ $p['nama'] }}
                                     </div>
-                                    
-                                    <div style="position: absolute; right: -40px; top: 0; vertical-align: top;">
+
+                                    {{-- TTD --}}
+                                    <div style="
+                                        position: absolute;
+                                        right: -40px;
+                                        top: 0;">
                                         @if(isset($p['ttd']) && !empty($p['ttd']))
-                                            <img src="{{ $p['ttd'] }}" style="height: 60px; max-width: 150px;">
+                                            <img src="{{ $p['ttd'] }}"
+                                                style="height: 50px; max-width: 150px;">
                                         @else
-                                            <div style="height: 60px; border-bottom: 1px dotted #000; width: 150px;"></div>
+                                            <div style="
+                                                height: 50px;
+                                                width: 150px;
+                                                border-bottom: 1px dotted #000;">
+                                            </div>
                                         @endif
                                     </div>
+
                                 </td>
                             </tr>
                         @endforeach

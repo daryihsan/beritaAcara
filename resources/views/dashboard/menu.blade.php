@@ -1,9 +1,13 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="p-6">
-    <h1 class="text-7xl font-extrabold text-slate-800 tracking-tight">Dashboard</h1>
-
+    <div class="mb-8">
+        <h1 class="text-5xl font-extrabold text-slate-800 tracking-tight">Dashboard</h1>
+        <p class="text-slate-500 mt-2">
+            Selamat datang, {{ auth()->user()->name }}
+        </p>
+    </div>
+    
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
         
         <a href="/berita-acara/create" class="block no-underline transform transition hover:scale-105 hover:no-underline group">
@@ -37,7 +41,6 @@
         </a>
 
     </div>
-</div>
 
 <style>
     /* Menghilangkan garis bawah default link pada elemen dashboard */

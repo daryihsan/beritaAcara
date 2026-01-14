@@ -257,7 +257,7 @@ class BeritaAcaraController extends Controller
             // Kalau Admin pilih filter: Cari nama petugas yang dipilih
             $p = User::where('nip', $filterNip)->first();
             if ($p)
-                $infoPetugas = "Filter Petugas: " . $p->name;
+                $infoPetugas = "Nama Petugas: " . $p->name;
         }
 
         // Panggil Service dengan parameter baru ($filterNip)
@@ -282,12 +282,12 @@ class BeritaAcaraController extends Controller
         } elseif ($filterNip && $filterNip !== 'semua') {
             $p = User::where('nip', $filterNip)->first();
             if ($p)
-                $infoPetugas = "Filter Petugas: " . $p->name;
+                $infoPetugas = "Nama Petugas: " . $p->name;
         }
 
         $data = $this->beritaAcaraService->getBapData($tahun, auth()->user(), $filterNip);
 
-        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('exports.bap_rekap', [
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('exports.bap_rekap_pdf', [
             'data' => $data,
             'labelHeader' => $judul,
             'infoPetugas' => $infoPetugas // Kirim ke View PDF
