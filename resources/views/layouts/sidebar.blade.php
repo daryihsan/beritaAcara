@@ -1,27 +1,18 @@
-<aside class="w-72 min-h-screen bg-white text-gray-700 border-r border-gray-200 shadow-sm">
+<aside class="w-72 min-h-screen bg-[#020617] text-gray-700 border-r border-gray-200 shadow-sm">
     <!-- LOGO -->
-    <div class="h-40 flex items-center px-6 mb-2">
-        <div class="flex items-center gap-3 w-full p-3 rounded-xl bg-gradient-to-br from-blue-50 to-white border border-blue-100 shadow-sm">
-            <div class="flex-shrink-0 w-12 h-12 flex items-center justify-center rounded-lg bg-blue-600 shadow-lg shadow-blue-200">
-                <span class="glyphicon glyphicon-edit text-white text-2xl"></span>
-            </div>
-            
-            <div class="flex flex-col">
-                <h1 class="text-3xl px-4 font-black tracking-tighter text-blue-900 m-0 leading-none">
-                    BAP
-                </h1>
-                <p class="text-[10px] px-4 font-bold uppercase tracking-[0.1em] text-blue-400 m-0 mt-1">
-                    Digital System
-                </p>
-            </div>
+    <div class="h-auto py-6 flex items-center px-6 mb-2">
+        <div class="flex items-center justify-center w-full p-5 rounded-xl border border-white/10 shadow-xl shadow-black/40 relative overflow-hidden">
+            <img src="{{ asset('assets/img/SIMBAP2.png') }}" 
+                alt="Logo SIMBAP" 
+                class="relative z-10 w-36 h-auto object-contain drop-shadow-[0_0_20px_rgba(255,255,255,0.25)]">
         </div>
     </div>
 
-    <div class="px-6 mb-4">
+    <div class="px-6 mb-2">
         <div class="h-[1px] w-full bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
     </div>
     
-    <nav class="px-4 py-6 space-y-2 text-base">
+    <nav class="px-4 py-2 space-y-2 text-base">
 
         <!-- DASHBOARD -->
         <a href="/dashboard"

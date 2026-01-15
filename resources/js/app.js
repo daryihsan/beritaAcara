@@ -401,7 +401,7 @@ $(document).ready(function () {
                 lengthMenu: "Tampilkan _MENU_ data",
                 search: "Cari Data : ",
                 zeroRecords: "Tidak ada data yang ditemukan",
-                emptyTable: "Tidak ada data tersedia di tabel",
+                emptyTable: "Tidak ada data tersedia di tahun ini",
             },
         });
     }

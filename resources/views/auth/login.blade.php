@@ -3,189 +3,203 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - BAP Digital BPOM</title>
+    <title>Login - SIMBAP BPOM</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    {{-- Font & Icon --}}
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <style>
-        body { font-family: 'Inter', sans-serif; }
-        input[type="password"]::-ms-reveal,
-        input[type="password"]::-ms-clear {
-            display: none;
-        }
-    </style>
+    @include('auth.custom_css')
 </head>
-<body class="min-h-screen flex items-center justify-center bg-slate-900 p-4">
-    
-    {{-- CARD CONTAINER (Split Layout) --}}
-    {{-- Saya ganti w-[1000px] jadi max-w-6xl (standar) agar lebih aman --}}
-    <div class="w-full max-w-6xl bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row min-h-[600px]">
+<body class="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+
+    {{-- 1. BACKGROUND IMAGE (BLURRY) --}}
+    <div class="absolute inset-0 z-0">
+        {{-- Placeholder warna gelap --}}
+        <div class="absolute inset-0 bg-slate-900"></div> 
         
-        {{-- BAGIAN KIRI (DARK BLUE / BRANDING) --}}
-        {{-- hidden md:flex artinya: di HP hilang, di Laptop muncul --}}
-        <div class="hidden md:flex w-5/12 bg-slate-900 relative flex-col justify-between p-10 text-white">
+        {{-- Gambar Background --}}
+        <img src="{{ asset('assets/img/bg_login.png') }}" 
+             alt="Background" 
+             class="w-full h-full object-cover blur-[6px] scale-105 brightness-90 opacity-100">
+        
+        {{-- Overlay Gradient --}}
+        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-slate-900/50"></div>
+    </div>
+
+    {{-- 2. CARD CONTAINER --}}
+    <div class="w-full max-w-6xl rounded-[30px] shadow-2xl overflow-hidden flex flex-col md:flex-row min-h-[300px] relative z-10 animate-fade-in-up">
+        
+        {{-- BAGIAN KIRI: DARK GLOOM GRADIENT --}}
+        {{-- Flex-col agar Footer bisa ditaruh di bawah (mt-auto) --}}
+        <div class="hidden md:flex w-5/12 relative flex-col p-8 text-white overflow-hidden">
             
-            {{-- Background Gradient Effect --}}
-            <div class="absolute inset-0 bg-gradient-to-br from-slate-900 to-blue-900 opacity-90"></div>
+            {{-- Background Gradient --}}
+            <div class="absolute inset-0 bg-gradient-to-br from-[#0f172a] via-[#1e293b] to-black"></div>
             
-            {{-- Hiasan Blur --}}
-            <div class="absolute top-0 left-0 w-full h-full overflow-hidden opacity-20 pointer-events-none">
-                <div class="absolute -top-20 -left-20 w-60 h-60 bg-blue-500 rounded-full blur-3xl"></div>
-                <div class="absolute bottom-10 right-10 w-40 h-40 bg-indigo-500 rounded-full blur-3xl"></div>
+            {{-- Efek Glow Background --}}
+            <div class="absolute top-0 left-0 w-full h-full overflow-hidden opacity-30 pointer-events-none">
+                <div class="absolute -top-24 -left-24 w-80 h-80 bg-blue-900/50 rounded-full blur-[80px]"></div>
+                <div class="absolute bottom-0 right-0 w-64 h-64 bg-indigo-900/40 rounded-full blur-[60px]"></div>
             </div>
 
-            {{-- Content Atas --}}
-            <div class="relative z-10 text-center mt-10">
-                <h3 class="text-xl font-medium tracking-wide opacity-90">Welcome to</h3>
-                <h1 class="text-4xl font-extrabold mt-2 tracking-tight">SIMBAP BPOM</h1>
+            <div class="flex items-center gap-3 mb-6 opacity-80">
+                <div class="h-px w-8 bg-blue-400 box-glow-weak"></div>
+                <span class="text-xs font-bold tracking-[0.2em] uppercase text-blue-200 text-glow-weak">Official Portal</span>
+            </div>
+            
+            {{-- CONTENT TENGAH (LOGO & PENJELASAN) --}}
+            {{-- flex-1 + justify-center + items-center membuat isinya pas di tengah vertikal & horizontal --}}
+            <div class="relative z-10 flex flex-col flex-1 justify-center items-center text-center">
                 
-                {{-- Logo Tengah --}}
-                <div class="my-12 flex justify-center">
-                   <div class="w-32 h-32 bg-white/10 backdrop-blur-sm rounded-2xl flex items-center justify-center border border-white/20 shadow-inner">
-                        <i class="fa-solid fa-file-signature text-6xl text-blue-200"></i>
-                   </div>
+                {{-- Logo Visual --}}
+                <div class="relative w-72 flex items-center justify-center mb-8">
+                    
+                    {{-- EFEK CAHAYA (GLOW) PERMANEN --}}
+                    <div class="absolute inset-0 bg-blue-400/20 blur-2xl rounded-full opacity-60 pointer-events-none"></div>
+
+                    {{-- GAMBAR LOGO --}}
+                    <img src="{{ asset('assets/img/SIMBAP.png') }}" 
+                         alt="Logo Utama" 
+                         class="relative z-10 w-full h-auto object-contain drop-shadow-[0_0_25px_rgba(255,255,255,0.5)]">
                 </div>
+                
+                {{-- Penjelasan --}}
+                <p class="text-slate-300 font-semibold text-sm leading-relaxed max-w-xs mx-auto glow-subtle">
+                    Sistem Informasi Manajemen<br>
+                    Berita Acara Pemeriksaan<br> 
+                    Terintegrasi Badan POM
+                </p>
             </div>
 
-            {{-- Content Bawah --}}
-            <div class="relative z-10">
-                <p class="text-[10px] font-bold tracking-widest uppercase text-center text-blue-200 mb-4">
-                    INTEGRATED WITH
-                </p>
-                <div class="flex justify-center gap-4 opacity-80 mb-8">
-                    <div class="px-4 py-2 bg-white/10 rounded border border-white/10 text-xs font-semibold">
-                        <i class="fa-solid fa-server mr-1"></i> BBPOM
+            {{-- FOOTER KIRI (INTEGRATED WITH) --}}
+            {{-- mt-auto memaksanya turun ke paling bawah --}}
+            <div class="relative z-10 mt-auto pt-8">
+                <p class="text-[10px] font-bold tracking-widest uppercase text-slate-500 mb-4 text-center">Integrated With</p>
+                <div class="flex justify-center gap-3">
+                    <div class="px-4 py-2 bg-white/5 hover:bg-white/10 transition rounded-lg border border-white/5 backdrop-blur-sm text-xs font-medium text-slate-300 flex items-center gap-2">
+                        <i class="fa-solid fa-server text-blue-400"></i> BBPOM
                     </div>
-                    <div class="px-4 py-2 bg-white/10 rounded border border-white/10 text-xs font-semibold">
-                        <i class="fa-solid fa-shield-halved mr-1"></i> LawangSewu
+                    <div class="px-4 py-2 bg-white/5 hover:bg-white/10 transition rounded-lg border border-white/5 backdrop-blur-sm text-xs font-medium text-slate-300 flex items-center gap-2">
+                        <i class="fa-solid fa-shield-halved text-indigo-400"></i> LawangSewu
                     </div>
                 </div>
-            
             </div>
         </div>
 
-        {{-- BAGIAN KANAN (FORM LOGIN PUTIH) --}}
-        <div class="w-full md:w-7/12 bg-white p-8 md:p-12 flex flex-col justify-center relative">
+        {{-- BAGIAN KANAN: GLASSMORPHISM --}}
+        <div class="w-full md:w-7/12 p-6 md:p-8 flex flex-col justify-center relative overflow-hidden md:rounded-r-[30px] border border-l-0 border-white/20 shadow-[inset_0px_0px_30px_rgba(255,255,255,0.3)]">
             
-            {{-- Logo Mobile (Muncul cuma di HP) --}}
-            <div class="md:hidden flex justify-center mb-6">
-                 <i class="fa-solid fa-file-signature text-4xl text-blue-900"></i>
-            </div>
+            {{-- Background Glass Effect --}}
+            <div class="absolute inset-0 bg-white/50 backdrop-blur-[20px]"></div>
+            <div class="absolute inset-0 bg-gradient-to-br from-white/40 via-transparent to-white/10 pointer-events-none"></div>
+            {{-- Border Kiri Halus --}}
+            <div class="absolute inset-y-0 left-0 w-px bg-gradient-to-b from-transparent via-white/70 to-transparent hidden md:block z-20"></div>
 
-            {{-- Logo BPOM Kecil --}}
-            <div class="flex justify-center mb-6">
-                <div class="flex flex-col items-center">
-                    {{-- Ganti Icon Flask dengan Gambar Logo Asli --}}
-                    <img src="{{ asset('assets/img/bpom.jpeg') }}" 
-                         alt="Logo BPOM" 
-                         class="h-16 mb-2 object-contain">
-                </div>
-            </div>
-
-            <div class="text-center mb-8">
-                <h2 class="text-3xl font-bold text-slate-800">Login to Your Account</h2>
-                <p class="text-slate-500 text-sm mt-2">Enter your credentials to access the system</p>
-            </div>
-
-            <form method="POST" action="/login" class="space-y-5">
-                @csrf
-
-                @error('login')
-                    <div class="bg-red-50 text-red-600 text-sm p-3 rounded-lg border border-red-100 flex items-center gap-2">
-                        <i class="fa-solid fa-circle-exclamation"></i> {{ $message }}
-                    </div>
-                @enderror
-
-                {{-- 1. INPUT CARI NAMA --}}
-                <div>
-                    <label class="block text-slate-700 text-sm font-semibold mb-2">
-                        <i class="fa-solid fa-user text-slate-400 mr-1"></i> Nama Pegawai
-                    </label>
-                    <input type="text" id="input-nama" list="list-users" 
-                           class="w-full border border-slate-300 rounded-lg px-4 py-3 text-slate-700 focus:ring-2 focus:ring-blue-900 focus:border-blue-900 outline-none transition placeholder-slate-400"
-                           placeholder="Ketik nama Anda..." autocomplete="off">
-                    <datalist id="list-users">
-                        @foreach($users as $user)
-                            <option value="{{ $user->name }}" data-nip="{{ $user->nip }}">
-                        @endforeach
-                    </datalist>
+            {{-- Content Form --}}
+            <div class="relative z-30 w-full max-w-md mx-auto">
+                
+                {{-- Logo Mobile --}}
+                <div class="md:hidden flex justify-center mb-8">
+                     <div class="w-16 h-16 bg-blue-900/80 rounded-xl flex items-center justify-center shadow-lg border border-white/20">
+                        <i class="fa-solid fa-file-signature text-3xl text-white"></i>
+                     </div>
                 </div>
 
-                {{-- 2. INPUT NIP (Auto) --}}
-                <div>
-                    <div class="flex justify-between">
-                        <label class="block text-slate-700 text-sm font-semibold mb-2">
-                            <i class="fa-solid fa-id-card text-slate-400 mr-1"></i> NIP
+                {{-- Header Kanan --}}
+                <div class="text-center mb-8">
+                    <img src="{{ asset('assets/img/bpom.png') }}" alt="Logo BPOM" class="h-14 mx-auto mb-4 drop-shadow-md">
+                    <h2 class="text-3xl font-bold text-slate-800 tracking-tight drop-shadow-sm">Selamat Datang</h2>
+                    <p class="text-slate-600 text-sm mt-2 font-medium">Silakan masuk untuk mengakses dashboard</p>
+                </div>
+
+                {{-- Form --}}
+                <form method="POST" action="/login" class="space-y-5 p-2">
+                    @csrf
+
+                    @error('login')
+                        <div class="bg-red-50/90 backdrop-blur-sm text-red-600 text-sm p-4 rounded-xl border border-red-200/50 flex items-center gap-3 shadow-sm animate-pulse">
+                            <i class="fa-solid fa-circle-exclamation text-lg"></i> {{ $message }}
+                        </div>
+                    @enderror
+
+                    {{-- 1. INPUT CARI NAMA --}}
+                    <div class="group">
+                        <label class="block text-slate-700 text-xs font-bold uppercase tracking-wider mb-2 ml-1 text-shadow-sm">
+                            <i class="fa-solid fa-user text-slate-400 mr-1"></i>  Nama Pegawai
                         </label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none z-10">
+                                <i class="fa-solid fa-user text-slate-400 group-focus-within:text-blue-700 transition-colors"></i>
+                            </div>
+                            <input type="text" id="input-nama" list="list-users" 
+                                   class="w-full bg-white/60 border border-white/40 text-slate-800 text-sm rounded-xl focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 block w-full pl-11 p-3.5 transition-all shadow-sm focus:bg-white/90 placeholder-slate-500 backdrop-blur-sm" 
+                                   placeholder="Ketik nama Anda..." autocomplete="off">
+                        </div>
+                        <datalist id="list-users">
+                            @foreach($users as $user)
+                                <option value="{{ $user->name }}" data-nip="{{ $user->nip }}">
+                            @endforeach
+                        </datalist>
                     </div>
-                    <input name="nip" id="input-nip" 
-                           class="w-full bg-slate-50 border border-slate-300 rounded-lg px-4 py-3 text-slate-600 font-mono cursor-not-allowed focus:outline-none"
-                           placeholder="NIP akan muncul otomatis..." readonly required>
-                </div>
 
-                {{-- 3. INPUT PASSWORD --}}
-                <div class="relative">
-                    <div class="flex justify-between items-center mb-2">
-                        <label class="block text-slate-700 text-sm font-semibold">
-                            <i class="fa-solid fa-lock text-slate-400 mr-1"></i> Password
-                        </label>
+                    {{-- 2. INPUT NIP (Auto) --}}
+                    <div class="group">
+                        <div class="flex justify-between mb-2 ml-1">
+                            <label class="text-slate-700 text-xs font-bold uppercase tracking-wider text-shadow-sm">
+                                <i class="fa-solid fa-id-card text-slate-400 mr-1"></i>  Nomor Induk Pegawai
+                            </label>
+                        </div>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none z-10">
+                                <i class="fa-solid fa-id-badge text-slate-500"></i>
+                            </div>
+                            <input name="nip" id="input-nip" 
+                                   class="w-full bg-slate-200/50 border border-white/30 text-slate-600 text-sm rounded-xl block w-full pl-11 p-3.5 cursor-not-allowed backdrop-blur-sm" 
+                                   placeholder="NIP otomatis terisi..." readonly required>
+                        </div>
                     </div>
-                    <input type="password" name="password" id="password"
-                           class="w-full border border-slate-300 rounded-lg px-4 py-3 text-slate-700 focus:ring-2 focus:ring-blue-900 focus:border-blue-900 outline-none transition placeholder-slate-400"
-                           placeholder="Enter your password" required>
-                    <button type="button" id="toggle-password" class="absolute right-4 top-[38px] text-slate-400 hover:text-slate-600 focus:outline-none">
-                        <i class="fa-regular fa-eye"></i>
+
+                    {{-- 3. INPUT PASSWORD --}}
+                    <div class="group">
+                        <div class="flex justify-between items-center mb-2 ml-1">
+                            <label class="text-slate-700 text-xs font-bold uppercase tracking-wider text-shadow-sm">
+                                <i class="fa-solid fa-lock text-slate-400 mr-1"></i>  Password
+                            </label>
+                        </div>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none z-10">
+                                <i class="fa-solid fa-lock text-slate-500 group-focus-within:text-blue-700 transition-colors"></i>
+                            </div>
+                            <input type="password" name="password" id="password"
+                                   class="w-full bg-white/60 border border-white/40 text-slate-800 text-sm rounded-xl focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 block w-full pl-11 pr-12 p-3.5 transition-all shadow-sm focus:bg-white/90 placeholder-slate-500 backdrop-blur-sm" 
+                                   placeholder="Masukkan password..." required>
+                            
+                            {{-- Toggle Button --}}
+                            <button type="button" id="toggle-password" 
+                                    class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-500 hover:text-slate-700 transition focus:outline-none">
+                                <i class="fa-regular fa-eye text-lg"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    {{-- TOMBOL LOGIN --}}
+                    <button type="submit" 
+                            class="w-full text-white bg-slate-900/90 hover:bg-slate-800 backdrop-blur-md focus:ring-4 focus:ring-slate-300/50 font-bold rounded-xl text-sm px-5 py-4 text-center shadow-lg hover:shadow-slate-900/30 transform transition active:scale-[0.98] flex items-center justify-center gap-3 group border border-white/10">
+                        <span>Masuk Aplikasi</span>
+                        <i class="fa-solid fa-arrow-right group-hover:translate-x-2 transition-transform"></i>
                     </button>
+                </form>
+
+                <div class="mt-8 text-center">
+                    <p class="text-xs text-slate-600 font-medium text-shadow-sm">
+                        &copy; {{ date('Y') }} Badan Pengawas Obat dan Makanan
+                    </p>
                 </div>
-
-                {{-- TOMBOL LOGIN --}}
-                <button type="submit" 
-                        class="w-full bg-slate-900 text-white font-bold py-3.5 rounded-xl hover:bg-slate-800 hover:shadow-lg transform transition active:scale-[0.98] flex items-center justify-center gap-2 mt-4">
-                    <i class="fa-solid fa-arrow-right-to-bracket"></i> Login to SIMBAP
-                </button>
-            </form>
-
-            <p class="text-center text-xs text-slate-400 mt-8">
-                &copy; {{ date('Y') }} Badan POM. All rights reserved.
-            </p>
+            </div>
         </div>
     </div>
 
-    {{-- SCRIPT AUTO-FILL --}}
-    <script>
-        $(document).ready(function() {
-            // 1. Auto Fill NIP
-            $('#input-nama').on('input', function() {
-                var val = $(this).val();
-                var list = $('#list-users option');
-                var match = list.filter(function() { return this.value === val; });
+    @include('auth.custom_js')
 
-                if (match.length > 0) {
-                    var nip = match.data('nip');
-                    $('#input-nip').val(nip);
-                    $('#password').focus();
-                } else {
-                    $('#input-nip').val('');
-                }
-            });
-
-            // 2. TOGGLE PASSWORD VISIBILITY
-            $('#toggle-password').on('click', function() {
-                var passwordInput = $('#password');
-                var icon = $(this).find('i');
-
-                if (passwordInput.attr('type') === 'password') {
-                    passwordInput.attr('type', 'text');
-                    icon.removeClass('fa-eye').addClass('fa-eye-slash');
-                } else {
-                    passwordInput.attr('type', 'password');
-                    icon.removeClass('fa-eye-slash').addClass('fa-eye');
-                }
-            });
-        });
-    </script>
 </body>
 </html>
