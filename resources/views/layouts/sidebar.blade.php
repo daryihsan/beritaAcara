@@ -1,23 +1,45 @@
-<aside class="w-72 min-h-screen bg-[#020617] text-gray-700 border-r border-gray-200 shadow-sm">
-    <!-- LOGO -->
-    <div class="h-auto py-6 flex items-center px-6 mb-2">
-        <div class="flex items-center justify-center w-full p-5 rounded-xl border border-white/10 shadow-xl shadow-black/40 relative overflow-hidden">
-            <img src="{{ asset('assets/img/SIMBAP2.png') }}" 
-                alt="Logo SIMBAP" 
-                class="relative z-10 w-36 h-auto object-contain drop-shadow-[0_0_20px_rgba(255,255,255,0.25)]">
+{{-- OVERLAY (Latar gelap saat menu buka di HP) --}}
+<div id="sidebar-overlay" class="fixed inset-0 bg-black/60 z-40 hidden backdrop-blur-sm transition-opacity cursor-pointer md:hidden"></div>
+
+<aside id="sidebar-menu" 
+       class="fixed inset-y-0 left-0 z-50 w-72 min-h-screen bg-white text-gray-700 border-r border-gray-200 shadow-2xl 
+              transform -translate-x-full transition-transform duration-300 ease-in-out
+              md:translate-x-0 md:static md:shadow-none">
+
+    <div class="h-auto py-6 flex items-center justify-between px-6 mb-2">
+        
+        <div class="flex items-center justify-center w-full p-5 rounded-xl bg-gradient-to-br from-[#0b1a33] via-[#102a4e] to-[#020617] border border-blue-500/20 shadow-lg relative overflow-hidden group">
+            
+            {{-- Hiasan Glow Biru --}}
+            <div class="absolute -top-10 -right-10 w-24 h-24 bg-blue-600/20 blur-[40px] rounded-full pointer-events-none"></div>
+            {{-- Hiasan Glow Ungu --}}
+            <div class="absolute -bottom-10 -left-10 w-24 h-24 bg-indigo-600/20 blur-[40px] rounded-full pointer-events-none"></div>
+
+            {{-- LOGO --}}
+            <img src="{{ asset('assets/img/SIMBAP.png') }}" 
+                 alt="Logo SIMBAP" 
+                 class="relative z-10 w-36 h-auto object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]">
         </div>
+
+        {{-- Warna tombol disesuaikan untuk background putih (Gray -> Red) --}}
+        <button id="btn-close-sidebar" class="md:hidden absolute -right-3 top-2 bg-white text-slate-400 hover:text-red-500 p-1.5 rounded-full shadow-md border border-slate-100 transition-colors z-50">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+        </button>
     </div>
 
+    {{-- DIVIDER --}}
     <div class="px-6 mb-2">
         <div class="h-[1px] w-full bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
     </div>
     
-    <nav class="px-4 py-2 space-y-2 text-base">
+    {{-- MENU NAVIGASI --}}
+    <nav class="px-4 py-2 space-y-2 text-base overflow-y-auto h-[calc(100vh-150px)]">
 
-        <!-- DASHBOARD -->
         <a href="/dashboard"
-        class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 no-underline
-        {{ request()->is('dashboard') && !request()->has('tahun') 
+           class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 no-underline
+           {{ request()->is('dashboard') && !request()->has('tahun') 
                 ? 'bg-blue-50 border-l-4 border-blue-500 font-semibold text-blue-700' 
                 : 'text-gray-700 hover:!bg-blue-200 hover:!text-blue-900 hover:font-medium hover:no-underline' }}">
             <span class="glyphicon glyphicon-home text-xl"></span>
@@ -26,36 +48,23 @@
 
         <button id="berita-acara-toggle"
                 class="flex items-center justify-between w-full px-4 py-3 rounded-lg transition-all duration-200 no-underline text-gray-700 hover:!bg-blue-200 hover:!text-blue-900 hover:font-medium hover:no-underline
-                {{ request()->is('berita-acara*') || request()->has('tahun')
-                    ? 'bg-blue-50 border-l-4 border-blue-500 font-semibold text-blue-700'
-                    : '' }}">
+                {{ request()->is('berita-acara*') || request()->has('tahun') ? 'bg-blue-50 border-l-4 border-blue-500 font-semibold text-blue-700' : '' }}">
             <a class="flex items-center gap-3">
-                <span class="glyphicon glyphicon-file text-xl"></span> <!-- Ganti icon jika perlu -->
+                <span class="glyphicon glyphicon-file text-xl"></span>
                 <span class="text-xl">Berita Acara</span>
-            </a>
+           </a>
             <span class="glyphicon glyphicon-chevron-down text-xl transition-transform duration-200" id="berita-acara-icon"></span>
         </button>
-        <!-- SUB-MENU BERITA ACARA (Hidden initially) -->
+
         <div id="berita-acara-submenu" class="overflow-hidden transition-all duration-300 ease-in-out max-h-0">
-            <!-- BERITA ACARA BARU -->
-            <a href="/berita-acara/create"
-            class="flex items-center gap-3 px-8 py-3 rounded-lg transition-all duration-200 no-underline
-            {{ request()->is('berita-acara/create')
-                    ? 'bg-blue-50 border-l-4 border-blue-500 font-semibold text-blue-700'
-                    : 'text-gray-700 hover:!bg-blue-200 hover:!text-blue-900 hover:font-medium hover:no-underline' }}">
+            <a href="/berita-acara/create" class="flex items-center gap-3 px-8 py-3 rounded-lg transition-all duration-200 no-underline {{ request()->is('berita-acara/create') ? 'bg-blue-50 border-l-4 border-blue-500 font-semibold text-blue-700' : 'text-gray-700 hover:!bg-blue-200 hover:!text-blue-900 hover:font-medium hover:no-underline' }}">
                 <span class="glyphicon glyphicon-plus-sign text-xl"></span>
                 <span class="text-xl">Berita Acara Baru</span>
             </a>
-            <!-- SECTION ARSIP -->
-            <div class="mt-4 px-8 text-sm font-semibold text-gray-500 uppercase tracking-widest">
-                Arsip Pemeriksaan
-            </div>
+            
+            <div class="mt-4 px-8 text-sm font-semibold text-gray-500 uppercase tracking-widest">Arsip Pemeriksaan</div>
             @foreach([2026, 2025, 2024, 2023, 2022, 2021, 2020] as $year)
-                <a href="{{ route('dashboard', ['tahun' => $year]) }}"
-                class="flex items-center gap-3 px-8 py-2 rounded-lg transition-all duration-200 no-underline
-                {{ request('tahun') == $year
-                        ? 'bg-blue-50 border-l-4 border-blue-500 font-semibold text-blue-700'
-                        : 'text-gray-600 hover:!bg-blue-200 hover:!text-blue-900 hover:font-medium hover:no-underline' }}">
+                <a href="{{ route('dashboard', ['tahun' => $year]) }}" class="flex items-center gap-3 px-8 py-2 rounded-lg transition-all duration-200 no-underline {{ request('tahun') == $year ? 'bg-blue-50 border-l-4 border-blue-500 font-semibold text-blue-700' : 'text-gray-600 hover:!bg-blue-200 hover:!text-blue-900 hover:font-medium hover:no-underline' }}">
                     <span class="glyphicon glyphicon-folder-open text-xl"></span>
                     <span class="text-xl">BAP Tahun {{ $year }}</span>
                 </a>
@@ -63,22 +72,14 @@
         </div>
 
         @if(auth()->user()->isAdmin())
-            <div class="mt-8 px-4 text-m font-semibold text-gray-500 uppercase tracking-widest">
-                Panel Kontrol Admin
-            </div>
-
-            <a href="/admin/berita-acara"
-            class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 no-underline
-            {{ request()->is('admin/*') 
-                    ? 'bg-amber-50 border-l-4 border-amber-500 font-semibold text-amber-700' 
-                    : 'text-gray-700 hover:!bg-amber-200 hover:!text-amber-900 hover:font-medium hover:no-underline' }}">
+            <div class="mt-4 px-8 text-sm font-semibold text-gray-500 uppercase tracking-widest">Panel Kontrol Admin</div>
+            <a href="/admin/berita-acara" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 no-underline {{ request()->is('admin/*') ? 'bg-amber-50 border-l-4 border-amber-500 font-semibold text-amber-700' : 'text-gray-700 hover:!bg-amber-200 hover:!text-amber-900 hover:font-medium hover:no-underline' }}">
                 <span class="glyphicon glyphicon-lock text-xl"></span>
                 <span class="text-xl">Semua Berita Acara</span>
             </a>
         @endif
 
-        <!-- LOGOUT -->
-        <div class="pt-10">
+        <div class="pt-10 pb-10">
             <form method="POST" action="/logout">
                 @csrf
                 <button class="flex items-center gap-3 w-full px-4 py-3 rounded-lg text-gray-600 hover:bg-red-200 hover:text-red-900 hover:font-medium transition-all duration-200">

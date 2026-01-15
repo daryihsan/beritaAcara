@@ -451,3 +451,37 @@ $(document).on("change", "#tgl_periksa", function () {
 if ($("#tgl_surat").val()) {
     $("#tgl_periksa").attr("min", $("#tgl_surat").val());
 }
+
+$(document).ready(function() {
+    // --- LOGIKA SIDEBAR MOBILE ---
+    const sidebar = $('#sidebar-menu');
+    const overlay = $('#sidebar-overlay');
+    const btnOpen = $('#btn-open-sidebar');
+    const btnClose = $('#btn-close-sidebar');
+
+    // 1. Buka Sidebar
+    btnOpen.click(function(e) {
+        e.stopPropagation();
+        sidebar.removeClass('-translate-x-full'); // Geser Masuk
+        overlay.removeClass('hidden'); // Gelapkan Background
+        $('body').addClass('overflow-hidden'); // Kunci Scroll
+    });
+
+    // 2. Tutup Sidebar
+    function closeSidebar() {
+        sidebar.addClass('-translate-x-full'); // Geser Keluar
+        overlay.addClass('hidden'); // Hilangkan Gelap
+        $('body').removeClass('overflow-hidden'); // Buka Scroll
+    }
+
+    // Tutup kalau klik tombol X atau klik area gelap (overlay)
+    btnClose.click(function() { closeSidebar(); });
+    overlay.click(function() { closeSidebar(); });
+    
+    // --- LOGIKA DROPDOWN MENU BERITA ACARA ---
+    $('#berita-acara-toggle').click(function(e) {
+        e.preventDefault();
+        $('#berita-acara-submenu').toggleClass('max-h-0 max-h-[500px]'); // Slide effect
+        $('#berita-acara-icon').toggleClass('rotate-180'); // Putar panah
+    });
+});
