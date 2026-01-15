@@ -9,25 +9,26 @@
         @foreach($listPetugas as $index => $petugasExisting)
             <div class="petugas-row" id="row-{{ $index }}" style="margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 15px;">
                 
-                {{-- INPUT HIDDEN TTD (Wajib ada untuk JS) --}}
+                {{-- INPUT HIDDEN TTD --}}
                 <input type="hidden" name="petugas_ttd[]" class="input-ttd-base64" 
                        value="{{ old('petugas_ttd.'.$index, optional($petugasExisting)->pivot->ttd ?? '') }}">
 
-                <div class="row" style="display: flex; flex-wrap: wrap;">
+                <div class="row">
                     
                     {{-- BAGIAN 1: DATA DIRI (KIRI) --}}
-                    <div class="col-md-7">
+                    {{-- Added col-xs-12 to stretch full width on mobile --}}
+                    <div class="col-md-7 col-xs-12" style="margin-bottom: 15px;">
                         
                         {{-- Baris Atas: Nama & NIP --}}
                         <div class="row">
-                            <div class="col-md-8">
+                            <div class="col-md-8 col-xs-12" style="margin-bottom: 10px;">
                                 <label class="text">Nama Petugas</label>
                                 <input type="text" name="petugas_nama[]" class="form-control input-nama" list="list-petugas"
                                     autocomplete="off" required 
                                     value="{{ old('petugas_nama.'.$index, optional($petugasExisting)->name) }}" 
                                     placeholder="Ketik nama...">
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-4 col-xs-12" style="margin-bottom: 10px;">
                                 <label class="text">NIP</label>
                                 <input type="text" name="petugas_nip[]" class="form-control input-nip" readonly
                                     style="background-color: #f9fafb;"
@@ -36,14 +37,14 @@
                         </div>
 
                         {{-- Baris Bawah: Jabatan & Pangkat --}}
-                        <div class="row" style="margin-top: 8px;">
-                            <div class="col-md-8">
+                        <div class="row">
+                            <div class="col-md-8 col-xs-12" style="margin-bottom: 10px;">
                                 <label class="text">Jabatan</label>
                                 <input type="text" name="petugas_jabatan[]" class="form-control input-jabatan" readonly
                                     style="background-color: #f9fafb;"
                                     value="{{ old('petugas_jabatan.'.$index, optional($petugasExisting)->pivot->jabatan ?? optional($petugasExisting)->jabatan) }}">
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-4 col-xs-12">
                                 <label class="text">Pangkat/Gol</label>
                                 <input type="text" name="petugas_pangkat[]" class="form-control input-pangkat" readonly
                                     style="background-color: #f9fafb;"
@@ -52,53 +53,61 @@
                         </div>
                     </div>
 
-                    {{-- BAGIAN 2: TANDA TANGAN (TENGAH) --}}
-                    <div class="col-md-4" style="border-left: 1px dashed #ddd; padding-left: 15px;">
-                        <label class="text" style="display:block; text-align:center;">Tanda Tangan</label>
-                        
-                        <div class="ttd-preview-area" 
-                             style="border: 1px solid #e5e7eb; height: 95px; border-radius: 6px; display: flex; align-items: center; justify-content: center; background: #fff; position: relative;">
+                    {{-- BAGIAN 2 & 3: TANDA TANGAN & HAPUS (MERGED RIGHT COLUMN) --}}
+                    {{-- Merged col-md-4 and col-md-1 into col-md-5. Used Flexbox for layout. --}}
+                    <div class="col-md-5 col-xs-12">
+                        <div style="display: flex; gap: 10px; align-items: flex-end;">
                             
-                            {{-- Gambar Preview TTD --}}
-                            <img src="{{ old('petugas_ttd.'.$index, optional($petugasExisting)->pivot->ttd ?? '') }}" 
-                                 class="img-ttd-preview" 
-                                 style="max-height: 80px; max-width: 90%; {{ (old('petugas_ttd.'.$index, optional($petugasExisting)->pivot->ttd ?? '') ) ? '' : 'display:none;' }}">
-                            
-                            {{-- Placeholder Text --}}
-                            <span class="text-placeholder text-gray-400 small" 
-                                  style="font-size: 14px; color: #999; {{ (old('petugas_ttd.'.$index, optional($petugasExisting)->pivot->ttd ?? '') ) ? 'display:none;' : '' }}">
-                                (Kosong)
-                            </span>
+                            {{-- Container Tanda Tangan --}}
+                            <div style="flex-grow: 1;">
+                                <label class="text" style="display:block; text-align:center;">Tanda Tangan</label>
+                                
+                                {{-- Increased height to 120px for larger pad --}}
+                                <div class="ttd-preview-area" 
+                                     style="border: 1px solid #e5e7eb; height: 120px; border-radius: 6px; display: flex; align-items: center; justify-content: center; background: #fff; position: relative;">
+                                    
+                                    {{-- Gambar Preview TTD --}}
+                                    <img src="{{ old('petugas_ttd.'.$index, optional($petugasExisting)->pivot->ttd ?? '') }}" 
+                                         class="img-ttd-preview" 
+                                         style="max-height: 100px; max-width: 90%; {{ (old('petugas_ttd.'.$index, optional($petugasExisting)->pivot->ttd ?? '') ) ? '' : 'display:none;' }}">
+                                    
+                                    {{-- Placeholder Text --}}
+                                    <span class="text-placeholder text-gray-400 small" 
+                                          style="font-size: 14px; color: #999; {{ (old('petugas_ttd.'.$index, optional($petugasExisting)->pivot->ttd ?? '') ) ? 'display:none;' : '' }}">
+                                        (Kosong)
+                                    </span>
 
-                            {{-- TOMBOL PEN (OVERLAY POJOK KANAN BAWAH) --}}
-                            @php
-                                $user = auth()->user();
-                                $isMyRow = (optional($petugasExisting)->nip == $user->nip);
-                                $canSign = $user->isAdmin() || $isMyRow || !isset($ba); 
-                            @endphp
+                                    {{-- TOMBOL PEN --}}
+                                    @php
+                                        $user = auth()->user();
+                                        $isMyRow = (optional($petugasExisting)->nip == $user->nip);
+                                        $canSign = $user->isAdmin() || $isMyRow || !isset($ba); 
+                                    @endphp
 
-                            @if($canSign)
-                                <button type="button" class="btn btn-xs btn-primary btn-open-signature" 
-                                        style="position: absolute; bottom: 5px; right: 5px; border-radius: 50%; width: 25px; height: 25px; padding: 0; display:flex; align-items:center; justify-content:center;">
-                                    <span class="glyphicon glyphicon-pencil" style="font-size: 10px;"></span>
-                                </button>
-                            @endif
-                        </div>
-                         @if(!$canSign && isset($ba))
-                            <div class="text-center" style="margin-top:2px;">
-                                <small class="text-danger" style="font-size: 9px;"><i>Read-only</i></small>
+                                    @if($canSign)
+                                        <button type="button" class="btn btn-xs btn-primary btn-open-signature" 
+                                                style="position: absolute; bottom: 5px; right: 5px; border-radius: 50%; width: 25px; height: 25px; padding: 0; display:flex; align-items:center; justify-content:center;">
+                                            <span class="glyphicon glyphicon-pencil" style="font-size: 10px;"></span>
+                                        </button>
+                                    @endif
+                                </div>
+                                 @if(!$canSign && isset($ba))
+                                    <div class="text-center" style="margin-top:2px;">
+                                        <small class="text-danger" style="font-size: 9px;"><i>Read-only</i></small>
+                                    </div>
+                                 @endif
                             </div>
-                         @endif
-                    </div>
 
-                    {{-- BAGIAN 3: TOMBOL HAPUS (KANAN) --}}
-                    <div class="col-md-1" style="display: flex; align-items: center; justify-content: center;">
-                        <button type="button" class="btn btn-danger btn-sm btn-hapus" 
-                                style="margin-top: 15px;"
-                                {{ $loop->count <= 1 ? 'disabled' : '' }} 
-                                title="Hapus Petugas">
-                            <span class="glyphicon glyphicon-trash"></span>
-                        </button>
+                            {{-- Tombol Hapus (Now integrated flex-end) --}}
+                            <div>
+                                <button type="button" class="btn btn-danger btn-sm btn-hapus" 
+                                        style="height: 120px; width: 40px;"
+                                        {{ $loop->count <= 1 ? 'disabled' : '' }} 
+                                        title="Hapus Petugas">
+                                    <span class="glyphicon glyphicon-trash"></span>
+                                </button>
+                            </div>
+                        </div>
                     </div>
 
                 </div> {{-- End Row --}}
@@ -115,10 +124,12 @@
     </datalist>
 
     <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
-        <button type="button" class="btn btn-success" id="btn-tambah-petugas">
-            <span class="glyphicon glyphicon-plus"></span> Tambah Petugas
-        </button>
-
+        {{-- Changed to btn-sm for smaller size --}}
+    <div style="padding-top: 20px;">
+        <button type="button" class="btn btn-success btn-sm" id="btn-tambah-petugas">
+                <span class="glyphicon glyphicon-plus"></span> Tambah Petugas
+            </button>
+    </div>
         <div style="display: flex; gap: 10px;">
             <button type="button" class="btn btn-default btn-next" data-next="#kelengkapan">← Back</button>
             <button type="button" class="btn btn-primary btn-next" data-next="#objek">Next →</button>
