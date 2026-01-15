@@ -66,66 +66,61 @@
     </div>
 
     <div class="bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
-        <table id="tableBap" class="w-full">
-            <thead class="bg-slate-50">
-                <tr class="text-slate-700">
-                    <th style="min-width: 180px;"
-                        class="text-xl font-bold uppercase tracking-wider border-r border-slate-100">No. Surat Tugas</th>
-                    <th style="min-width: 300px;"
-                        class="text-xl font-bold uppercase tracking-wider border-r border-slate-100">Nama Petugas</th>
-                    <th style="min-width: 200px;"
-                        class="text-xl font-bold uppercase tracking-wider border-r border-slate-100">Objek</th>
-                    <th style="min-width: 120px;"
-                        class="text-xl font-bold uppercase tracking-wider border-r border-slate-100">Tanggal Periksa</th>
-                    <th style="min-width: 120px;"
-                        class="text-xl font-bold uppercase tracking-wider border-r border-slate-100">Tanggal Surat Tugas</th>
-                    <th style="min-width: 100px;" class="text-xl font-bold uppercase tracking-wider">Aksi</th>
-                </tr>
-            </thead>
-            <tbody class="text-slate-700">
-                @forelse($data as $ba)
-                    <tr class="hover:bg-blue-50/50 transition border-b border-slate-100">
-                        <td class="p-5 text-left">{{ $ba->no_surat_tugas }}</td>
-                        <td class="p-5 text-left">
-                            <div>
-                                @foreach($ba->petugas as $p) <span>{{ $p->name }}</span><br> @endforeach
-                            </div>
-                        </td>
-                        <td class="p-5 text-left">{{ $ba->objek_nama }}</td>
-                        <td class="p-5 text-left">{{ \Carbon\Carbon::parse($ba->tanggal_pemeriksaan)->format('d M Y') }}</td>
-                        <td class="p-5 text-left">{{ \Carbon\Carbon::parse($ba->tgl_surat_tugas)->format('d M Y') }}</td>
-                        <td class="p-5 text-center border-l border-slate-100">
-                            <div class="flex items-center justify-center gap-2">
-                                <a href="{{ route('berita-acara.pdf', $ba->id) }}" target="_blank"
-                                    class="btn btn-primary btn-sm">
-                                    <span class="glyphicon glyphicon-print"></span> PDF
-                                </a>
-
-                                @if(auth()->user()->isAdmin() || $ba->petugas->contains('nip', auth()->user()->nip))
-                                    <a href="{{ route('berita-acara.edit', $ba->id) }}" class="btn btn-warning btn-sm text-white">
-                                        <span class="glyphicon glyphicon-edit"></span> Edit
-                                    </a>
-                                @endif
-
-                                @if(auth()->user()->isAdmin())
-                                    <form action="{{ route('berita-acara.destroy', $ba->id) }}" method="POST"
-                                        onsubmit="return confirm('Yakin ingin menghapus data rusak/palsu/rekayasa ini?')"
-                                        class="m-0">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-danger btn-sm">
-                                            <span class="glyphicon glyphicon-trash"></span> Hapus
-                                        </button>
-                                    </form>
-                                @endif
-                            </div>
-                        </td>
+        <!-- HORIZONTAL SCROLL CONTAINER -->
+        <div class="table-responsive" style="overflow-x:auto; -webkit-overflow-scrolling:touch;">
+            <table id="tableBap" class="w-full">
+                <thead class="bg-slate-50">
+                    <tr class="text-slate-700">
+                        <th style="min-width: 180px;" class="text-xl font-bold uppercase tracking-wider border-r border-slate-100">No. Surat Tugas</th>
+                        <th style="min-width: 300px;" class="text-xl font-bold uppercase tracking-wider border-r border-slate-100">Nama Petugas</th>
+                        <th style="min-width: 200px;" class="text-xl font-bold uppercase tracking-wider border-r border-slate-100">Objek</th>
+                        <th style="min-width: 120px;" class="text-xl font-bold uppercase tracking-wider border-r border-slate-100">Tanggal Periksa</th>
+                        <th style="min-width: 120px;" class="text-xl font-bold uppercase tracking-wider border-r border-slate-100">Tanggal BAP</th>
+                        <th style="min-width: 100px;" class="text-xl font-bold uppercase tracking-wider">Aksi</th>
                     </tr>
-                @empty
-                    {{-- DataTables akan menangani tampilan kosong lewat bahasa Indonesia --}}
-                @endforelse
-            </tbody>
-        </table>
+                </thead>
+                <tbody class="text-slate-700">
+                    @forelse($data as $ba)
+                        <tr class="hover:bg-blue-50/50 transition border-b border-slate-100">
+                            <td class="p-5 text-left">{{ $ba->no_surat_tugas }}</td>
+                            <td class="p-5 text-left">
+                                <div>
+                                    @foreach($ba->petugas as $p) <span>{{ $p->name }}</span><br> @endforeach
+                                </div>
+                            </td>
+                            <td class="p-5 text-left">{{ $ba->objek_nama }}</td>
+                            <td class="p-5 text-left">{{ \Carbon\Carbon::parse($ba->tanggal_pemeriksaan)->format('d M Y') }}</td>
+                            <td class="p-5 text-left">{{ \Carbon\Carbon::parse($ba->tanggal_berita_acara)->format('d M Y') }}</td>
+                            <td class="p-5 text-center border-l border-slate-100">
+                                <div class="flex items-center justify-center gap-2">
+                                    <a href="{{ route('berita-acara.pdf', $ba->id) }}" target="_blank" class="btn btn-primary btn-sm">
+                                        <span class="glyphicon glyphicon-print"></span> PDF
+                                    </a>
+
+                                    @if(auth()->user()->isAdmin() || $ba->petugas->contains('nip', auth()->user()->nip))
+                                        <a href="{{ route('berita-acara.edit', $ba->id) }}" class="btn btn-warning btn-sm text-white">
+                                            <span class="glyphicon glyphicon-edit"></span> Edit
+                                        </a>
+                                    @endif
+
+                                    @if(auth()->user()->isAdmin())
+                                        <form action="{{ route('berita-acara.destroy', $ba->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data rusak/palsu/rekayasa ini?')" class="m-0">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger btn-sm">
+                                                <span class="glyphicon glyphicon-trash"></span> Hapus
+                                            </button>
+                                        </form>
+                                    @endif
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        {{-- DataTables akan menangani tampilan kosong lewat bahasa Indonesia --}}
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
     </div>
 
 @endsection
