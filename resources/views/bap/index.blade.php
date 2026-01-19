@@ -135,3 +135,20 @@
     </div>
 
 @endsection
+
+@push('scripts') {{-- Atau langsung taruh di bawah jika tidak pakai stack --}}
+    @if(session('print_pdf_id'))
+        <script>
+            $(document).ready(function() {
+                // URL PDF (Sesuaikan dengan nama route Anda)
+                var url = "{{ route('berita-acara.pdf', session('print_pdf_id')) }}";
+                
+                // Buka di Tab Baru
+                window.open(url, '_blank');
+                
+                // Opsional: Tampilkan notifikasi (Toast)
+                // toastr.success('PDF sedang dibuka di tab baru...');
+            });
+        </script>
+    @endif
+@endpush

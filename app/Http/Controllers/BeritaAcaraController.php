@@ -85,8 +85,13 @@ class BeritaAcaraController extends Controller
 
         $ba = $this->beritaAcaraService->storeBap($dbData, $petugasData);
 
-        // Redirect ke preview PDF atau kembali
-        return redirect()->route('berita-acara.pdf', $ba->id);
+        // Ambil tahun dari input tanggal untuk redirect ke dashboard yang benar
+        $tahun = date('Y', strtotime($request->tanggal));
+
+        // REDIRECT KE DASHBOARD + BAWA ID UNTUK DICETAK
+        return redirect()->route('dashboard', ['tahun' => $tahun])
+            ->with('success', 'Data Berita Acara berhasil disimpan.')
+            ->with('print_pdf_id', $ba->id);
     }
 
     public function edit($id)
@@ -149,7 +154,13 @@ class BeritaAcaraController extends Controller
 
         $this->beritaAcaraService->updateBap($id, $dbData, $petugasData);
 
-        return redirect()->route('berita-acara.pdf', $id)->with('success', 'Perubahan berhasil disimpan!');
+        // Ambil tahun dari input tanggal agar user kembali ke list tahun yang sesuai
+        $tahun = date('Y', strtotime($request->tanggal));
+
+        // REDIRECT KE DASHBOARD + BAWA ID UNTUK DICETAK
+        return redirect()->route('dashboard', ['tahun' => $tahun])
+            ->with('success', value: 'Perubahan berhasil disimpan!')
+            ->with('print_pdf_id', $id);
     }
 
     // Menggantikan fungsi assign dari AdminController yang dihapus

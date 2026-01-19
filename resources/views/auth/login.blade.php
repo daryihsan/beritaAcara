@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0 maximum-scale=1.0, user-scalable=no">
     <title>Login - SIMBAP BPOM</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
@@ -10,10 +10,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     @include('auth.custom_css')
 </head>
-<body class="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+<body class="min-h-[100dvh] w-full flex items-center justify-center p-4 relative overflow-y-auto bg-slate-900">
 
     {{-- 1. BACKGROUND IMAGE (BLURRY) --}}
-    <div class="absolute inset-0 z-0">
+    <div class="fixed inset-0 z-0 pointer-events-none">
         {{-- Placeholder warna gelap --}}
         <div class="absolute inset-0 bg-slate-900"></div> 
         
@@ -27,7 +27,7 @@
     </div>
 
     {{-- 2. CARD CONTAINER --}}
-    <div class="w-full max-w-6xl rounded-[30px] shadow-2xl overflow-hidden flex flex-col md:flex-row min-h-[300px] relative z-10 animate-fade-in-up">
+    <div class="w-[90%] max-w-sm md:w-full md:max-w-6xl rounded-[30px] shadow-2xl overflow-hidden flex flex-col md:flex-row relative z-10 animate-fade-in-up my-8 md:my-0">
         
         {{-- BAGIAN KIRI: DARK GLOOM GRADIENT --}}
         {{-- Flex-col agar Footer bisa ditaruh di bawah (mt-auto) --}}
@@ -87,7 +87,7 @@
         </div>
 
         {{-- BAGIAN KANAN: GLASSMORPHISM --}}
-        <div class="w-full md:w-7/12 p-6 md:p-8 flex flex-col justify-center relative overflow-hidden md:rounded-r-[30px] border border-l-0 border-white/20 shadow-[inset_0px_0px_30px_rgba(255,255,255,0.3)] backdrop-blur-md bg-white/10">
+        <div class="w-full md:w-7/12 px-6 py-8 md:p-8 flex flex-col justify-center relative overflow-hidden md:rounded-r-[30px] border-t md:border-t-0 md:border-l border-white/20 shadow-[inset_0px_0px_30px_rgba(255,255,255,0.3)] bg-white/10 backdrop-blur-md">
             
             {{-- Background Glass Effect --}}
             <div class="absolute inset-0 bg-white/60 backdrop-blur-[20px]"></div>
@@ -99,10 +99,10 @@
             <div class="relative z-30 w-full max-w-md mx-auto">
 
                 {{-- Header Kanan --}}
-                <div class="text-center mb-10">
-                    <img src="{{ asset('assets/img/bpom.png') }}" alt="Logo BPOM" class="h-16 mx-auto mb-5 drop-shadow-md">
-                    <h2 class="text-3xl font-bold text-slate-800 tracking-tight drop-shadow-sm">Selamat Datang</h2>
-                    <p class="text-slate-600 text-sm mt-2 font-medium">Silakan masuk untuk mengakses dashboard</p>
+                <div class="text-center mb-8 md:mb-10">
+                    <img src="{{ asset('assets/img/bpom.png') }}" alt="Logo BPOM" class="h-14 md:h-16 mx-auto mb-4 drop-shadow-md">
+                    <h2 class="text-2xl md:text-3xl font-bold text-slate-800 tracking-tight drop-shadow-sm">Selamat Datang</h2>
+                    <p class="text-slate-600 text-xs md:text-sm mt-2 font-medium">Silakan masuk untuk mengakses dashboard</p>
                 </div>
 
                 {{-- Form --}}
@@ -122,10 +122,10 @@
                         </label>
                         <div class="relative">
                             <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none z-10">
-                                <i class="fa-solid fa-user text-slate-400 group-focus-within:text-blue-700 transition-colors"></i>
+                                <i class="fa-solid fa-user text-slate-500 group-focus-within:text-blue-700 transition-colors"></i>
                             </div>
                             <input type="text" id="input-nama" list="list-users" 
-                                   class="w-full bg-white/70 border border-white/50 text-slate-800 text-sm rounded-xl focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 block w-full pl-11 p-3.5 transition-all shadow-sm focus:bg-white/90 placeholder-slate-500 backdrop-blur-sm" 
+                                   class="w-full bg-white/70 border border-white/50 text-slate-800 text-sm rounded-xl focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 block pl-11 p-3.5 transition-all shadow-sm focus:bg-white/90 placeholder-slate-500 backdrop-blur-sm" 
                                    placeholder="Ketik nama Anda..." autocomplete="off">
                         </div>
                         <datalist id="list-users">
@@ -147,7 +147,7 @@
                                 <i class="fa-solid fa-id-badge text-slate-500"></i>
                             </div>
                             <input name="nip" id="input-nip" 
-                                   class="w-full bg-slate-200/60 border border-white/40 text-slate-600 text-sm rounded-xl block w-full pl-11 p-4 md:p-3.5 cursor-not-allowed backdrop-blur-sm" 
+                                   class="w-full bg-slate-200/60 border border-white/40 text-slate-600 text-sm rounded-xl block pl-11 p-3.5 cursor-not-allowed backdrop-blur-sm" 
                                    placeholder="NIP otomatis terisi..." readonly required>
                         </div>
                     </div>
@@ -164,7 +164,7 @@
                                 <i class="fa-solid fa-lock text-slate-500 group-focus-within:text-blue-700 transition-colors"></i>
                             </div>
                             <input type="password" name="password" id="password"
-                                   class="w-full bg-white/70 border border-white/50 text-slate-800 text-sm rounded-xl focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 block w-full pl-11 pr-12 p-4 md:p-3.5 transition-all shadow-sm focus:bg-white/90 placeholder-slate-500 backdrop-blur-sm" 
+                                   class="w-full bg-white/70 border border-white/50 text-slate-800 text-sm rounded-xl focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 block pl-11 pr-12 p-3.5 transition-all shadow-sm focus:bg-white/90 placeholder-slate-500 backdrop-blur-sm" 
                                    placeholder="Masukkan password..." required>
                             
                             {{-- Toggle Button --}}
@@ -178,8 +178,8 @@
                     {{-- TOMBOL LOGIN --}}
                     <button type="submit" 
                             class="w-full text-white bg-slate-900/90 hover:bg-slate-800 backdrop-blur-md focus:ring-4 focus:ring-slate-300/50 font-bold rounded-xl text-sm px-5 py-4 text-center shadow-lg hover:shadow-slate-900/30 transform transition active:scale-[0.98] flex items-center justify-center gap-3 group border border-white/10 mt-2">
-                        <span>Masuk Aplikasi</span>
-                        <i class="fa-solid fa-arrow-right group-hover:translate-x-2 transition-transform"></i>
+                        <span>Masuk Situs</span>
+                        <i class="fa-solid fa-arrow-right group-hover:translate-x-3 transition-transform"></i>
                     </button>
                 </form>
 
