@@ -1,5 +1,9 @@
 @extends('layouts.app')
-
+@section('scripts')
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/dataTables.bootstrap5.min.css">
+    <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.1/js/dataTables.bootstrap5.min.js"></script>
+@endsection
 @section('content')
     <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
         <div>
@@ -10,7 +14,7 @@
         <div class="flex flex-wrap gap-2 items-center">
             
             {{-- FORM FILTER REKAP --}}
-            <form method="GET" class="flex gap-2 items-center bg-white p-1 rounded-xl shadow-lg border border-slate-200">
+            <form method="GET" class="flex flex flex-col md:flex-row gap-2 bg-white p-2 rounded-xl shadow-lg border border-slate-200 w-full md:w-auto">
                 
                 {{-- Dropdown Pilih Tahun --}}
                 <select name="tahun" class="form-select border-0 focus:ring-0 text-sm font-semibold text-slate-600 bg-transparent py-2 pl-3 pr-8 cursor-pointer outline-none">
@@ -34,40 +38,46 @@
                     </select>
                 @endif
 
-                {{-- Tombol Excel --}}
-                <button type="submit" formaction="{{ route('berita-acara.export.excel') }}" 
-                        style="color: #fff !important"
-                        class="bg-green-500 hover:bg-green-700 px-6 py-3 rounded-xl transition-all ring-1 ring-black/5 hover:shadow-xl transition-all transform hover:-translate-y-1 font-bold no-underline flex items-center gap-2" 
-                        title="Download Excel">
-                    <span class="glyphicon glyphicon-save-file" style="color: #fff !important"></span> 
-                    <span style="color: #fff !important;">Excel</span>
-                </button>
+                <div class="flex gap-2 justify-center w-full md:w-auto">
+                    {{-- Tombol Excel --}}    
+                    <button type="submit" formaction="{{ route('berita-acara.export.excel') }}" 
+                            style="color: #fff !important"
+                            class="bg-green-500 hover:bg-green-700 px-6 py-3 rounded-xl transition-all ring-1 ring-black/5 hover:shadow-xl transition-all transform hover:-translate-y-1 font-bold no-underline flex items-center gap-2" 
+                            title="Download Excel">
+                        <span class="glyphicon glyphicon-save-file" style="color: #fff !important"></span> 
+                        <span style="color: #fff !important;">Excel</span>
+                    </button>
 
-                {{-- Tombol PDF --}}
-                <button type="submit" formaction="{{ route('berita-acara.export.pdflist') }}" formtarget="_blank"
-                        style="color: #fff !important"
-                        class="bg-red-600 hover:bg-red-700 px-6 py-3 rounded-xl transition-all ring-1 ring-black/5 hover:shadow-xl transition-all transform hover:-translate-y-1 font-bold no-underline flex items-center gap-2" 
-                        title="Download PDF">
-                    <span class="glyphicon glyphicon-print" style="color: #fff !important"></span> 
-                    <span style="color: #fff !important;">PDF</span>
-                </button>
+                    {{-- Tombol PDF --}}
+                    <button type="submit" formaction="{{ route('berita-acara.export.pdflist') }}" formtarget="_blank"
+                            style="color: #fff !important"
+                            class="bg-red-600 hover:bg-red-700 px-6 py-3 rounded-xl transition-all ring-1 ring-black/5 hover:shadow-xl transition-all transform hover:-translate-y-1 font-bold no-underline flex items-center gap-2" 
+                            title="Download PDF">
+                        <span class="glyphicon glyphicon-print" style="color: #fff !important"></span> 
+                        <span style="color: #fff !important;">PDF</span>
+                    </button>
+                </div>
             </form>
 
             {{-- PEMISAH --}}
             <div class="w-px h-8 bg-slate-300 mx-1"></div>
 
             {{-- TOMBOL TAMBAH DATA (UTAMA) --}}
-            <a href="/berita-acara/create"
-                class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl shadow-lg transition-all ring-1 ring-black/5 hover:shadow-xl transition-all transform hover:-translate-y-1 font-bold no-underline flex items-center gap-2">
-                <span class="glyphicon glyphicon-plus mr-2"></span> 
-                <span>Tambah</span>
-            </a>
+            <div class="btn-tambah-wrapper">
+                <a href="/berita-acara/create"
+                    class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl shadow-lg transition-all ring-1 ring-black/5 hover:shadow-xl transition-all transform hover:-translate-y-1 font-bold no-underline flex items-center gap-2">
+                    <span class="glyphicon glyphicon-plus mr-2"></span> 
+                    <span>Tambah</span>
+                </a>
+            </div>
         </div>
     </div>
 
-    <div class="bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
+    <div class="bg-white rounded-2xl shadow-xl border border-slate-200">
         <!-- HORIZONTAL SCROLL CONTAINER -->
-        <div class="table-responsive" style="overflow-x:auto; -webkit-overflow-scrolling:touch;">
+        <div class="dt-top"></div>
+
+        <div class="table-scroll-x" style="overflow-x:auto; -webkit-overflow-scrolling:touch;">
             <table id="tableBap" class="w-full">
                 <thead class="bg-slate-50">
                     <tr class="text-slate-700">
@@ -121,6 +131,8 @@
                 </tbody>
             </table>
         </div>
+
+        <div class="dt-bottom"></div>
     </div>
 
 @endsection

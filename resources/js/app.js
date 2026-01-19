@@ -387,6 +387,10 @@ $(document).ready(function () {
             search: {
                 smart: false,
             },
+            dom:
+                '<"dt-control-wrapper flex flex-col gap-2 mb-2"lf>' +
+                'rt' +
+                '<"dt-control-wrapper flex flex-col gap-2 mt-2"ip>',
             // Bahasa Indonesia & Tombol
             language: {
                 url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/id.json",

@@ -97,13 +97,6 @@
 
             {{-- Content Form --}}
             <div class="relative z-30 w-full max-w-md mx-auto">
-                
-                {{-- Logo Mobile --}}
-                <div class="md:hidden flex justify-center mb-8">
-                     <div class="w-16 h-16 bg-blue-900/80 rounded-xl flex items-center justify-center shadow-lg border border-white/20">
-                        <i class="fa-solid fa-file-signature text-3xl text-white"></i>
-                     </div>
-                </div>
 
                 {{-- Header Kanan --}}
                 <div class="text-center mb-8">
