@@ -18,7 +18,6 @@
     .menu-item {
         @apply block px-3 py-2 rounded hover:bg-gray-100 transition;
     }
-
     .input {
         @apply w-full px-3 py-2 border rounded mb-2;
     }
@@ -99,7 +98,6 @@ body {
     width: 100%;
     height: 100%;
 }
-
 .dataTables_wrapper {
     font-size: 15px;
     font-family: inherit;
@@ -108,7 +106,6 @@ body {
     padding: 20px;
     background-color: white;
 }
-
 .dataTables_length select,
 .dataTables_filter input {
     border: 1px solid #d1d5db;
@@ -117,77 +114,74 @@ body {
     margin-bottom: 15px;
     font-weight: 600;
 }
-
 table.dataTable {
     border-collapse: collapse;
     margin-top: 15px;
     width: 100%;
     border: 1px solid #d1d5db;
 }
-
 table.dataTable thead th {
     padding: 15px;
     background-color: #f8fafc;
     border-bottom: 1px solid #e5e7eb;
     color: #334155;
 }
-
+.pagination {
+    justify-content: flex-end;
+}
 .dataTables_info,
 .dataTables_paginate {
     margin-top: 20px;
     font-size: 14px;
 }
-
 table.dataTable tbody td {
     padding: 12px 15px;
     border-bottom: 1px solid #e5e7eb;
     vertical-align: middle;
 }
-
 #tableBap tbody td {
     padding: 10px;
     line-height: 1.6;
     vertical-align: top;
     border: 1px solid #e5e7eb;
 }
-
 #tableBap thead th {
     padding: 20px 10px;
     background-color: #ffffff; /* slate-50 */
     border: 1px solid #e5e7eb;
 }
-
 #tableBap tbody tr:nth-child(even) {
     background-color: #ffffff;
 }
-
 #tableBap tbody tr:nth-child(odd) {
     background-color: #f1f5f9; /* Warna slate-100 */
 }
-
 #tableBap tbody tr:hover {
     background-color: #e2e8f0; /* Warna slate-200 */
     transition: background-color 0.2s;
 }
-
+.dt-control-wrapper {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem; /* gap lebih besar agar terlihat rapi */
+}
 .dataTables_wrapper .dataTables_length,
 .dataTables_wrapper .dataTables_filter {
+    flex : 1;
     display: flex;
     align-items: center;
     gap: 10px;
     margin-bottom: 10px;
 }
-
 .dataTables_wrapper .dataTables_filter {
     text-align: right;
     justify-content: flex-end;
 }
-
 .dataTables_wrapper .dataTables_filter label,
 .dataTables_wrapper .dataTables_length label {
     margin-bottom: 0;
 }
-
 .dataTables_wrapper .dataTables_length select,
 .dataTables_wrapper .dataTables_filter input {
     margin: 0;
@@ -197,83 +191,87 @@ table.dataTable tbody td {
     outline: none;
     font-weight: normal;
 }
-
-/* Layout bottom: Gunakan flex untuk info (kiri) dan pagination (kanan) tanpa float */
 .dataTables_wrapper .dataTables_info {
     color: #64748b;
-    display: inline-block; /* Jaga inline untuk kompatibilitas */
+    display: inline-block; 
 }
-
+.dataTables_paginate {
+    float: none !important;
+    width: auto !important;
+    text-align: right !important;       /* Teks rata kanan */
+    justify-content: flex-end !important; /* Flex item rata kanan */
+}
 .dataTables_wrapper .dataTables_paginate {
     text-align: right;
     display: inline-block;
-    float: right; /* Pertahankan float right untuk rata kanan */
+    float: right;
     padding-top: 10px;
+    justify-content: flex-end;
 }
-
-/* Clear float untuk menghindari overlap */
+.dataTables_wrapper .dataTables_info,
+.dataTables_wrapper .dataTables_paginate {
+    flex: 1;
+    display: flex;
+    align-items: center;
+}
+.dataTables_length,
+.dataTables_filter,
+.dataTables_info {
+    float: none !important;
+    width: auto !important;
+    text-align: left !important;
+}
 .dataTables_wrapper::after {
     content: "";
     display: block;
     clear: both;
 }
-
-/* Styling pagination dengan kompatibilitas Bootstrap (target .page-item dan .page-link) */
 .dataTables_paginate .pagination {
-    margin: 0; /* Hilangkan margin extra untuk kurangi space kosong */
+    margin: 0; 
     justify-content: flex-end;
 }
-
 .dataTables_paginate .paginate_button.page-item {
-    margin: 0; /* Hilangkan margin antar tombol untuk hilangkan kotak kosong */
+    margin: 0; 
 }
-
 .dataTables_paginate .paginate_button.page-item .page-link {
     padding: 6px 12px;
-    border-radius: 6px; /* Lengkung sudut sedang, ga berlebihan */
+    border-radius: 6px;
     border: 1px solid #e2e8f0;
-    background: #fff; /* Non-selected: putih */
+    background: #fff; 
     color: #334155;
     font-weight: 600;
     cursor: pointer;
     text-decoration: none;
     transition: background 0.2s, color 0.2s, border-color 0.2s;
-    margin-left: -1px; /* Overlap border untuk tampilan continuous seperti Bootstrap */
+    margin-left: -1px; 
 }
-
 .dataTables_paginate .paginate_button.page-item:hover:not(.disabled) .page-link {
     background: #f1f5f9;
     color: #0f172a;
     border-color: #cbd5e1;
 }
-
 .dataTables_paginate .paginate_button.page-item.active .page-link,
 .dataTables_paginate .paginate_button.page-item.current .page-link {
-    background: #2563eb; /* Selected: biru */
+    background: #2563eb; 
     color: #fff;
     border-color: #2563eb;
 }
-
 .dataTables_paginate .paginate_button.page-item.disabled .page-link {
     cursor: not-allowed;
     opacity: 0.1;
     background: #f8fafc;
     color: #eaedf0;
 }
-
-/* Hilangkan kotak kosong ekstra dengan reset margin/padding pada ul.pagination */
 .dataTables_paginate ul.pagination {
     padding: 0;
     list-style: none;
     display: flex;
-    gap: 0; /* No gap extra */
+    gap: 0; 
 }
-
 table.dataTable thead .sorting_asc:after {
     content: " ▲";
     opacity: 0.7;
 }
-
 table.dataTable thead .sorting_desc:after {
     content: " ▼";
     opacity: 0.7;
@@ -285,7 +283,6 @@ table.dataTable thead .sorting_desc:after {
         font-size: 13px !important; 
         padding: 10px 8px !important;
     }
-
     .dt-control-wrapper {
         position: sticky;
         top: 0;
@@ -293,42 +290,38 @@ table.dataTable thead .sorting_desc:after {
         background: white;
         padding: 0.75rem;
         border-bottom: 1px solid #e5e7eb;
-
         display: flex;
         flex-direction: column;
         align-items: center;
         text-align: center;
     }
-
     .table-scroll-x {
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
     }
-
     .dataTables_paginate {
         display: flex !important;
         justify-content: center !important;
         flex-wrap: wrap;
         gap: 0.25rem;
     }
-
     .dataTables_paginate .paginate_button {
         padding: 0.35rem 0.6rem !important;
         font-size: 0.85rem;
     }
-
+    .dataTables_paginate .paginate_button.page-item {
+        margin: 0; 
+    }
     .btn-tambah-wrapper {
         width: 100%;
         display: flex;
         justify-content: center;
     }
-
     .dataTables_info {
         text-align: center !important;
-        font-size: 1rem;
+        font-size: 1.3rem;
         padding: 0.5rem 0;
     }
-
     .dataTables_length,
     .dataTables_filter,
     .dataTables_info,
@@ -337,7 +330,6 @@ table.dataTable thead .sorting_desc:after {
         width: 100%;
         text-align: center !important;
     }
-
     .dataTables_length,
     .dataTables_filter {
         display: flex !important;
@@ -346,31 +338,24 @@ table.dataTable thead .sorting_desc:after {
         text-align: center !important;
         width: 100%;
     }
-
-
     .dataTables_filter input {
         width: 100%;
         max-width: 260px;
         margin-left: 0 !important;
     }
-
     .dataTables_length select {
         margin: 0 0.5rem;
     }
-
     select.form-select {
         text-align: center;
         text-align-last: center;
     }
-
     .w-px {
         display: none !important;
     }
-
     form > * {
         margin-bottom: 0.25rem;
     }
-
     select[name="filter_petugas"],
     select[name="tahun"] {
         width: 100% !important;
@@ -378,4 +363,36 @@ table.dataTable thead .sorting_desc:after {
         text-align: center;
         text-align-last: center;
     }
+}
+
+/* hamburger tab */
+.sidebar-open #sidebar-float-toggle {
+    transform: translateX(18rem); /* 72 * 0.25rem */
+}
+
+#sidebar-float-toggle .line {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: #334155;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+}
+
+#sidebar-float-toggle .line-1 { top: 0; }
+#sidebar-float-toggle .line-2 { top: 50%; transform: translateY(-50%); }
+#sidebar-float-toggle .line-3 { bottom: 0; }
+
+.sidebar-open #sidebar-float-toggle .line-1 {
+    transform: rotate(45deg);
+    top: 50%;
+}
+.sidebar-open #sidebar-float-toggle .line-2 {
+    opacity: 0;
+}
+.sidebar-open #sidebar-float-toggle .line-3 {
+    transform: rotate(-45deg);
+    bottom: auto;
+    top: 50%;
 }

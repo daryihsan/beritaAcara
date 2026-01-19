@@ -1,15 +1,28 @@
 {{-- OVERLAY (Latar gelap saat menu buka di HP) --}}
 <div id="sidebar-overlay" class="fixed inset-0 bg-black/60 z-40 hidden backdrop-blur-sm transition-opacity cursor-pointer md:hidden"></div>
 
+<button id="sidebar-float-toggle"
+    class="fixed top-6 left-0 z-[60] 
+           w-12 h-12 bg-white border border-gray-200 rounded-r-xl shadow-lg
+           flex items-center justify-center
+           transform -translate-x-full
+           transition-transform duration-300 ease-in-out
+           md:hidden">
+
+    <span class="relative w-6 h-6 block">
+        <span class="line line-1"></span>
+        <span class="line line-2"></span>
+        <span class="line line-3"></span>
+    </span>
+</button>
+
 <aside id="sidebar-menu" 
        class="fixed inset-y-0 left-0 z-50 w-72 min-h-screen bg-white text-gray-700 border-r border-gray-200 shadow-2xl 
               transform -translate-x-full transition-transform duration-300 ease-in-out
               md:translate-x-0 md:static md:shadow-none">
 
     <div class="h-auto py-6 flex items-center justify-between px-6 mb-2">
-        
         <div class="flex items-center justify-center w-full p-5 rounded-xl bg-gradient-to-br from-[#0b1a33] via-[#102a4e] to-[#020617] border border-blue-500/20 shadow-lg relative overflow-hidden group">
-            
             {{-- Hiasan Glow Biru --}}
             <div class="absolute -top-10 -right-10 w-24 h-24 bg-blue-600/20 blur-[40px] rounded-full pointer-events-none"></div>
             {{-- Hiasan Glow Ungu --}}
@@ -20,13 +33,6 @@
                  alt="Logo SIMBAP" 
                  class="relative z-10 w-36 h-auto object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]">
         </div>
-
-        {{-- Warna tombol disesuaikan untuk background putih (Gray -> Red) --}}
-        <button id="btn-close-sidebar" class="md:hidden absolute -right-3 top-2 bg-white text-slate-400 hover:text-red-500 p-1.5 rounded-full shadow-md border border-slate-100 transition-colors z-50">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-            </svg>
-        </button>
     </div>
 
     {{-- DIVIDER --}}

@@ -87,10 +87,10 @@
         </div>
 
         {{-- BAGIAN KANAN: GLASSMORPHISM --}}
-        <div class="w-full md:w-7/12 p-6 md:p-8 flex flex-col justify-center relative overflow-hidden md:rounded-r-[30px] border border-l-0 border-white/20 shadow-[inset_0px_0px_30px_rgba(255,255,255,0.3)]">
+        <div class="w-full md:w-7/12 p-6 md:p-8 flex flex-col justify-center relative overflow-hidden md:rounded-r-[30px] border border-l-0 border-white/20 shadow-[inset_0px_0px_30px_rgba(255,255,255,0.3)] backdrop-blur-md bg-white/10">
             
             {{-- Background Glass Effect --}}
-            <div class="absolute inset-0 bg-white/50 backdrop-blur-[20px]"></div>
+            <div class="absolute inset-0 bg-white/60 backdrop-blur-[20px]"></div>
             <div class="absolute inset-0 bg-gradient-to-br from-white/40 via-transparent to-white/10 pointer-events-none"></div>
             {{-- Border Kiri Halus --}}
             <div class="absolute inset-y-0 left-0 w-px bg-gradient-to-b from-transparent via-white/70 to-transparent hidden md:block z-20"></div>
@@ -99,14 +99,14 @@
             <div class="relative z-30 w-full max-w-md mx-auto">
 
                 {{-- Header Kanan --}}
-                <div class="text-center mb-8">
-                    <img src="{{ asset('assets/img/bpom.png') }}" alt="Logo BPOM" class="h-14 mx-auto mb-4 drop-shadow-md">
+                <div class="text-center mb-10">
+                    <img src="{{ asset('assets/img/bpom.png') }}" alt="Logo BPOM" class="h-16 mx-auto mb-5 drop-shadow-md">
                     <h2 class="text-3xl font-bold text-slate-800 tracking-tight drop-shadow-sm">Selamat Datang</h2>
                     <p class="text-slate-600 text-sm mt-2 font-medium">Silakan masuk untuk mengakses dashboard</p>
                 </div>
 
                 {{-- Form --}}
-                <form method="POST" action="/login" class="space-y-5 p-2">
+                <form method="POST" action="/login" class="space-y-6 p-2 md:space-y-5">
                     @csrf
 
                     @error('login')
@@ -125,7 +125,7 @@
                                 <i class="fa-solid fa-user text-slate-400 group-focus-within:text-blue-700 transition-colors"></i>
                             </div>
                             <input type="text" id="input-nama" list="list-users" 
-                                   class="w-full bg-white/60 border border-white/40 text-slate-800 text-sm rounded-xl focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 block w-full pl-11 p-3.5 transition-all shadow-sm focus:bg-white/90 placeholder-slate-500 backdrop-blur-sm" 
+                                   class="w-full bg-white/70 border border-white/50 text-slate-800 text-sm rounded-xl focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 block w-full pl-11 p-3.5 transition-all shadow-sm focus:bg-white/90 placeholder-slate-500 backdrop-blur-sm" 
                                    placeholder="Ketik nama Anda..." autocomplete="off">
                         </div>
                         <datalist id="list-users">
@@ -147,7 +147,7 @@
                                 <i class="fa-solid fa-id-badge text-slate-500"></i>
                             </div>
                             <input name="nip" id="input-nip" 
-                                   class="w-full bg-slate-200/50 border border-white/30 text-slate-600 text-sm rounded-xl block w-full pl-11 p-3.5 cursor-not-allowed backdrop-blur-sm" 
+                                   class="w-full bg-slate-200/60 border border-white/40 text-slate-600 text-sm rounded-xl block w-full pl-11 p-4 md:p-3.5 cursor-not-allowed backdrop-blur-sm" 
                                    placeholder="NIP otomatis terisi..." readonly required>
                         </div>
                     </div>
@@ -164,12 +164,12 @@
                                 <i class="fa-solid fa-lock text-slate-500 group-focus-within:text-blue-700 transition-colors"></i>
                             </div>
                             <input type="password" name="password" id="password"
-                                   class="w-full bg-white/60 border border-white/40 text-slate-800 text-sm rounded-xl focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 block w-full pl-11 pr-12 p-3.5 transition-all shadow-sm focus:bg-white/90 placeholder-slate-500 backdrop-blur-sm" 
+                                   class="w-full bg-white/70 border border-white/50 text-slate-800 text-sm rounded-xl focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 block w-full pl-11 pr-12 p-4 md:p-3.5 transition-all shadow-sm focus:bg-white/90 placeholder-slate-500 backdrop-blur-sm" 
                                    placeholder="Masukkan password..." required>
                             
                             {{-- Toggle Button --}}
                             <button type="button" id="toggle-password" 
-                                    class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-500 hover:text-slate-700 transition focus:outline-none">
+                                    class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-500 hover:text-slate-700 transition focus:outline-none z-20">
                                 <i class="fa-regular fa-eye text-lg"></i>
                             </button>
                         </div>
@@ -177,14 +177,14 @@
 
                     {{-- TOMBOL LOGIN --}}
                     <button type="submit" 
-                            class="w-full text-white bg-slate-900/90 hover:bg-slate-800 backdrop-blur-md focus:ring-4 focus:ring-slate-300/50 font-bold rounded-xl text-sm px-5 py-4 text-center shadow-lg hover:shadow-slate-900/30 transform transition active:scale-[0.98] flex items-center justify-center gap-3 group border border-white/10">
+                            class="w-full text-white bg-slate-900/90 hover:bg-slate-800 backdrop-blur-md focus:ring-4 focus:ring-slate-300/50 font-bold rounded-xl text-sm px-5 py-4 text-center shadow-lg hover:shadow-slate-900/30 transform transition active:scale-[0.98] flex items-center justify-center gap-3 group border border-white/10 mt-2">
                         <span>Masuk Aplikasi</span>
                         <i class="fa-solid fa-arrow-right group-hover:translate-x-2 transition-transform"></i>
                     </button>
                 </form>
 
-                <div class="mt-8 text-center">
-                    <p class="text-xs text-slate-600 font-medium text-shadow-sm">
+                <div class="mt-10 text-center">
+                    <p class="text-xs text-slate-500 font-medium text-shadow-sm">
                         &copy; {{ date('Y') }} Badan Pengawas Obat dan Makanan
                     </p>
                 </div>

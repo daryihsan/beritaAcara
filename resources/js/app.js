@@ -3,7 +3,6 @@ import "./bootstrap";
 // ==========================================
 // 1. LOGIKA VALIDASI FORM & TAB (jQuery)
 // ==========================================
-
 function validateTab(tabId) {
     let isValid = true;
     let tabPane = $(tabId);
@@ -125,7 +124,6 @@ $(document).ready(function () {
 // ==========================================
 // 2. PROTEKSI DATA HILANG (UNSAVED CHANGES)
 // ==========================================
-
 var formChanged = false;
 
 $(document).on(
@@ -388,9 +386,9 @@ $(document).ready(function () {
                 smart: false,
             },
             dom:
-                '<"dt-control-wrapper flex flex-col gap-2 mb-2"lf>' +
-                'rt' +
-                '<"dt-control-wrapper flex flex-col gap-2 mt-2"ip>',
+                '<"dt-control-wrapper flex flex-col md:flex-row gap-4 mb-4 justify-between items-center top"lf>' +
+                "rt" +
+                '<"dt-control-wrapper flex flex-col md:flex-row gap-4 mt-4 justify-between items-center bottom"ip>',
             // Bahasa Indonesia & Tombol
             language: {
                 url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/id.json",
@@ -456,36 +454,50 @@ if ($("#tgl_surat").val()) {
     $("#tgl_periksa").attr("min", $("#tgl_surat").val());
 }
 
-$(document).ready(function() {
-    // --- LOGIKA SIDEBAR MOBILE ---
-    const sidebar = $('#sidebar-menu');
-    const overlay = $('#sidebar-overlay');
-    const btnOpen = $('#btn-open-sidebar');
-    const btnClose = $('#btn-close-sidebar');
+$(document).ready(function () {
 
-    // 1. Buka Sidebar
-    btnOpen.click(function(e) {
-        e.stopPropagation();
-        sidebar.removeClass('-translate-x-full'); // Geser Masuk
-        overlay.removeClass('hidden'); // Gelapkan Background
-        $('body').addClass('overflow-hidden'); // Kunci Scroll
-    });
+    const sidebar = $("#sidebar-menu");
+    const overlay = $("#sidebar-overlay");
+    const btnOpen = $("#btn-open-sidebar");
+    const floatBtn = $("#sidebar-float-toggle"); // 🔥 INI YANG KURANG
 
-    // 2. Tutup Sidebar
-    function closeSidebar() {
-        sidebar.addClass('-translate-x-full'); // Geser Keluar
-        overlay.addClass('hidden'); // Hilangkan Gelap
-        $('body').removeClass('overflow-hidden'); // Buka Scroll
+    function openSidebar() {
+        sidebar.removeClass("-translate-x-full");
+        overlay.removeClass("hidden");
+        floatBtn.removeClass("-translate-x-full");
+
+        $("body").addClass("overflow-hidden sidebar-open");
     }
 
-    // Tutup kalau klik tombol X atau klik area gelap (overlay)
-    btnClose.click(function() { closeSidebar(); });
-    overlay.click(function() { closeSidebar(); });
-    
-    // --- LOGIKA DROPDOWN MENU BERITA ACARA ---
-    $('#berita-acara-toggle').click(function(e) {
+    function closeSidebar() {
+        sidebar.addClass("-translate-x-full");
+        overlay.addClass("hidden");
+        floatBtn.addClass("-translate-x-full");
+
+        $("body").removeClass("overflow-hidden sidebar-open");
+    }
+
+    // buka dari navbar
+    btnOpen.on("click", function (e) {
         e.preventDefault();
-        $('#berita-acara-submenu').toggleClass('max-h-0 max-h-[500px]'); // Slide effect
-        $('#berita-acara-icon').toggleClass('rotate-180'); // Putar panah
+        openSidebar();
     });
+
+    // tutup dari floating button
+    floatBtn.on("click", function () {
+        closeSidebar();
+    });
+
+    // tutup dari overlay
+    overlay.on("click", function () {
+        closeSidebar();
+    });
+
+    // dropdown berita acara
+    $("#berita-acara-toggle").on("click", function (e) {
+        e.preventDefault();
+        $("#berita-acara-submenu").toggleClass("max-h-0 max-h-[500px]");
+        $("#berita-acara-icon").toggleClass("rotate-180");
+    });
+
 });

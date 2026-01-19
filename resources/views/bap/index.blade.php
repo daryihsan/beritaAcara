@@ -25,11 +25,10 @@
                     @endforeach
                 </select>
 
-                <div class="w-px h-10 bg-slate-300 mx-1"></div>
+                <div class="w-px h-13 bg-slate-300 mx-1"></div>
 
                 {{-- 2. Dropdown Petugas (KHUSUS ADMIN) --}}
                 @if(auth()->user()->isAdmin())
-                    <div class="w-px h-6 bg-slate-200"></div> {{-- Pemisah kecil --}}
                     <select name="filter_petugas" class="form-select border-0 focus:ring-0 text-sm font-semibold text-slate-600 bg-transparent py-2 pl-3 pr-8 cursor-pointer outline-none" style="max-width: 150px;">
                         <option value="semua" selected>Semua Petugas</option>
                         @foreach($allPetugas as $p)
