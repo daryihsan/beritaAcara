@@ -14,7 +14,7 @@ class BeritaAcaraService
      */
     public function getBapData($tahun, $user, $filterNip = null)
     {
-        $query = BeritaAcara::query();
+        $query = BeritaAcara::with('petugas', 'pembuat');
 
         // Filter Tahun
         if ($tahun && $tahun !== 'semua') {

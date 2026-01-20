@@ -5,6 +5,7 @@ use App\Models\BeritaAcara;
 use App\Models\User;
 use App\Services\BeritaAcaraService;
 use App\Exports\BeritaAcaraExport;
+use App\Http\Requests\StoreBeritaAcaraRequest;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
 use App\Helpers\DateHelper;
@@ -41,40 +42,23 @@ class BeritaAcaraController extends Controller
 
     public function store(Request $request)
     {
-        // Validasi tetap di controller (Best Practice: Pindahkan ke FormRequest terpisah jika ingin lebih pro)
-        $validData = $request->validate([
-            'no_surat_tugas' => 'required',
-            'tgl_surat_tugas' => 'required|date',
-            'tanggal' => 'required|date',
-            'hari' => 'required',
-            'objek_nama' => 'required',
-            'objek_alamat' => 'required',
-            'hasil_pemeriksaan' => 'required',
-            'petugas_nip' => 'required|array',
-            'petugas_nip.*' => 'exists:users,nip',
-            'kepala_balai_text' => 'required',
-            'objek_kota' => 'required',
-            'dalam_rangka' => 'required',
-            'yang_diperiksa' => 'required',
-        ], [
-            'petugas_nip.*.exists' => 'NIP Petugas tidak terdaftar di sistem!'
+        // Mapping data untuk database
+        $dbData = $request->only([
+            'no_surat_tugas',
+            'tgl_surat_tugas',
+            'tanggal_pemeriksaan',
+            'hari',
+            'objek_nama',
+            'objek_alamat',
+            'hasil_pemeriksaan',
+            'kepala_balai_text',
+            'objek_kota',
+            'dalam_rangka',
+            'yang_diperiksa',
         ]);
 
-        // Mapping data untuk database
-        $dbData = [
-            'no_surat_tugas' => $request->no_surat_tugas,
-            'tgl_surat_tugas' => $request->tgl_surat_tugas,
-            'tanggal_pemeriksaan' => $request->tanggal,
-            'hari' => $request->hari,
-            'objek_nama' => $request->objek_nama,
-            'objek_alamat' => $request->objek_alamat,
-            'hasil_pemeriksaan' => $request->hasil_pemeriksaan,
-            'kepala_balai_text' => $request->kepala_balai_text,
-            'objek_kota' => $request->objek_kota,
-            'dalam_rangka' => $request->dalam_rangka,
-            'yang_diperiksa' => $request->yang_diperiksa,
-            'created_by' => auth()->id(),
-        ];
+        $dbData['tanggal_pemeriksaan'] = $request->tanggal;
+        $dbData['created_by'] = auth()->id();
 
         $petugasData = [
             'nip' => $request->petugas_nip,
@@ -113,37 +97,22 @@ class BeritaAcaraController extends Controller
 
     public function update(Request $request, $id)
     {
-        // Validasi (Sama persis dengan store)
-        $request->validate([
-            'no_surat_tugas' => 'required',
-            'tgl_surat_tugas' => 'required|date',
-            'tanggal' => 'required|date',
-            'hari' => 'required',
-            'objek_nama' => 'required',
-            'objek_alamat' => 'required',
-            'hasil_pemeriksaan' => 'required',
-            'petugas_nip' => 'required|array',
-            'petugas_nip.*' => 'exists:users,nip',
-            'kepala_balai_text' => 'required',
-            'objek_kota' => 'required',
-            'dalam_rangka' => 'required',
-            'yang_diperiksa' => 'required',
+        $dbData = $request->only([
+            'no_surat_tugas',
+            'tgl_surat_tugas',
+            'tanggal_pemeriksaan',
+            'hari',
+            'objek_nama',
+            'objek_alamat',
+            'hasil_pemeriksaan',
+            'kepala_balai_text',
+            'objek_kota',
+            'dalam_rangka',
+            'yang_diperiksa',
         ]);
 
-        $dbData = [
-            'no_surat_tugas' => $request->no_surat_tugas,
-            'tgl_surat_tugas' => $request->tgl_surat_tugas,
-            'tanggal_pemeriksaan' => $request->tanggal,
-            'hari' => $request->hari,
-            'objek_nama' => $request->objek_nama,
-            'objek_alamat' => $request->objek_alamat,
-            'hasil_pemeriksaan' => $request->hasil_pemeriksaan,
-            'kepala_balai_text' => $request->kepala_balai_text,
-            'objek_kota' => $request->objek_kota,
-            'dalam_rangka' => $request->dalam_rangka,
-            'yang_diperiksa' => $request->yang_diperiksa,
-            // 'created_by' TIDAK DIUPDATE agar history pembuat tetap ada
-        ];
+        $dbData['tanggal_pemeriksaan'] = $request->tanggal;
+        // 'created_by' TIDAK DIUPDATE agar history pembuat tetap ada
 
         $petugasData = [
             'nip' => $request->petugas_nip,
@@ -161,24 +130,6 @@ class BeritaAcaraController extends Controller
         return redirect()->route('dashboard', ['tahun' => $tahun])
             ->with('success', value: 'Perubahan berhasil disimpan!')
             ->with('print_pdf_id', $id);
-    }
-
-    // Menggantikan fungsi assign dari AdminController yang dihapus
-    public function assignPetugas(Request $request)
-    {
-        // Pastikan hanya admin yang bisa akses via Middleware atau Gate
-        if (!auth()->user()->isAdmin())
-            abort(403);
-
-        $request->validate([
-            'berita_acara_id' => 'required',
-            'user_ids' => 'required|array'
-        ]);
-
-        $ba = BeritaAcara::findOrFail($request->berita_acara_id);
-        $ba->petugas()->syncWithoutDetaching($request->user_ids);
-
-        return back()->with('success', 'Petugas berhasil ditambahkan');
     }
 
     public function pdf($id)

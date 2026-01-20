@@ -54,26 +54,33 @@
             <tr>
                 <th class="bg-abu" style="width: 30px;">No</th>
                 <th class="bg-abu" style="width: 120px;">No. Surat Tugas</th>
-                <th class="bg-abu" style="width: 210px;">Petugas Pemeriksa</th>
-                <th class="bg-abu" style="width: 90px;">Tgl Periksa</th>
-                <th class="bg-abu" style="width: 120px;">Objek</th>
-                <th class="bg-abu" style="width: 180px;">Alamat</th>
-                <th class="bg-abu" style="width: 100px;">Kota/Kab</th>
+                <th class="bg-abu" style="width: 180px;">Petugas Pemeriksa</th> <th class="bg-abu" style="width: 80px;">Tgl Periksa</th>
+                <th class="bg-abu" style="width: 80px;">Tgl BAP</th>
+                <th class="bg-abu" style="width: 110px;">Objek</th>
+                <th class="bg-abu" style="width: 150px;">Alamat</th>
+                <th class="bg-abu" style="width: 90px;">Kota/Kab</th>
             </tr>
         </thead>
         <tbody>
-            @foreach($data as $key => $ba)
+            @foreach ($data as $key => $ba)
                 <tr>
                     <td style="text-align: center;">{{ $key + 1 }}</td>
                     <td>{{ $ba->no_surat_tugas }}</td>
                     <td>
-                        <ul style="margin: 0; padding-left: 15px;"> 
-                        @foreach($ba->petugas as $p)
-                            <li>{{ $p->name }}</li>
-                        @endforeach
+                        <ul style="margin: 0; padding-left: 15px;">
+                            @foreach ($ba->petugas as $p)
+                                <li>{{ $p->name }}</li>
+                            @endforeach
                         </ul>
                     </td>
-                    <td style="text-align: center;">{{ \Carbon\Carbon::parse($ba->tanggal_pemeriksaan)->format('d-m-Y') }}</td>
+                    <td style="text-align: center;">
+                        {{ \Carbon\Carbon::parse($ba->tanggal_pemeriksaan)->format('d-m-Y') }}
+                    </td>
+
+                    <td style="text-align: center;">
+                        {{ \Carbon\Carbon::parse($ba->created_at)->format('d-m-Y') }}
+                    </td>
+
                     <td>{{ $ba->objek_nama }}</td>
                     <td>{{ $ba->objek_alamat }}</td>
                     <td>{{ $ba->objek_kota }}</td>

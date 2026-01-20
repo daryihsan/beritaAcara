@@ -99,7 +99,13 @@
                             </td>
                             <td class="p-5 text-left">{{ $ba->objek_nama }}</td>
                             <td class="p-5 text-left">{{ \Carbon\Carbon::parse($ba->tanggal_pemeriksaan)->format('d M Y') }}</td>
-                            <td class="p-5 text-left">{{ \Carbon\Carbon::parse($ba->tanggal_berita_acara)->format('d M Y') }}</td>
+                            <td class="p-5 text-left">
+                                {{ 
+                                    \Carbon\Carbon::parse(
+                                        $ba->created_at ?? $ba->tanggal_pemeriksaan
+                                    )->format('d M Y') 
+                                }}
+                            </td>
                             <td class="p-5 text-center border-l border-slate-100">
                                 <div class="flex items-center justify-center gap-2">
                                     <a href="{{ route('berita-acara.pdf', $ba->id) }}" target="_blank" class="btn btn-primary btn-sm">
@@ -134,6 +140,7 @@
         <div class="dt-bottom"></div>
     </div>
 
+    <div class="hidden dt-control-wrapper flex flex-col md:flex-row gap-4 mb-4 justify-between items-center mt-4 top bottom"></div>
 @endsection
 
 @push('scripts') {{-- Atau langsung taruh di bawah jika tidak pakai stack --}}

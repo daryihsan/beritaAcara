@@ -35,53 +35,37 @@ class BeritaAcaraExport implements FromView, WithColumnWidths, WithStyles
     public function columnWidths(): array
     {
         return [
-            'A' => 5,   // No
-            'B' => 30,  // No. Surat Tugas
-            'C' => 40,  // Petugas Pemeriksa
-            'D' => 15,  // Tgl Pemeriksaan
-            'E' => 35,  // Objek
-            'F' => 40,  // Alamat
-            'G' => 20,  // Kota/Kab
+            'A' => 5,  // No
+            'B' => 30, // No. Surat Tugas
+            'C' => 40, // Petugas
+            'D' => 15, // Tgl Pemeriksaan
+            'E' => 15, // [BARU] Tgl BAP
+            'F' => 35, // Objek (Sebelumnya E)
+            'G' => 40, // Alamat (Sebelumnya F)
+            'H' => 20, // Kota/Kab (Sebelumnya G)
         ];
     }
 
     public function styles(Worksheet $sheet)
     {
-        // 3. Aktifkan WRAP TEXT agar tulisan tidak tembus keluar
-        $sheet->getStyle('A:G')->getAlignment()->setWrapText(true);
-        // Set alignment vertikal ke atas biar rapi
-        $sheet->getStyle('A:G')->getAlignment()->setVertical('top');
-        $headerRow = 3; // Default (Judul -> Spasi -> Header)
+        // Update range style agar mencakup sampai kolom H
+        $sheet->getStyle('A:H')->getAlignment()->setWrapText(true);
+        $sheet->getStyle('A:H')->getAlignment()->setVertical('top');
 
+        $headerRow = 3;
         if (!empty($this->infoPetugas)) {
-            $headerRow = 4; // Kalau ada info: (Judul -> Info -> Spasi -> Header)
+            $headerRow = 4;
         }
 
-        // 3. TERAPKAN STYLE KE BARIS HEADER YANG SUDAH DIHITUNG
-        // Warna Abu-abu hanya di baris header
-        $sheet->getStyle('A' . $headerRow . ':G' . $headerRow)->getFill()
+        // Update range warna header sampai H
+        $sheet->getStyle('A' . $headerRow . ':H' . $headerRow)->getFill()
             ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
             ->getStartColor()->setARGB('FFCCCCCC');
 
-        // 4. ATUR FONT
         return [
-            // Baris 1 (Judul): Bold, Besar, Tengah
-            1 => [
-                'font' => ['bold' => true, 'size' => 14],
-                'alignment' => ['horizontal' => 'center']
-            ],
-
-            // Baris 2 (Info Petugas): Italic, Tengah
-            2 => [
-                'font' => ['italic' => true, 'size' => 12],
-                'alignment' => ['horizontal' => 'center']
-            ],
-
-            // Baris HEADER (Dinamis): Bold, Tengah, Border
-            $headerRow => [
-                'font' => ['bold' => true],
-                'alignment' => ['horizontal' => 'center', 'vertical' => 'center'],
-            ],
+            1 => ['font' => ['bold' => true, 'size' => 14], 'alignment' => ['horizontal' => 'center']],
+            2 => ['font' => ['italic' => true, 'size' => 12], 'alignment' => ['horizontal' => 'center']],
+            $headerRow => ['font' => ['bold' => true], 'alignment' => ['horizontal' => 'center', 'vertical' => 'center']],
         ];
     }
 }
