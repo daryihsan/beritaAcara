@@ -236,17 +236,22 @@ table.dataTable thead .sorting_desc:after {
         -webkit-overflow-scrolling: touch;
     }
     .dataTables_wrapper .dataTables_filter input {
-        width: 100% !important;
+        width: auto !important;
+        max-width: 200px;
         margin-left: 0 !important;
     }
     .dataTables_wrapper .dataTables_paginate {
         justify-content: center !important;
+        float: none !important;
+        width: 100% !important;
+        text-align: center !important;
     }
     .dataTables_paginate {
         display: flex !important;
         justify-content: center !important;
-        flex-wrap: wrap;
+        flex-wrap: wrap !important;
         gap: 0.25rem;
+        width: 100% !important;
     }
     .dataTables_paginate .paginate_button {
         padding: 0.35rem 0.6rem !important;
@@ -264,6 +269,7 @@ table.dataTable thead .sorting_desc:after {
         text-align: center !important;
         font-size: 1.3rem;
         padding: 0.5rem 0;
+        width: 100% !important;
     }
     .dataTables_length,
     .dataTables_filter,
@@ -275,11 +281,13 @@ table.dataTable thead .sorting_desc:after {
     }
     .dataTables_length,
     .dataTables_filter {
+        float: none !important;
         display: flex !important;
         flex-direction: column;
-        align-items: center;
+        align-items: center !important;
         text-align: center !important;
         width: 100%;
+        justify-content: center !important;
     }
     .dataTables_filter input {
         width: 100%;

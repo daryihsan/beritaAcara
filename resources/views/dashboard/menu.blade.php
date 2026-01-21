@@ -4,7 +4,7 @@
     <div class="mb-8">
         <h1 class="text-5xl font-extrabold text-slate-800 tracking-tight">Dashboard</h1>
         <p class="text-slate-500 mt-2">
-            Selamat datang, {{ auth()->user()->name }}
+            Selamat datang, {{ auth()->user()->name }}.
         </p>
     </div>
     

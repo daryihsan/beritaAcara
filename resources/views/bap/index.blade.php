@@ -6,8 +6,21 @@
 @endsection
 @section('content')
     <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
-        <div>
-            <h1 class="text-5xl font-extrabold text-slate-800 tracking-tight">Daftar Berita Acara</h1>
+        <div class="w-full md:w-auto text-left">
+            <h1 class="text-5xl font-extrabold text-slate-800 tracking-tight">
+                Daftar Berita Acara
+                @if(request('tahun') && request('tahun') !== 'semua')
+                    Tahun {{ request('tahun') }}
+                @endif
+            </h1>
+            <p class="text-slate-500 mt-2">
+                Semua berita acara  
+                @if(request('tahun') && request('tahun') !== 'semua')
+                    pada tahun {{ request('tahun') }} yang dibuat.
+                @else
+                    yang telah dibuat.
+                @endif
+            </p>
         </div>
 
         {{-- AREA TOMBOL & FILTER --}}
@@ -140,7 +153,6 @@
         <div class="dt-bottom"></div>
     </div>
 
-    <div class="hidden dt-control-wrapper flex flex-col md:flex-row gap-4 mb-4 justify-between items-center mt-4 top bottom"></div>
 @endsection
 
 @push('scripts') {{-- Atau langsung taruh di bawah jika tidak pakai stack --}}
