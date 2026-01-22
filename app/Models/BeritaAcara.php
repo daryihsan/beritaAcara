@@ -3,10 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Activitylog\Traits\LogsActivity;   
+use Spatie\Activitylog\LogOptions;
 
 class BeritaAcara extends Model
 {
-    // Tambahkan baris ini untuk menentukan nama tabel secara manual
+    use SoftDeletes, LogsActivity;
     protected $table = 'berita_acara';
 
     protected $fillable = [
@@ -18,10 +21,10 @@ class BeritaAcara extends Model
         'objek_alamat',
         'hasil_pemeriksaan',
         'created_by',
-        'kepala_balai_text', // Tambahkan ini
-        'objek_kota',        // Tambahkan ini
-        'dalam_rangka',      // Tambahkan ini
-        'yang_diperiksa'     // Tambahkan ini
+        'kepala_balai_text', 
+        'objek_kota',        
+        'dalam_rangka',      
+        'yang_diperiksa'     
     ];
 
     // app/Models/BeritaAcara.php
@@ -41,5 +44,14 @@ class BeritaAcara extends Model
     public function pembuat()
     {
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly(['no_surat_tugas', 'objek_nama', 'hasil_pemeriksaan', 'tanggal_pemeriksaan']) // Kolom yang dipantau
+            ->logOnlyDirty() // Hanya catat yang berubah
+            ->dontSubmitEmptyLogs()
+            ->setDescriptionForEvent(fn(string $eventName) => "Berita Acara telah di-{$eventName}");
     }
 }

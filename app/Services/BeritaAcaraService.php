@@ -10,11 +10,12 @@ use Barryvdh\DomPDF\Facade\Pdf;
 class BeritaAcaraService
 {
     /**
-     * Ambil data BAP dengan filter tahun dan hak akses user
+     * Query Builder (Untuk DataTables Server-Side)
      */
-    public function getBapData($tahun, $user, $filterNip = null)
+    public function getBapQuery($tahun, $user, $filterNip = null)
     {
-        $query = BeritaAcara::with('petugas', 'pembuat');
+        $query = BeritaAcara::with('petugas', 'pembuat')
+            -> select('berita_acara.*');
 
         // Filter Tahun
         if ($tahun && $tahun !== 'semua') {
@@ -23,7 +24,8 @@ class BeritaAcaraService
 
         // Filter Hak Akses (Jika bukan admin, hanya lihat yang ditugaskan)
         if (!$user->isAdmin()) {
-            $query->whereHas('petugas', fn($q) => $q->where('users.nip', $user->nip));
+            $query->whereHas('petugas', fn($q) => 
+            $q->where('users.nip', $user->nip));
         }
 
         elseif ($filterNip && $filterNip !== 'semua') {
@@ -32,7 +34,16 @@ class BeritaAcaraService
                 $q->where('users.nip', $filterNip));
         }
 
-        return $query->orderBy('tanggal_pemeriksaan', 'desc')
+        return $query;
+    }
+
+    /**
+     * Ambil data BAP dengan filter tahun dan hak akses user
+     */
+    public function getBapData($tahun, $user, $filterNip = null)
+    {
+        return $this->getBapQuery($tahun, $user, $filterNip)
+            ->orderBy('tanggal_pemeriksaan', 'desc')
             ->orderBy('created_at', 'desc')
             ->get();
     }
@@ -42,27 +53,35 @@ class BeritaAcaraService
      */
     public function storeBap(array $data, array $petugasData)
     {
-        // 1. Create Data Utama
-        $ba = BeritaAcara::create($data);
+        $ba = activity()->withoutLogs(function () use ($data, $petugasData) {
+            
+            // A. Buat Data Utama
+            $newInstance = BeritaAcara::create($data);
+            
+            // B. Sync Petugas
+            $this->syncPetugas($newInstance, $petugasData);
+            
+            return $newInstance;
+        });
 
-        // 2. Sync Data Petugas (Pivot Table)
-        $syncData = [];
-        foreach ($petugasData['nip'] as $i => $nip) {
-            if ($nip) {
-                $dataPivot = [
-                    'pangkat' => $petugasData['pangkat'][$i] ?? '-',
-                    'jabatan' => $petugasData['jabatan'][$i] ?? '-',
-                ];
+        // 2. Siapkan Data untuk Log Lengkap
+        // Refresh agar relasi petugas termuat dengan benar
+        $ba->refresh(); 
+        
+        // Ambil semua atribut data utama yang baru dibuat
+        $logAttributes = $ba->only(array_keys($data));
+        
+        // Ambil nama-nama petugas
+        $petugasNames = $ba->petugas->pluck('name')->toArray();
+        $logAttributes['petugas'] = implode(', ', $petugasNames); // Gabung jadi string
 
-                // Cek apakah ada input TTD baru dari form?
-                if (isset($petugasData['ttd'][$i]) && !empty($petugasData['ttd'][$i])) {
-                    $dataPivot['ttd'] = $petugasData['ttd'][$i];
-                }
-                $syncData[$nip] = $dataPivot;
-            }
-        }
-
-        $ba->petugas()->sync($syncData);
+        // 3. Catat Log "Created" dengan detail lengkap
+        activity()
+            ->performedOn($ba)
+            ->causedBy(auth()->user())
+            ->withProperties(['attributes' => $logAttributes]) // Masukkan semua data ke sini
+            ->event('created')
+            ->log('Membuat Berita Acara Baru');
 
         return $ba;
     }
@@ -71,10 +90,55 @@ class BeritaAcaraService
     {
         $ba = BeritaAcara::findOrFail($id);
 
-        // 1. Update Data Utama
-        $ba->update($data);
+        // 1. Ambil data LAMA sebelum diapa-apain (untuk perbandingan)
+        $oldData = $ba->only(array_keys($data));
+        $oldPetugas = $ba->petugas->pluck('name')->toArray();
 
-        // 2. Siapkan data pivot petugas
+        // 2. Lakukan Update TANPA Log Otomatis (Kita catat manual nanti biar gabung)
+        activity()->withoutLogs(function () use ($ba, $data, $petugasData) {
+            // Update Data Utama
+            $ba->update($data);
+            $this->syncPetugas($ba, $petugasData);
+        });
+
+        // 3. Ambil Data BARU setelah update
+        $ba->refresh(); // Refresh agar relasi petugas terupdate
+        $newData = $ba->only(array_keys($data));
+        $newPetugas = $ba->petugas->pluck('name')->toArray();
+
+        // 4. Bandingkan Manual & Buat SATU Log Gabungan
+        $changes = [];
+        
+        // Cek perubahan data utama
+        foreach ($newData as $key => $value) {
+            if ($oldData[$key] != $value) {
+                $changes[$key] = "Dari '{$oldData[$key]}' menjadi '{$value}'";
+            }
+        }
+
+        // Cek perubahan petugas
+        if ($oldPetugas !== $newPetugas) {
+            $changes['susunan_petugas'] = "Diubah dari [" . implode(', ', $oldPetugas) . "] menjadi [" . implode(', ', $newPetugas) . "]";
+        }
+
+        // 5. Catat Log HANYA JIKA ada perubahan
+        if (!empty($changes)) {
+            activity()
+                ->performedOn($ba)
+                ->causedBy(auth()->user())
+                ->withProperties(['attributes' => $changes]) // Simpan detail perubahan di sini
+                ->event('updated')
+                ->log('Melakukan perubahan data BAP');
+        }
+
+        return $ba;
+    }
+
+    /**
+     * [HELPER] Sinkronisasi Petugas
+     */
+    private function syncPetugas($ba, $petugasData)
+    {
         $syncData = [];
         foreach ($petugasData['nip'] as $i => $nip) {
             if ($nip) {
@@ -82,21 +146,18 @@ class BeritaAcaraService
                     'pangkat' => $petugasData['pangkat'][$i] ?? '-',
                     'jabatan' => $petugasData['jabatan'][$i] ?? '-',
                 ];
-
-                // Cek apakah ada input TTD baru dari form?
                 if (isset($petugasData['ttd'][$i]) && !empty($petugasData['ttd'][$i])) {
                     $dataPivot['ttd'] = $petugasData['ttd'][$i];
                 }
                 $syncData[$nip] = $dataPivot;
             }
         }
-
-        // 3. Sync (Otomatis hapus yang lama, masukkan yang baru)
         $ba->petugas()->sync($syncData);
-
-        return $ba;
     }
 
+    /**
+     * Ambil data BAP beserta relasi petugas berdasarkan ID
+     */
     public function getBapById($id)
     {
         return BeritaAcara::with('petugas')->findOrFail($id);
@@ -134,5 +195,39 @@ class BeritaAcaraService
         $type = pathinfo($path, PATHINFO_EXTENSION);
         $data = file_get_contents($path);
         return 'data:image/' . $type . ';base64,' . base64_encode($data);
+    }
+
+    /**
+     * Hapus Data dengan Log Detail (Snapshot sebelum hapus)
+     */
+    public function deleteBap($id)
+    {
+        // 1. Ambil data lengkap beserta relasinya
+        $ba = BeritaAcara::with('petugas')->findOrFail($id);
+
+        // 2. Siapkan "Snapshot" data yang ingin dicatat di log
+        $logAttributes = [
+            'no_surat_tugas' => $ba->no_surat_tugas,
+            'tanggal_pemeriksaan' => $ba->tanggal_pemeriksaan,
+            'objek_nama' => $ba->objek_nama,
+            // Gabungkan nama petugas jadi satu string
+            'petugas' => $ba->petugas->pluck('name')->implode(', '), 
+        ];
+
+        // 3. Hapus data (Matikan log otomatis bawaan model agar tidak double/kosong)
+        activity()->withoutLogs(function () use ($ba) {
+            $ba->petugas()->detach(); // Hapus relasi pivot
+            $ba->delete();            // Hapus data utama
+        });
+
+        // 4. Catat Log Manual dengan detail yang sudah kita snapshot tadi
+        activity()
+            ->performedOn($ba)
+            ->causedBy(auth()->user()) // Pelaku hapus
+            ->withProperties(['attributes' => $logAttributes]) // Masukkan detail di sini
+            ->event('deleted') // Set event sebagai 'deleted' (biar badge warna merah)
+            ->log('Menghapus Berita Acara');
+
+        return true;
     }
 }

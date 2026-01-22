@@ -7,6 +7,7 @@ import { initValidation } from './components/validation';
 import { initSignature } from './components/signature';
 import { initDatatable } from './components/datatable';
 import { initUI } from './components/ui';
+import { initLoader } from './components/loader';
 
 $(document).ready(function() {
     initAuth();        // Jalan di halaman login
@@ -14,4 +15,5 @@ $(document).ready(function() {
     initValidation();  // Jalan di form BAP
     initSignature();   // Jalan di form BAP (modal)
     initDatatable();   // Jalan di index BAP
+    initLoader();     // Jalan di semua halaman (global)
 });

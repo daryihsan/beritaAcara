@@ -79,14 +79,19 @@
 
         @if(auth()->user()->isAdmin())
             <div class="mt-4 px-8 text-sm font-semibold text-gray-500 uppercase tracking-widest">Panel Kontrol Admin</div>
-            <a href="/admin/berita-acara" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 no-underline {{ request()->is('admin/*') ? 'bg-amber-50 border-l-4 border-amber-500 font-semibold text-amber-700' : 'text-gray-700 hover:!bg-amber-200 hover:!text-amber-900 hover:font-medium hover:no-underline' }}">
+            <a href="/admin/berita-acara" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 no-underline {{ request()->is('admin/berita-acara*') ? 'bg-amber-50 border-l-4 border-amber-500 font-semibold text-amber-700' : 'text-gray-700 hover:!bg-amber-200 hover:!text-amber-900 hover:font-medium hover:no-underline' }}">
                 <span class="glyphicon glyphicon-lock text-xl"></span>
                 <span class="text-xl">Semua Berita Acara</span>
+            </a>
+
+            <a href="{{ route('admin.activity-log') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 no-underline {{ request()->is('admin/activity-log*') ? 'bg-amber-50 border-l-4 border-amber-500 font-semibold text-amber-700' : 'text-gray-700 hover:!bg-amber-200 hover:!text-amber-900 hover:font-medium hover:no-underline' }}">
+                <span class="glyphicon glyphicon-eye-open text-xl"></span> {{-- Ikon Mata/Jejak --}}
+                <span class="text-xl">Log Aktivitas</span>
             </a>
         @endif
 
         <div class="pt-10 pb-10">
-            <form method="POST" action="/logout">
+            <form method="POST" action="/logout" data-no-loader="true">
                 @csrf
                 <button class="flex items-center gap-3 w-full px-4 py-3 rounded-lg text-gray-600 hover:bg-red-200 hover:text-red-900 hover:font-medium transition-all duration-200">
                     <span class="glyphicon glyphicon-log-out text-xl"></span>
