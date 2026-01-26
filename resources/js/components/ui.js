@@ -38,25 +38,13 @@ export function initUI() {
         closeSidebar();
     });
 
-    // dropdown berita acara
-    // $("#berita-acara-toggle").on("click", function (e) {
-    //     e.preventDefault();
-    //     $("#berita-acara-submenu").toggleClass("max-h-0 max-h-[500px]");
-    //     $("#berita-acara-icon").toggleClass("rotate-180");
-    // });
-
     const toggleButton = $("#berita-acara-toggle");
     const submenu = $("#berita-acara-submenu");
     const icon = $("#berita-acara-icon");
     const storageKey = "berita-acara-open";
 
-    // Cek keberadaan tombol agar tidak error di halaman Login
+    // Cek keberadaan tombol 
     if (toggleButton.length) {
-        // const submenu = document.getElementById(submenuId);
-        // const icon = document.getElementById(iconId);
-
-        // --- PERBAIKAN DI SINI ---
-        // Kita ganti PHP {{ request()->... }} dengan Javascript window.location
         const currentPath = window.location.pathname;
         const currentSearch = window.location.search;
 
@@ -67,23 +55,8 @@ export function initUI() {
 
         const storedState = localStorage.getItem(storageKey);
 
-        // // Buka jika URL aktif ATAU user terakhir kali membiarkannya terbuka
-        // const shouldBeOpen = isSubActive || storedState === "true";
-
-        // if (shouldBeOpen) {
-        //     submenu.css({
-        //         "max-height": submenu.prop("scrollHeight") + "px",
-        //         "transition": "none"
-        //     });
-        //     icon.addClass("rotate-180");
-
-        //     setTimeout(() => {
-        //         submenu.css("transition", "max-height 0.3s ease-in-out");
-        //     }, 50);
-        // }
-
         if (isSubActive || storedState === "true") {
-            // FIX: Gunakan .css() dan .prop() karena ini objek jQuery
+            //Gunakan .css() dan .prop() karena objek jQuery
             let scrollHeight = submenu.prop("scrollHeight");
             submenu.css("max-height", scrollHeight + "px");
             submenu.css("transition", "none");

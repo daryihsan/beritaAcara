@@ -1,60 +1,65 @@
 <!DOCTYPE html>
 <html>
+
 <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    
+    <title>{{ $judulTab ?? 'Rekapitulasi BAP' }}</title>
     <style>
         /* CSS KHUSUS PDF */
         table {
             width: 100%;
-            border-collapse: collapse; 
+            border-collapse: collapse;
             font-family: sans-serif;
         }
-        
-        th, td {
+        th,
+        td {
             border: 1px solid #000000;
             padding: 5px;
             vertical-align: top;
             font-size: 10pt;
         }
-
-        /* KHUSUS HEADER KOLOM (WARNA ABU) */
-        /* Gunakan background-color hex code standar dengan !important */
+        /* KHUSUS HEADER KOLOM */
         .bg-abu {
-            background-color: #d3d3d3 !important; /* Abu-abu terang */
+            background-color: #d3d3d3 !important;
             font-weight: bold;
             text-align: center;
         }
-
-        /* KHUSUS JUDUL (TANPA GARIS) */
+        /* KHUSUS JUDUL */
         .no-border {
             border: none !important;
-            background-color: #ffffff !important; /* Pastikan putih */
+            background-color: #ffffff !important;
         }
     </style>
 </head>
+
 <body>
     <table>
         <thead>
-            {{-- BARIS 1: JUDUL UTAMA --}}
+            <!-- JUDUL UTAMA -->
             <tr>
-                <th colspan="7" class="no-border" style="text-align: center; font-weight: bold; font-size: 14pt; padding-bottom: 5px;">
+                <th colspan="7" class="no-border"
+                    style="text-align: center; font-weight: bold; font-size: 14pt; padding-bottom: 5px;">
                     REKAPITULASI BERITA ACARA - {{ $labelHeader }}
                 </th>
             </tr>
 
-            {{-- BARIS 2: INFO PETUGAS (Kondisional) --}}
+            <!-- INFO PETUGAS -->
             @if(!empty($infoPetugas))
                 <tr>
-                    <th colspan="7" class="no-border" style="text-align: center; font-style: italic; font-size: 11pt; padding-bottom: 10px;">
+                    <th colspan="7" class="no-border"
+                        style="text-align: center; font-style: italic; font-size: 11pt; padding-bottom: 10px;">
                         {{ $infoPetugas }}
                     </th>
                 </tr>
             @endif
 
-            {{-- BARIS HEADER KOLOM (DENGAN CLASS BG-ABU) --}}
+            <!-- HEADER KOLOM -->
             <tr>
                 <th class="bg-abu" style="width: 30px;">No</th>
                 <th class="bg-abu" style="width: 120px;">No. Surat Tugas</th>
-                <th class="bg-abu" style="width: 180px;">Petugas Pemeriksa</th> <th class="bg-abu" style="width: 80px;">Tgl Periksa</th>
+                <th class="bg-abu" style="width: 180px;">Petugas Pemeriksa</th>
+                <th class="bg-abu" style="width: 80px;">Tgl Periksa</th>
                 <th class="bg-abu" style="width: 80px;">Tgl BAP</th>
                 <th class="bg-abu" style="width: 110px;">Objek</th>
                 <th class="bg-abu" style="width: 150px;">Alamat</th>
@@ -89,4 +94,5 @@
         </tbody>
     </table>
 </body>
+
 </html>

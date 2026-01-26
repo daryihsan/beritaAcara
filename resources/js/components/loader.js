@@ -24,9 +24,7 @@ export function initLoader() {
         }, 300);
     };
 
-    // 1. HANDLE KLIK LINK (Event Delegation)
-    // Kita pasang listener di document, bukan di 'a' langsung.
-    // Ini PENTING agar link di dalam DataTables (yang diload AJAX) tetap kena logic ini.
+    // handle klik link (Event Delegation)
     document.addEventListener('click', function(e) {
         const link = e.target.closest('a'); // Cari elemen <a> terdekat
 
@@ -37,7 +35,7 @@ export function initLoader() {
             // Cek apakah user menekan Ctrl+Click atau Command+Click (Buka di tab baru)
             const isModifierKey = e.ctrlKey || e.metaKey; 
 
-            // LOGIKA FILTER:
+            // LOGIKA PENENTUAN:
             // 1. Harus link internal (diawali '/')
             // 2. Bukan link kosong ('#') atau javascript
             // 3. BUKAN target="_blank" (Tab baru)
@@ -49,15 +47,13 @@ export function initLoader() {
             const isInternal    = href && (href.startsWith('/') || href.startsWith(window.location.origin));
             const isSpecialLink = href.startsWith('#') || href.includes('javascript');
 
-            // --- LOGIKA UTAMA ---
-
-            // PRIORITAS 1: Apakah ini PDF atau Export? (Tidak peduli New Tab atau tidak)
+            // Prioritas 1: Apakah ini PDF atau Export? (Tidak peduli New Tab atau tidak)
             if (isPdfOrExport) {
                 showLoader();
                 // Matikan loader setelah 3 detik karena browser tidak refresh halaman
                 setTimeout(hideLoader, 3000);
             }
-            // PRIORITAS 2: Link Internal Biasa (Bukan New Tab, Bukan PDF)
+            // Prioritas 2: Link Internal Biasa (Bukan New Tab, Bukan PDF)
             else if (isInternal && !isSpecialLink && !isNewTab) {
                 showLoader();
                 // Loader tidak perlu dimatikan, karena halaman akan refresh/pindah
@@ -65,13 +61,13 @@ export function initLoader() {
         }
     });
 
-    // 2. HANDLE FORM SUBMIT
+    // handle form submit
     document.addEventListener('submit', function(e) {
         const form = e.target;
         if (form.hasAttribute('data-no-loader')) return;
         if (!form.checkValidity()) return; // Jangan load kalau form tidak valid
 
-        // Cek Tombol mana yang ditekan? (Terutama untuk tombol Export Excel/PDF di header)
+        // Cek Tombol yang ditekan (Terutama untuk tombol Export Excel/PDF di header)
         const submitter = e.submitter; 
         
         let isExport = false;
@@ -96,7 +92,7 @@ export function initLoader() {
             // Kasus Download/Export:
             // Tampilkan loader sebentar (biar user tau sistem merespon), lalu hilangkan.
             showLoader();
-            setTimeout(hideLoader, 2000); // Hilang otomatis setelah 2 detik
+            setTimeout(hideLoader, 2000); 
         } else {
             // Kasus Simpan Biasa:
             // Tampilkan loader sampai halaman terreload
@@ -104,7 +100,7 @@ export function initLoader() {
         }
     });
 
-    // 3. FIX BACK BUTTON (Safari/Chrome bfcache)
+    // back button (Safari/Chrome bfcache)
     // Kalau user klik Back, loader harus hilang
     window.addEventListener('pageshow', function(event) {
         if (event.persisted) {

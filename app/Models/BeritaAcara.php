@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Spatie\Activitylog\Traits\LogsActivity;   
+use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
 
 class BeritaAcara extends Model
@@ -21,10 +21,10 @@ class BeritaAcara extends Model
         'objek_alamat',
         'hasil_pemeriksaan',
         'created_by',
-        'kepala_balai_text', 
-        'objek_kota',        
-        'dalam_rangka',      
-        'yang_diperiksa'     
+        'kepala_balai_text',
+        'objek_kota',
+        'dalam_rangka',
+        'yang_diperiksa'
     ];
 
     // app/Models/BeritaAcara.php

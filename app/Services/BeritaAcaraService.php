@@ -6,6 +6,9 @@ use App\Models\BeritaAcara;
 use App\Helpers\DateHelper;
 use Illuminate\Support\Facades\Auth;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Intervention\Image\Facades\Image;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
 
 class BeritaAcaraService
 {
@@ -15,7 +18,7 @@ class BeritaAcaraService
     public function getBapQuery($tahun, $user, $filterNip = null)
     {
         $query = BeritaAcara::with('petugas', 'pembuat')
-            -> select('berita_acara.*');
+            ->select('berita_acara.*');
 
         // Filter Tahun
         if ($tahun && $tahun !== 'semua') {
@@ -24,13 +27,11 @@ class BeritaAcaraService
 
         // Filter Hak Akses (Jika bukan admin, hanya lihat yang ditugaskan)
         if (!$user->isAdmin()) {
-            $query->whereHas('petugas', fn($q) => 
-            $q->where('users.nip', $user->nip));
-        }
-
-        elseif ($filterNip && $filterNip !== 'semua') {
-            // Jika Admin DAN dia memilih filter NIP tertentu
-            $query->whereHas('petugas', fn ($q) => 
+            $query->whereHas('petugas', fn($q) =>
+                $q->where('users.nip', $user->nip));
+        } elseif ($filterNip && $filterNip !== 'semua') {
+            // Jika Admin DAN memilih filter NIP tertentu
+            $query->whereHas('petugas', fn($q) =>
                 $q->where('users.nip', $filterNip));
         }
 
@@ -53,62 +54,63 @@ class BeritaAcaraService
      */
     public function storeBap(array $data, array $petugasData)
     {
-        $ba = activity()->withoutLogs(function () use ($data, $petugasData) {
-            
-            // A. Buat Data Utama
-            $newInstance = BeritaAcara::create($data);
-            
-            // B. Sync Petugas
-            $this->syncPetugas($newInstance, $petugasData);
-            
-            return $newInstance;
+        return DB::transaction(function () use ($data, $petugasData) {
+            $ba = activity()->withoutLogs(function () use ($data, $petugasData) {
+
+                // Buat Data Utama
+                $newInstance = BeritaAcara::create($data);
+
+                // Sync Petugas
+                $this->syncPetugas($newInstance, $petugasData);
+
+                return $newInstance;
+            });
+
+            // Data untuk Log Lengkap
+            // Refresh agar relasi petugas termuat dengan benar
+            $ba->refresh();
+
+            // Ambil semua atribut data utama yang baru dibuat
+            $logAttributes = $ba->only(array_keys($data));
+
+            // Ambil nama-nama petugas
+            $petugasNames = $ba->petugas->pluck('name')->toArray();
+            $logAttributes['petugas'] = implode(', ', $petugasNames); 
+
+            // Catat Log "Created" dengan detail lengkap
+            activity()
+                ->performedOn($ba)
+                ->causedBy(auth()->user())
+                ->withProperties(['attributes' => $logAttributes]) 
+                ->event('created')
+                ->log('Membuat Berita Acara Baru');
+            return $ba;
         });
-
-        // 2. Siapkan Data untuk Log Lengkap
-        // Refresh agar relasi petugas termuat dengan benar
-        $ba->refresh(); 
-        
-        // Ambil semua atribut data utama yang baru dibuat
-        $logAttributes = $ba->only(array_keys($data));
-        
-        // Ambil nama-nama petugas
-        $petugasNames = $ba->petugas->pluck('name')->toArray();
-        $logAttributes['petugas'] = implode(', ', $petugasNames); // Gabung jadi string
-
-        // 3. Catat Log "Created" dengan detail lengkap
-        activity()
-            ->performedOn($ba)
-            ->causedBy(auth()->user())
-            ->withProperties(['attributes' => $logAttributes]) // Masukkan semua data ke sini
-            ->event('created')
-            ->log('Membuat Berita Acara Baru');
-
-        return $ba;
     }
 
     public function updateBap($id, array $data, array $petugasData)
     {
         $ba = BeritaAcara::findOrFail($id);
 
-        // 1. Ambil data LAMA sebelum diapa-apain (untuk perbandingan)
+        // data lama 
         $oldData = $ba->only(array_keys($data));
         $oldPetugas = $ba->petugas->pluck('name')->toArray();
 
-        // 2. Lakukan Update TANPA Log Otomatis (Kita catat manual nanti biar gabung)
+        // Lakukan Update tanpa Log Otomatis
         activity()->withoutLogs(function () use ($ba, $data, $petugasData) {
             // Update Data Utama
             $ba->update($data);
             $this->syncPetugas($ba, $petugasData);
         });
 
-        // 3. Ambil Data BARU setelah update
+        // Ambil Data setelah update
         $ba->refresh(); // Refresh agar relasi petugas terupdate
         $newData = $ba->only(array_keys($data));
         $newPetugas = $ba->petugas->pluck('name')->toArray();
 
-        // 4. Bandingkan Manual & Buat SATU Log Gabungan
+        // Bandingkan Manual & Buat satu log gabungan
         $changes = [];
-        
+
         // Cek perubahan data utama
         foreach ($newData as $key => $value) {
             if ($oldData[$key] != $value) {
@@ -121,21 +123,20 @@ class BeritaAcaraService
             $changes['susunan_petugas'] = "Diubah dari [" . implode(', ', $oldPetugas) . "] menjadi [" . implode(', ', $newPetugas) . "]";
         }
 
-        // 5. Catat Log HANYA JIKA ada perubahan
+        // Catat Log hanya saat ada perubahan
         if (!empty($changes)) {
             activity()
                 ->performedOn($ba)
                 ->causedBy(auth()->user())
-                ->withProperties(['attributes' => $changes]) // Simpan detail perubahan di sini
+                ->withProperties(['attributes' => $changes])
                 ->event('updated')
                 ->log('Melakukan perubahan data BAP');
         }
-
         return $ba;
     }
 
     /**
-     * [HELPER] Sinkronisasi Petugas
+     * Sinkronisasi Petugas
      */
     private function syncPetugas($ba, $petugasData)
     {
@@ -146,9 +147,23 @@ class BeritaAcaraService
                     'pangkat' => $petugasData['pangkat'][$i] ?? '-',
                     'jabatan' => $petugasData['jabatan'][$i] ?? '-',
                 ];
-                if (isset($petugasData['ttd'][$i]) && !empty($petugasData['ttd'][$i])) {
-                    $dataPivot['ttd'] = $petugasData['ttd'][$i];
+
+                $ttdInput = $petugasData['ttd'][$i] ?? null;
+
+                if (!empty($ttdInput) && is_string($ttdInput) && str_contains($ttdInput, 'data:image')) {
+                    try {
+                        $image = Image::make($ttdInput)
+                            ->resize(300, null, function ($c) {
+                                $c->aspectRatio();
+                                $c->upsize();
+                            })
+                            ->encode('png', 85); 
+                        $dataPivot['ttd'] = 'data:image/png;base64,' . base64_encode($image);
+                    } catch (\Exception $e) {
+                        $dataPivot['ttd'] = $ttdInput;
+                    }
                 }
+
                 $syncData[$nip] = $dataPivot;
             }
         }
@@ -169,23 +184,23 @@ class BeritaAcaraService
      */
     public function generatePdf($data, $listPetugas)
     {
-        // Logic konversi gambar ke base64 dipindah ke sini atau Helper, 
-        // tapi untuk sekarang kita simpan logic view data-nya
-
+        ini_set('memory_limit', '256M');
         $pdfData = [
             'data' => $data,
             'list_petugas' => $listPetugas,
-            'teks_tgl' => DateHelper::teksTanggal($data['tanggal']), // Pastikan key array konsisten
+            'teks_tgl' => DateHelper::teksTanggal($data['tanggal']),
             'tgl_st' => DateHelper::indoLengkap($data['tgl_surat_tugas']),
-            'logo' => $this->imgBase64('logo_bpom.png'),
-            'footer' => $this->imgBase64('border.png')
+            'logo' => $this->imgBase64('headerpdf.png'),
+            'footer' => $this->imgBase64('footerpdf.png')
         ];
-
         $pdf = Pdf::loadView('bap.pdf', $pdfData);
-        return $pdf->setPaper('A4', 'portrait')->stream('BAP_Digital.pdf');
+
+        $safeSurat = str_replace(['/', '\\'], '-', $data['no_surat_tugas']); 
+        $fileName = 'BAP-' . $safeSurat . '.pdf';
+        return $pdf->setPaper('A4', 'portrait')->stream($fileName);
     }
 
-    // Helper private untuk gambar (diambil dari controller lama)
+    // Helper private untuk gambar
     private function imgBase64($file)
     {
         $path = public_path('assets/img/' . $file);
@@ -202,32 +217,30 @@ class BeritaAcaraService
      */
     public function deleteBap($id)
     {
-        // 1. Ambil data lengkap beserta relasinya
+        // data lengkap beserta relasi
         $ba = BeritaAcara::with('petugas')->findOrFail($id);
 
-        // 2. Siapkan "Snapshot" data yang ingin dicatat di log
+        // "Snapshot" data yang ingin dicatat di log
         $logAttributes = [
             'no_surat_tugas' => $ba->no_surat_tugas,
             'tanggal_pemeriksaan' => $ba->tanggal_pemeriksaan,
             'objek_nama' => $ba->objek_nama,
-            // Gabungkan nama petugas jadi satu string
-            'petugas' => $ba->petugas->pluck('name')->implode(', '), 
+            'petugas' => $ba->petugas->pluck('name')->implode(', '),
         ];
 
-        // 3. Hapus data (Matikan log otomatis bawaan model agar tidak double/kosong)
+        // Hapus data 
         activity()->withoutLogs(function () use ($ba) {
             $ba->petugas()->detach(); // Hapus relasi pivot
             $ba->delete();            // Hapus data utama
         });
 
-        // 4. Catat Log Manual dengan detail yang sudah kita snapshot tadi
+        // Catat Log Manual
         activity()
             ->performedOn($ba)
             ->causedBy(auth()->user()) // Pelaku hapus
-            ->withProperties(['attributes' => $logAttributes]) // Masukkan detail di sini
-            ->event('deleted') // Set event sebagai 'deleted' (biar badge warna merah)
+            ->withProperties(['attributes' => $logAttributes])
+            ->event('deleted') // Set event sebagai 'deleted' 
             ->log('Menghapus Berita Acara');
-
         return true;
     }
 }

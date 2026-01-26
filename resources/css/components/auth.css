@@ -2,7 +2,6 @@ body {
     font-family: "Inter", sans-serif;
 }
 
-/* Hilangkan mata password bawaan browser */
 input[type="password"]::-ms-reveal,
 input[type="password"]::-ms-clear {
     display: none;

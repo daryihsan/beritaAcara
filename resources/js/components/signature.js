@@ -6,11 +6,9 @@ export function initSignature() {
     let signaturePad = null;
     const canvas = document.getElementById("signature-pad");
 
-    // if (!canvas) return;
-
     // Fungsi Resize Canvas
     function resizeCanvas() {
-        // 1. Jika tinggi terbaca 0 (karena modal belum full load), paksa tinggi default 200px
+        // Jika tinggi terbaca 0 (karena modal belum full load), paksa tinggi default 200px
         const width = canvas.offsetWidth > 0 ? canvas.offsetWidth : 500;
         const height = canvas.offsetHeight > 0 ? canvas.offsetHeight : 200;
 
@@ -31,8 +29,8 @@ export function initSignature() {
 
         // Kembalikan konten stroke (garis) lama jika ada
         if (signaturePad && data) {
-            signaturePad.clear(); // Bersihkan dulu
-            signaturePad.fromData(data); // Restore garis
+            signaturePad.clear(); 
+            signaturePad.fromData(data); 
         }
     }
 
@@ -41,7 +39,7 @@ export function initSignature() {
         // Paksa Tab "Draw" aktif
         $('.nav-tabs a[href="#tab-draw"]').tab("show");
 
-        // Setup Library SignaturePad (Jika belum)
+        // Setup Library SignaturePad
         if (!signaturePad) {
             signaturePad = new SignaturePad(canvas, {
                 backgroundColor: "rgb(255, 255, 255)",
@@ -53,7 +51,7 @@ export function initSignature() {
         resizeCanvas();
         window.addEventListener("resize", resizeCanvas);
 
-        // RESTORE DATA TTD DARI DATABASE
+        // Restore Data TTD dari Database
         let existingSignature = activeRow.find(".input-ttd-base64").val();
 
         // Reset Form
@@ -61,10 +59,6 @@ export function initSignature() {
         $("#image-preview-container").hide();
 
         if (existingSignature && existingSignature.length > 100) {
-            // 2. FIX KEPOTONG/ZOOM:
-            // Saat restore gambar, kita harus beri tahu ukuran 'Logis' (CSS Width/Height)
-            // Agar dia tidak digambar dobel skala (karena context sudah di-scale di resizeCanvas)
-
             // Hitung rasio layar saat ini
             const ratio = Math.max(window.devicePixelRatio || 1, 1);
 
@@ -83,7 +77,7 @@ export function initSignature() {
         }
     });
 
-    // RESIZE SAAT PINDAH TAB
+    // Resize Saat Pindah Tab
     $(document).on("shown.bs.tab", 'a[data-toggle="tab"]', function (e) {
         if ($(e.target).attr("href") === "#tab-draw") {
             resizeCanvas();
@@ -150,7 +144,6 @@ export function initSignature() {
             activeRow.find(".input-ttd-base64").val(base64String);
             activeRow.find(".img-ttd-preview").attr("src", base64String).show();
             activeRow.find(".text-placeholder").hide();
-            // formChanged = true;
             activeRow.closest('form').trigger('change');
         }
 

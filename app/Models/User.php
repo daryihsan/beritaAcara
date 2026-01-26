@@ -52,14 +52,13 @@ class User extends Authenticatable
 
     public function beritaAcaras()
     {
-        // Karena kamu pakai NIP (string) sebagai kunci di pivot, kita definisikan manual:
         return $this->belongsToMany(
             BeritaAcara::class,
-            'berita_acara_user', // nama tabel pivot
-            'user_nip',          // foreign key di tabel pivot untuk model ini
-            'berita_acara_id',   // foreign key di tabel pivot untuk model lawan
-            'nip',               // local key di tabel users
-            'id'                 // local key di tabel berita_acara
+            'berita_acara_user',          // nama tabel pivot
+            'user_nip',         // foreign key di tabel pivot untuk model ini
+            'berita_acara_id',  // foreign key di tabel pivot untuk model lawan
+            'nip',                    // local key di tabel users
+            'id'                     // local key di tabel berita_acara
         );
     }
 

@@ -1,7 +1,7 @@
 import $ from "jquery";
 
 export function initAuth() {
-    // 1. Auto Fill NIP (Login Page)
+    // Auto Fill NIP
     $("#input-nama").on("input", function () {
         var val = $(this).val();
         var list = $("#list-users option");
@@ -14,19 +14,19 @@ export function initAuth() {
             $("#input-nip")
                 .val(nip)
                 .addClass(
-                    "bg-blue-50/50 text-blue-700 font-bold border-blue-200"
+                    "bg-blue-50/50 text-blue-700 font-bold border-blue-200",
                 );
             $("#password").focus();
         } else {
             $("#input-nip")
                 .val("")
                 .removeClass(
-                    "bg-blue-50/50 text-blue-700 font-bold border-blue-200"
+                    "bg-blue-50/50 text-blue-700 font-bold border-blue-200",
                 );
         }
     });
 
-    // 2. Toggle Password
+    // Toggle Password
     $("#toggle-password").on("click", function () {
         var passwordInput = $("#password");
         var icon = $(this).find("i");

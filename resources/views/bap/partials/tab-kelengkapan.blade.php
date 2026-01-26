@@ -4,14 +4,16 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label>No. Surat Tugas</label>
-                <input type="text" name="no_surat_tugas" class="form-control" required value="{{ old('no_surat_tugas', $ba->no_surat_tugas ?? '') }}" placeholder="Contoh: ST-123/BPOM/..."
+                <input type="text" name="no_surat_tugas" class="form-control" required
+                    value="{{ old('no_surat_tugas', $ba->no_surat_tugas ?? '') }}" placeholder="Contoh: ST-123/BPOM/..."
                     required>
             </div>
         </div>
         <div class="col-md-6">
             <div class="form-group">
                 <label>Tanggal Surat Tugas</label>
-                <input type="date" name="tgl_surat_tugas" id="tgl_surat" class="form-control" required value="{{ old('tgl_surat_tugas', $ba->tgl_surat_tugas ?? '') }}">
+                <input type="date" name="tgl_surat_tugas" id="tgl_surat" class="form-control" required
+                    value="{{ old('tgl_surat_tugas', $ba->tgl_surat_tugas ?? '') }}">
             </div>
         </div>
     </div>
@@ -19,13 +21,16 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label>Hari Pemeriksaan</label>
-                <input type="text" name="hari" id="hari_periksa" class="form-control" required value="{{ old('hari', $ba->hari ?? '') }}" placeholder="Terisi setelah tanggal pemeriksaan..." readonly style="background-color: #f9fafb; cursor: not-allowed;">
+                <input type="text" name="hari" id="hari_periksa" class="form-control" required
+                    value="{{ old('hari', $ba->hari ?? '') }}" placeholder="Terisi setelah tanggal pemeriksaan..."
+                    readonly style="background-color: #f9fafb; cursor: not-allowed;">
             </div>
         </div>
         <div class="col-md-6">
             <div class="form-group">
                 <label>Tanggal Pemeriksaan (Hari H)</label>
-                <input type="date" name="tanggal" id="tgl_periksa" class="form-control" required value="{{ old('tanggal', $ba->tanggal_pemeriksaan ?? '') }}">
+                <input type="date" name="tanggal" id="tgl_periksa" class="form-control" required
+                    value="{{ old('tanggal', $ba->tanggal_pemeriksaan ?? '') }}">
             </div>
         </div>
     </div>

@@ -6,7 +6,7 @@ use App\Http\Controllers\ActivityLogController;
 
 // Auth Routes
 Route::get('/', [LoginController::class, 'show'])->middleware('guest')->name('login');
-Route::post('/login', [LoginController::class, 'login']);
+Route::post('/login', [LoginController::class, 'login'])->middleware('throttle:5,1');
 Route::post('/logout', [LoginController::class, 'logout']);
 
 // Main Routes (Protected)
@@ -31,7 +31,7 @@ Route::middleware(['auth'])->group(function () {
         // Admin Only Actions
         Route::middleware(['role:admin'])->group(function () {
             Route::delete('/{id}', [BeritaAcaraController::class, 'destroy'])->name('destroy');
-            Route::post('/assign', [BeritaAcaraController::class, 'assignPetugas'])->name('assign'); // Route baru pengganti admin controller
+            Route::post('/assign', [BeritaAcaraController::class, 'assignPetugas'])->name('assign'); 
         });
     });
     Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {

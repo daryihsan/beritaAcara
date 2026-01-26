@@ -15,5 +15,5 @@ $(document).ready(function() {
     initValidation();  // Jalan di form BAP
     initSignature();   // Jalan di form BAP (modal)
     initDatatable();   // Jalan di index BAP
-    initLoader();     // Jalan di semua halaman (global)
+    initLoader();      // Jalan di semua halaman (global)
 });

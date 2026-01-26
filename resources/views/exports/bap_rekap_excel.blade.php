@@ -1,13 +1,13 @@
 <table>
     <thead>
-        {{-- BARIS 1: JUDUL UTAMA --}}
+        <!-- JUDUL UTAMA -->
         <tr>
             <th colspan="7" style="text-align: center; font-weight: bold; font-size: 14pt;">
                 REKAPITULASI BERITA ACARA - {{ $labelHeader }}
             </th>
         </tr>
 
-        {{-- BARIS 2: INFO PETUGAS (Kondisional) --}}
+        <!-- INFO PETUGAS -->
         @if(!empty($infoPetugas))
             <tr>
                 <th colspan="7" class="no-border"
@@ -17,19 +17,16 @@
             </tr>
         @endif
 
-
-        {{-- Spasi --}}
+        <!-- Spasi -->
         <tr></tr>
 
-        {{-- BARIS 4: HEADER TABEL --}}
+        <!-- HEADER TABEL -->
         <tr>
             <th style="border: 1px solid #000000; font-weight:bold; text-align: center;">No</th>
             <th style="border: 1px solid #000000; font-weight:bold; text-align: center;">No. Surat Tugas</th>
             <th style="border: 1px solid #000000; font-weight:bold; text-align: center;">Petugas Pemeriksa</th>
             <th style="border: 1px solid #000000; font-weight:bold; text-align: center;">Tgl Pemeriksaan</th>
-            
             <th style="border: 1px solid #000000; font-weight:bold; text-align: center;">Tanggal BAP</th>
-            
             <th style="border: 1px solid #000000; font-weight:bold; text-align: center;">Objek</th>
             <th style="border: 1px solid #000000; font-weight:bold; text-align: center;">Alamat</th>
             <th style="border: 1px solid #000000; font-weight:bold; text-align: center;">Kota/Kab</th>

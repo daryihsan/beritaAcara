@@ -11,7 +11,6 @@ class LoginController extends Controller
 {
     public function show()
     {
-        // Ambil data NIP dan Nama semua user untuk autocomplete
         $users = User::select('nip', 'name')->orderBy('name')->get();
 
         return view('auth.login', compact('users'));

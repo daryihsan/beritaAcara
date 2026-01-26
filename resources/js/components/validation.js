@@ -84,7 +84,7 @@ export function initValidation() {
             return false;
         }
 
-        // Jika valid, matikan proteksi unload agar bisa submit
+        // Jika valid, matikan proteksi unload untuk submit
         window.onbeforeunload = null;
     });
 
@@ -109,12 +109,11 @@ export function initValidation() {
     $(document).on("click", "#btn-tambah-petugas", function () {
         var newRow = $("#row-0").clone();
         newRow.find("input").val("");
-        // newRow.find("textarea").val("");
-        
-        // // Reset Tanda Tangan UI
-        // newRow.find(".img-ttd-preview").attr("src", "").hide();
-        // newRow.find(".text-placeholder").show();
-        // newRow.find(".input-ttd-base64").val("");
+        newRow.find("textarea").val("");
+        // Reset Tanda Tangan UI
+        newRow.find(".img-ttd-preview").attr("src", "").hide();
+        newRow.find(".text-placeholder").show();
+        newRow.find(".input-ttd-base64").val("");
         newRow.find(".btn-hapus").removeAttr("disabled");
         $("#petugas-container").append(newRow);
     });
@@ -132,19 +131,19 @@ export function initValidation() {
         // Set atribut 'min' pada tanggal periksa
         tglPeriksa.attr("min", minDate);
 
-        // Jika user sudah terlanjur isi tanggal periksa yang salah, reset
+        // Jika user terlanjur isi tanggal periksa yang salah, reset
         if (tglPeriksa.val() && tglPeriksa.val() < minDate) {
             alert("Tanggal Pemeriksaan tidak boleh sebelum Tanggal Surat Tugas!");
-            tglPeriksa.val(""); // Kosongkan
-            $("#hari_periksa").val(""); // Kosongkan harinya juga
+            tglPeriksa.val(""); 
+            $("#hari_periksa").val(""); 
         }
     });
 
-    // Trigger saat halaman load (untuk mode Edit)
+    // Trigger saat halaman load 
     if ($("#tgl_surat").val()) {
         $("#tgl_periksa").attr("min", $("#tgl_surat").val());
     }
-    // Auto-fill Hari (Senin, Selasa, dll) saat Tanggal Periksa dipilih
+    // Auto-fill Hari saat Tanggal Periksa dipilih
     $(document).on("change", "#tgl_periksa", function () {
         var dateVal = $(this).val();
         if (dateVal) {
@@ -160,7 +159,7 @@ export function initValidation() {
             ];
             var dayName = days[date.getDay()];
 
-            $("#hari_periksa").val(dayName); // Isi otomatis ke input hari
+            $("#hari_periksa").val(dayName); 
         }
     });
 }

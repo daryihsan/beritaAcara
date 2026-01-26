@@ -9,6 +9,7 @@ services:
       - "8080:80" # Akses web lewat port 8080 di browser
     volumes:
       - .:/var/www/html # Mirroring file dari laptop ke dalam kontainer
+      - ./php-custom.ini:/usr/local/etc/php/conf.d/php-custom.ini
     depends_on:
     - bap-db
     networks:

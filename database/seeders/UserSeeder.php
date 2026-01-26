@@ -9,17 +9,16 @@ class UserSeeder extends Seeder
 {
     public function run()
     {
-        // Admin Utama (dipertahankan dari seeder asli)
+        // Admin Utama
         User::create([
             'nip' => 'admin',
             'name' => 'Administrator Utama',
-            'password' => bcrypt('tikbpomsmg'),
+            'password' => bcrypt('tikAdmiNbpomsmg'),
             'pangkat' => null,
             'jabatan' => null,
             'role' => 'admin'
         ]);
 
-        // Data dari Excel, semua sebagai role 'petugas' tanpa terkecuali
         User::create([
             'nip' => '199412192024212011',
             'name' => 'Diah Suwanti, S.T.P',

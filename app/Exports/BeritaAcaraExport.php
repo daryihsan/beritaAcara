@@ -31,7 +31,7 @@ class BeritaAcaraExport implements FromView, WithColumnWidths, WithStyles
         ]);
     }
 
-    // 2. Tentukan Lebar Kolom di Sini (Satuan Excel, bukan Pixel)
+    // Lebar Kolom Excel
     public function columnWidths(): array
     {
         return [
@@ -39,16 +39,15 @@ class BeritaAcaraExport implements FromView, WithColumnWidths, WithStyles
             'B' => 30, // No. Surat Tugas
             'C' => 40, // Petugas
             'D' => 15, // Tgl Pemeriksaan
-            'E' => 15, // [BARU] Tgl BAP
-            'F' => 35, // Objek (Sebelumnya E)
-            'G' => 40, // Alamat (Sebelumnya F)
-            'H' => 20, // Kota/Kab (Sebelumnya G)
+            'E' => 15, // Tgl BAP
+            'F' => 35, // Objek 
+            'G' => 40, // Alamat 
+            'H' => 20, // Kota/Kab 
         ];
     }
 
     public function styles(Worksheet $sheet)
     {
-        // Update range style agar mencakup sampai kolom H
         $sheet->getStyle('A:H')->getAlignment()->setWrapText(true);
         $sheet->getStyle('A:H')->getAlignment()->setVertical('top');
 
@@ -57,7 +56,6 @@ class BeritaAcaraExport implements FromView, WithColumnWidths, WithStyles
             $headerRow = 4;
         }
 
-        // Update range warna header sampai H
         $sheet->getStyle('A' . $headerRow . ':H' . $headerRow)->getFill()
             ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
             ->getStartColor()->setARGB('FFCCCCCC');

@@ -35,6 +35,7 @@ class StoreBeritaAcaraRequest extends FormRequest
             'objek_kota'        => 'required',
             'dalam_rangka'      => 'required',
             'yang_diperiksa'    => 'required',
+            'ttd'               => 'image|mimes:png,jpg|max:300',
         ];
     }
 

@@ -1,7 +1,7 @@
 const $ = window.jQuery;
 
 export function initDatatable() {
-    // Cek apakah tabel BAP ada (agar tidak error di halaman lain)
+    // Cek apakah tabel BAP ada
     if ($("#tableBap").length > 0) {
         if (window.showGlobalLoader) window.showGlobalLoader();
         $("#tableBap").DataTable({
@@ -41,7 +41,7 @@ export function initDatatable() {
                             </div>
                         </div>
                         <div class="flex flex-col items-center gap-1 mt-2">
-                            <h3 class="text-slate-800 font-bold text-base tracking-tight">Memproses Data</h3>
+                            <h3 class="text-slate-800 font-bold text-base tracking-tight">Sedang Memproses</h3>
                             <p class="text-slate-500 text-lg font-medium animate-pulse">Mohon tunggu sebentar...</p>
                         </div>
                     </div>
@@ -49,40 +49,42 @@ export function initDatatable() {
             },
 
             processing: true,
-            serverSide: true, // WAJIB untuk 16rb data
-            autoWidth: false, // Biar CSS Tailwind yang atur lebar
+            serverSide: true, 
+            autoWidth: false,
             // Request AJAX
             ajax: {
-                url: window.location.href, 
+                url: window.location.origin + window.location.pathname,
                 data: function (d) {
-                    d.tahun = $('select[name="tahun"]').val();
-                    d.filter_petugas = $('select[name="filter_petugas"]').val();
+                    const urlParams = new URLSearchParams(window.location.search);
+                    
+                    d.tahun = urlParams.get('tahun'); 
+                    d.filter_petugas = urlParams.get('filter_petugas');
                 },
-                // ANTI NYANGKUT: Fungsi ini jalan kalau request GAGAL
+                // jalan kalau request gagal
                 error: function (xhr, error, thrown) {
                     console.error("DataTables Error:", error);
                     
-                    // 1. Matikan processing indicator bawaan DataTables
+                    // Matikan processing indicator bawaan DataTables
                     $("#tableBap_processing").css("display", "none");
                     
-                    // 2. Matikan Global Loader (jika Anda pakai window.hideGlobalLoader)
+                    // Matikan Global Loader 
                     if (window.hideGlobalLoader) window.hideGlobalLoader();
 
-                    // 3. Tampilkan pesan user friendly (Opsional)
+                    // Tampilkan pesan user friendly
                     alert("Gagal memuat data. Silakan refresh halaman.");
                 }
             },
 
-            // Definisi Kolom & Style (Meniru <td class="p-5 text-left">)
+            // Definisi Kolom & Style
             columns: [
-                // Kolom Data (Pakai class 'p-5 text-left' agar pad uding sama kayak HTML asli)
+                // Kolom Data 
                 {data: 'no_surat_tugas', name: 'no_surat_tugas', className: 'p-5 text-left'},
                 {data: 'petugas_names', name: 'petugas.name', className: 'p-5 text-left', orderable: false},
                 {data: 'objek_nama', name: 'objek_nama', className: 'p-5 text-left'},
                 {data: 'tanggal_pemeriksaan', name: 'tanggal_pemeriksaan', className: 'p-5 text-left'},
                 {data: 'tanggal_bap', name: 'created_at', className: 'p-5 text-left'},
                 
-                // Kolom Aksi (Tengah & ada border kiri)
+                // Kolom Aksi
                 {data: 'action', name: 'action', className: 'p-5 text-center border-l border-slate-100', searchable: false, orderable: false}
             ],
             initComplete: function () {
@@ -90,23 +92,22 @@ export function initDatatable() {
                 if (window.hideGlobalLoader) window.hideGlobalLoader();
                 var searchInput = $('.dataTables_filter input'); // Ambil elemen input search
 
-                // 1. Matikan event bawaan DataTables (biar gak langsung loading pas ngetik)
+                // Matikan event bawaan DataTables
                 searchInput.off('.DT') 
                 
-                // 2. Buat variable Timer
+                // variable Timer
                 var typingTimer;
-                var doneTypingInterval = 1000; // Waktu tunggu 1 detik (1000ms)
+                var doneTypingInterval = 1000;
 
-                // 3. Pasang Event Listener Sendiri
+                // Pasang Event Listener 
                 searchInput.on('keyup input', function () {
                     clearTimeout(typingTimer); // Reset timer tiap user ngetik huruf baru
                     
                     var value = this.value; // Ambil teks yang diketik
                     
-                    // Mulai hitung mundur
+                    // hitung mundur
                     typingTimer = setTimeout(function () {
-                        // Kalau user berhenti ngetik selama 1 detik, BARU Search!
-                        // Cek dulu apakah nilai berubah biar ga request dobel
+                        // Kalau user berhenti ngetik selama 1 detik, lanjut search
                         if (api.search() !== value) {
                             api.search(value).draw();
                         }
@@ -114,28 +115,18 @@ export function initDatatable() {
                 });
             }
         });
-        // Event Filter
-        $('select[name="tahun"], select[name="filter_petugas"]').on('change', function() {
-            const url = new URL(window.location.href);
-            url.searchParams.set('tahun', $('select[name="tahun"]').val());
-            if ($('select[name="filter_petugas"]').length) {
-                url.searchParams.set('filter_petugas', $('select[name="filter_petugas"]').val());
-            }
-            window.history.pushState(null, '', url.toString());
-            $("#tableBap").DataTable().draw();
-        });
+
     }
 
     if ($("#tableLog").length > 0) {
         if (window.showGlobalLoader) window.showGlobalLoader();
         $("#tableLog").DataTable({
             paging: true,
-            ordering: false, // Matikan sorting default agar urutan sesuai controller (Latest)
+            ordering: false, 
             info: true,
             pagingType: "full_numbers",
             search: { smart: false },
-            
-            // GUNAKAN STRUKTUR DOM YANG SAMA DENGAN BAP AGAR CSS-NYA SAMA
+    
             dom: '<"dt-control-wrapper top"lf>rt<"dt-control-wrapper bottom"ip>',
             
             language: {
@@ -158,7 +149,7 @@ export function initDatatable() {
                             </div>
                         </div>
                         <div class="flex flex-col items-center gap-1 mt-2">
-                            <h3 class="text-slate-800 font-bold text-base tracking-tight">Memproses Data</h3>
+                            <h3 class="text-slate-800 font-bold text-base tracking-tight">Sedang Memproses</h3>
                             <p class="text-slate-500 text-lg font-medium animate-pulse">Mohon tunggu sebentar...</p>
                         </div>
                     </div>
@@ -169,7 +160,11 @@ export function initDatatable() {
             serverSide: true,
             autoWidth: false,
             ajax: { 
-                url: window.location.href,
+                url: window.location.origin + window.location.pathname,
+                data: function (d) {
+                    d.start_date = $('#filter_start').val();
+                    d.end_date = $('#filter_end').val();
+                },
                 error: function (xhr, error, thrown) {
                     console.error("Log Error:", error);
                     $("#tableLog_processing").css("display", "none");
@@ -181,35 +176,66 @@ export function initDatatable() {
                 {data: 'pelaku', name: 'causer.name', className: 'p-5 text-left'},
                 {data: 'event', name: 'event', className: 'p-5 text-left'},
                 {data: 'description', name: 'description', className: 'p-5 text-left'},
-                {data: 'detail', name: 'properties', className: 'p-5 text-left text-xs font-mono text-slate-600'}
+                {data: 'detail', name: 'properties', className: 'p-5 text-left text-lg font-mono text-slate-600'}
             ],
             initComplete: function () {
                 var api = this.api();
                 if (window.hideGlobalLoader) window.hideGlobalLoader();
                 var searchInput = $('.dataTables_filter input'); // Ambil elemen input search
 
-                // 1. Matikan event bawaan DataTables (biar gak langsung loading pas ngetik)
+                // Matikan event bawaan DataTables 
                 searchInput.off('.DT') 
                 
-                // 2. Buat variable Timer
+                // variable Timer
                 var typingTimer;
-                var doneTypingInterval = 1000; // Waktu tunggu 1 detik (1000ms)
+                var doneTypingInterval = 1000;
 
-                // 3. Pasang Event Listener Sendiri
+                // Pasang Event Listener 
                 searchInput.on('keyup input', function () {
                     clearTimeout(typingTimer); // Reset timer tiap user ngetik huruf baru
                     
                     var value = this.value; // Ambil teks yang diketik
                     
-                    // Mulai hitung mundur
+                    // hitung mundur
                     typingTimer = setTimeout(function () {
-                        // Kalau user berhenti ngetik selama 1 detik, BARU Search!
+                        // Kalau user berhenti ngetik selama 1 detik, lanjut search
                         // Cek dulu apakah nilai berubah biar ga request dobel
                         if (api.search() !== value) {
                             api.search(value).draw();
                         }
                     }, doneTypingInterval);
                 });
+            }
+        });
+        let isFiltered = false;
+
+        $('#filter_start').on('change', function() {
+            var minDate = $(this).val();
+            $('#filter_end').attr('min', minDate);
+
+            var endDate = $('#filter_end').val();
+            if (endDate && endDate < minDate) {
+                $('#filter_end').val(minDate);
+            }
+        });
+        
+        $('#btn-filter').on('click', function () {
+            var start = $('#filter_start').val();
+            var end = $('#filter_end').val();
+            if (start && end && end < start) {
+                alert("Tanggal 'Hingga' tidak boleh sebelum tanggal 'Dari'!");
+                return; 
+            }
+            isFiltered = true;
+            $("#tableLog").DataTable().ajax.reload();
+        });
+
+        $('#btn-reset').on('click', function () {
+            $('#filter_start').val('');
+            $('#filter_end').val('').removeAttr('min');
+            if (isFiltered) {
+                $("#tableLog").DataTable().ajax.reload();
+                isFiltered = false;
             }
         });
     }
