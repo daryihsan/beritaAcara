@@ -5,17 +5,12 @@
         <select name="kepala_balai_text" class="form-control" required>
             <option value="" disabled selected>-- Pilih Jabatan --</option>
 
-            <option value="Balai Besar POM di Semarang" {{ (old('kepala_balai_text', $ba->kepala_balai_text ?? '') == 'Balai Besar POM di Semarang') ? 'selected' : '' }}>
-                Kepala Balai
-            </option>
-
-            <option value="Plh. Kepala Balai" {{ (old('kepala_balai_text', $ba->kepala_balai_text ?? '') == 'Plh. Kepala Balai') ? 'selected' : '' }}>
-                Plh. Kepala Balai
-            </option>
-
-            <option value="Plt. Kepala Balai" {{ (old('kepala_balai_text', $ba->kepala_balai_text ?? '') == 'Plt. Kepala Balai') ? 'selected' : '' }}>
-                Plt. Kepala Balai
-            </option>
+            @foreach(config('bap.pejabat_penandatangan') as $value => $label)
+                <option value="{{ $value }}" 
+                    {{ (old('kepala_balai_text', $ba->kepala_balai_text ?? '') == $value) ? 'selected' : '' }}>
+                    {{ $label }}
+                </option>
+            @endforeach
         </select>
     </div>
     <hr>

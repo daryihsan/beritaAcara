@@ -13,6 +13,7 @@ use App\Helpers\DateHelper;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
+
 class BeritaAcaraController extends Controller
 {
     protected $beritaAcaraService;
@@ -40,7 +41,7 @@ class BeritaAcaraController extends Controller
                     $request->filter_petugas
                 );
                 return $this->dataTableConfig($query, $user);
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 Log::error('Gagal mengambil data BAP: ' . $e->getMessage());
 
                 return response()->json([
@@ -73,7 +74,7 @@ class BeritaAcaraController extends Controller
                 // ambil semua tahun
                 $query = $this->beritaAcaraService->getBapQuery(null, $user, $request->filter_petugas);
                 return $this->dataTableConfig($query, $user);
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 Log::error('Gagal mengambil data BAP: ' . $e->getMessage());
 
                 return response()->json([
@@ -105,7 +106,7 @@ class BeritaAcaraController extends Controller
             $ba = $this->beritaAcaraService->storeBap($dbData, $petugasData);
 
             return $this->redirectAfterSave($request->tanggal, $ba->id, 'Data Berita Acara berhasil disimpan.');
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             Log::error('Gagal menyimpan BAP Baru: ' . $e->getMessage());
 
             return back()
@@ -142,7 +143,7 @@ class BeritaAcaraController extends Controller
             $this->beritaAcaraService->updateBap($id, $dbData, $petugasData);
 
             return $this->redirectAfterSave($request->tanggal, $id, 'Perubahan berhasil disimpan!');
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             Log::error('Gagal mengupdate BAP ID ' . $id . ': ' . $e->getMessage());
 
             return back()
@@ -226,13 +227,7 @@ class BeritaAcaraController extends Controller
             ->addIndexColumn() // Kolom No (DT_RowIndex)
             ->addColumn('petugas_names', function ($row) {
                 // Render List Petugas
-                // Tidak pakai <ul> default browser, tapi pakai styling text
-                $html = '<div>';
-                foreach ($row->petugas as $p) {
-                    $html .= '<span>' . e($p->name) . '</span><br>';
-                }
-                $html .= '</div>';
-                return $html;
+                return view('bap.tablePartials.datatable-petugas', compact('row'))->render();
             })
             ->editColumn('tanggal_pemeriksaan', function ($row) {
                 return Carbon::parse($row->tanggal_pemeriksaan)->format('d M Y');
@@ -242,34 +237,7 @@ class BeritaAcaraController extends Controller
                 return Carbon::parse($tgl)->format('d M Y');
             })
             ->addColumn('action', function ($row) use ($user) {
-                // RENDER HTML TOMBOL 
-                $btn = '<div class="flex items-center justify-center gap-2">';
-
-                // Tombol PDF
-                $urlPdf = route('berita-acara.pdf', $row->id);
-                $btn .= '<a href="' . $urlPdf . '" target="_blank" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-print"></span> PDF</a>';
-
-                // Cek Hak Akses Edit
-                $isPetugas = $row->petugas->contains('nip', $user->nip);
-                if ($user->isAdmin() || $isPetugas) {
-                    $urlEdit = route('berita-acara.edit', $row->id);
-                    $btn .= ' <a href="' . $urlEdit . '" class="btn btn-warning btn-sm text-white"><span class="glyphicon glyphicon-edit"></span> Edit</a>';
-                }
-
-                // Tombol Hapus (Admin Only)
-                if ($user->isAdmin()) {
-                    $urlDelete = route('berita-acara.destroy', $row->id);
-                    $csrf = csrf_field();
-                    $method = method_field('DELETE');
-                    // Pesan konfirmasi asli Anda
-                    $btn .= '<form action="' . $urlDelete . '" method="POST" onsubmit="return confirm(\'Yakin ingin menghapus data rusak/palsu/rekayasa ini?\')" class="m-0 inline-block">
-                            ' . $csrf . ' ' . $method . '
-                            <button type="submit" class="btn btn-danger btn-sm"><span class="glyphicon glyphicon-trash"></span> Hapus</button>
-                            </form>';
-                }
-
-                $btn .= '</div>';
-                return $btn;
+                return view('bap.tablePartials.datatable-action', compact('row', 'user'))->render();
             })
             ->rawColumns(['petugas_names', 'action']) // Izinkan HTML
             ->make(true);
@@ -308,7 +276,7 @@ class BeritaAcaraController extends Controller
                 'yang_diperiksa' => $ba->yang_diperiksa,
             ];
             return $this->beritaAcaraService->generatePdf($data, $list_petugas);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             Log::error('Gagal generate PDF BAP ID ' . $id . ': ' . $e->getMessage());
             
             return response()->view('errors.custom', [
@@ -326,71 +294,10 @@ class BeritaAcaraController extends Controller
         try{
             $this->beritaAcaraService->deleteBap($id);
             return back()->with('success', 'Berita Acara berhasil dihapus.');
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             Log::error('Gagal menghapus BAP ID ' . $id . ': ' . $e->getMessage());
 
             return back()->withErrors(['system_error' => 'Gagal menghapus data. Terjadi kesalahan sistem.']);
-        }
-    }
-
-    public function exportExcel(Request $request)
-    {
-        $tahun = $request->tahun ?? date('Y');
-        $filterNip = $request->filter_petugas; // Ambil dari dropdown
-        // LOGIKA JUDUL & INFO PETUGAS
-        $judul = $tahun == 'semua'
-            ? "SEMUA DATA (TERBARU - TERLAMA)"
-            : "TAHUN " . $tahun;
-        $infoPetugas = null;
-        // Cek siapa yang request?
-        if (!auth()->user()->isAdmin()) {
-            // Kalau Petugas: Otomatis nama dia
-            $infoPetugas = "Petugas: " . auth()->user()->name;
-        } elseif ($filterNip && $filterNip !== 'semua') {
-            // Kalau Admin pilih filter: Cari nama petugas yang dipilih
-            $p = User::where('nip', $filterNip)->first();
-            if ($p)
-                $infoPetugas = "Nama Petugas: " . $p->name;
-        }
-        // Panggil Service dengan parameter baru ($filterNip)
-        $data = $this->beritaAcaraService->getBapData($tahun, auth()->user(), $filterNip);
-        $namaFile = 'Rekap_BAP_' . $judul . '.xlsx';
-        // Kirim $judul DAN $infoPetugas ke Class Export
-        return Excel::download(new BeritaAcaraExport($data, $judul, $infoPetugas), $namaFile);
-    }
-
-    public function exportPdfList(Request $request)
-    {
-        try{
-            $tahun = $request->tahun ?? date('Y');
-            $filterNip = $request->filter_petugas;
-            $judul = $tahun == 'semua' ? "SEMUA DATA" : "TAHUN " . $tahun;
-
-            $judulTab = "Rekap BAP - " . ($tahun == 'semua' ? "Semua Periode" : $tahun);
-            $namaFile = "Rekap_BAP_" . ($tahun == 'semua' ? "Semua_Periode" : $tahun) . ".pdf";
-
-            $infoPetugas = null;
-            if (!auth()->user()->isAdmin()) {
-                $infoPetugas = "Petugas: " . auth()->user()->name;
-            } elseif ($filterNip && $filterNip !== 'semua') {
-                $p = User::where('nip', $filterNip)->first();
-                if ($p)
-                    $infoPetugas = "Nama Petugas: " . $p->name;
-            }
-            $data = $this->beritaAcaraService->getBapData($tahun, auth()->user(), $filterNip);
-            $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('exports.bap_rekap_pdf', [
-                'data' => $data,
-                'labelHeader' => $judul,
-                'infoPetugas' => $infoPetugas, // Kirim ke View PDF
-                'judulTab' => $judulTab
-            ]);
-            return $pdf->setPaper('a4', 'landscape')->stream($namaFile);
-        } catch (\Exception $e) {
-            Log::error('Gagal generate PDF Rekap BAP: ' . $e->getMessage());
-
-            return response()->view('errors.custom', [
-                'message' => 'Gagal membuat PDF Rekap. Pastikan memori server cukup atau hubungi admin.'
-            ], 500);
         }
     }
 }

@@ -10,9 +10,25 @@
             <div class="petugas-row" id="row-{{ $index }}"
                 style="margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 15px;">
 
+                {{-- LOGIC DATA TTD --}}
+                @php
+                    $rawTtd = old('petugas_ttd.'.$index, optional($petugasExisting)->pivot->ttd ?? '');
+                    $imgSrc = '';
+                    
+                    if ($rawTtd) {
+                        // Jika base64 (Format Lama/Baru Gambar)
+                        if (Str::contains($rawTtd, 'data:image')) {
+                            $imgSrc = $rawTtd;
+                        } 
+                        // Jika File Path (Format Baru Storage)
+                        else {
+                            $imgSrc = asset('storage/' . $rawTtd);
+                        }
+                    }
+                @endphp
+                
                 {{-- INPUT HIDDEN TTD --}}
-                <input type="hidden" name="petugas_ttd[]" class="input-ttd-base64"
-                    value="{{ old('petugas_ttd.' . $index, optional($petugasExisting)->pivot->ttd ?? '') }}">
+                <input type="hidden" name="petugas_ttd[]" class="input-ttd-base64" value="{{ $rawTtd }}">
 
                 <div class="row">
 
@@ -68,13 +84,13 @@
                                     style="border: 1px solid #e5e7eb; height: 120px; border-radius: 6px; display: flex; align-items: center; justify-content: center; background: #fff; position: relative;">
 
                                     {{-- Gambar Preview TTD --}}
-                                    <img src="{{ old('petugas_ttd.' . $index, optional($petugasExisting)->pivot->ttd ?? '') }}"
+                                    <img src="{{ $imgSrc }}"
                                         class="img-ttd-preview"
-                                        style="max-height: 100px; max-width: 90%; {{ (old('petugas_ttd.' . $index, optional($petugasExisting)->pivot->ttd ?? '')) ? '' : 'display:none;' }}">
+                                        style="max-height: 100px; max-width: 90%; {{ empty($imgSrc) ? 'display:none;' : '' }}">
 
                                     {{-- Placeholder Text --}}
                                     <span class="text-placeholder text-gray-400 small"
-                                        style="font-size: 14px; color: #999; {{ (old('petugas_ttd.' . $index, optional($petugasExisting)->pivot->ttd ?? '')) ? 'display:none;' : '' }}">
+                                        style="font-size: 14px; color: #999; {{ !empty($imgSrc) ? 'display:none;' : '' }}">
                                         (Kosong)
                                     </span>
 

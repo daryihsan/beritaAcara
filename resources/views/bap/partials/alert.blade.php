@@ -1,4 +1,4 @@
-@if ($errors->any())
+@if ($errors->any() && !$errors->has('system_error'))
     <div class="alert alert-danger" id="formAlertGlobal">
         <strong>Perhatian!</strong>
         <ul>

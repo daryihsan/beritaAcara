@@ -55,22 +55,37 @@ export function initSignature() {
         let existingSignature = activeRow.find(".input-ttd-base64").val();
 
         // Reset Form
+        signaturePad.clear();
         $("#upload-signature").val("");
+        $("#image-preview").attr("src", "");
         $("#image-preview-container").hide();
 
-        if (existingSignature && existingSignature.length > 100) {
-            // Hitung rasio layar saat ini
-            const ratio = Math.max(window.devicePixelRatio || 1, 1);
+        if (existingSignature && existingSignature.trim() !== "") {
+            // data adalah BASE64 (Data Lama atau Baru Digambar)
+            // diawali "data:image" atau string sangat panjang tanpa spasi
+            if (existingSignature.includes("data:image")) {
+                // Hitung rasio layar saat ini
+                const ratio = Math.max(window.devicePixelRatio || 1, 1);
 
-            signaturePad.fromDataURL(existingSignature, {
-                ratio: ratio,
-                width: canvas.width / ratio, // Gunakan ukuran CSS (Logis), bukan Pixel Fisik
-                height: canvas.height / ratio,
-            });
-
-            // Set juga ke tab image
-            $("#image-preview").attr("src", existingSignature);
-            $("#image-preview-container").show();
+                signaturePad.fromDataURL(existingSignature, {
+                    ratio: ratio,
+                    width: canvas.width / ratio, // Gunakan ukuran CSS (Logis), bukan Pixel Fisik
+                    height: canvas.height / ratio,
+                });
+            } else {
+                // Pindah ke Tab Image (Karena file PNG flat tidak bisa diedit garisnya)
+                $('.nav-tabs a[href="#tab-image"]').tab("show");
+                
+                // Format URL agar bisa dibaca browser
+                // Jika belum ada prefix '/storage/', tambahkan.
+                let fullPath = existingSignature.includes('storage') 
+                               ? existingSignature 
+                               : '/storage/' + existingSignature;
+                
+                // Tampilkan di preview
+                $("#image-preview").attr("src", fullPath);
+                $("#image-preview-container").show();
+            }
         } else {
             signaturePad.clear();
             $("#image-preview").attr("src", "");

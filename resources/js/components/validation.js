@@ -107,7 +107,8 @@ export function initValidation() {
 
     // Tambah Baris Petugas
     $(document).on("click", "#btn-tambah-petugas", function () {
-        var newRow = $("#row-0").clone();
+        var newRow = $(".petugas-row").first().clone();
+        newRow.removeAttr("id");
         newRow.find("input").val("");
         newRow.find("textarea").val("");
         // Reset Tanda Tangan UI

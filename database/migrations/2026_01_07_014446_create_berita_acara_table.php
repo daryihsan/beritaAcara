@@ -12,12 +12,12 @@ return new class extends Migration {
     {
         Schema::create('berita_acara', function (Blueprint $table) {
             $table->id();
-            $table->string('no_surat_tugas')->index();
+            $table->string('no_surat_tugas');
             $table->date('tgl_surat_tugas');
             $table->date('tanggal_pemeriksaan');
             $table->string('hari');
             $table->text('kepala_balai_text')->nullable();
-            $table->string('objek_nama')->index();
+            $table->string('objek_nama');
             $table->text('objek_alamat');
             $table->string('objek_kota')->nullable();
             $table->text('dalam_rangka')->nullable();
@@ -27,6 +27,7 @@ return new class extends Migration {
             $table->timestamps();
 
             $table->index(['tanggal_pemeriksaan', 'created_at']);
+            $table->index(['no_surat_tugas', 'objek_nama', 'tanggal_pemeriksaan'], 'idx_pencarian_utama');
         });
     }
 

@@ -3,6 +3,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BeritaAcaraController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\ActivityLogController;
+use App\Http\Controllers\Export\ExcelController;
+use App\Http\Controllers\Export\PdfController;
 
 // Auth Routes
 Route::get('/', [LoginController::class, 'show'])->middleware('guest')->name('login');
@@ -20,13 +22,21 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/', [BeritaAcaraController::class, 'store'])->name('store');
         Route::get('/{id}/edit', [BeritaAcaraController::class, 'edit'])->name('edit');
         Route::put('/{id}', [BeritaAcaraController::class, 'update'])->name('update');
-        Route::get('/{id}/pdf', [BeritaAcaraController::class, 'pdf'])->name('pdf');
+
+        Route::get('/{id}/pdf', [BeritaAcaraController::class, 'pdf'])
+            ->name('pdf')
+            ->middleware('throttle:5,1'); 
 
         // Server-Side DataTables Routes
         Route::get('/datatable', [BeritaAcaraController::class, 'datatableBap'])->name('berita-acara.datatable');
 
-        Route::get('/export/excel', [BeritaAcaraController::class, 'exportExcel'])->name('export.excel');
-        Route::get('/export/pdf-list', [BeritaAcaraController::class, 'exportPdfList'])->name('export.pdflist');
+        Route::get('/export/excel', [ExcelController::class, 'exportExcel'])
+            ->name('export.excel')
+            ->middleware('throttle:5,1');
+
+        Route::get('/export/pdf-list', [PdfController::class, 'exportPdfList'])
+            ->name('export.pdflist')
+            ->middleware('throttle:5,1');
 
         // Admin Only Actions
         Route::middleware(['role:admin'])->group(function () {
