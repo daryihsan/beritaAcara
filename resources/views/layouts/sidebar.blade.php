@@ -98,9 +98,12 @@
         @endif
 
         <div class="pt-10 pb-10">
-            <form method="POST" action="/logout" data-no-loader="true">
+            {{-- PERUBAHAN 1: Tambahkan id="logout-form" --}}
+            <form id="logout-form" method="POST" action="/logout" data-no-loader="true">
                 @csrf
-                <button
+                
+                {{-- PERUBAHAN 2: Tambah type="button" dan onclick="confirmLogout(event)" --}}
+                <button type="button" onclick="confirmLogout(event)"
                     class="flex items-center gap-3 w-full px-4 py-3 rounded-lg text-gray-600 hover:bg-red-200 hover:text-red-900 hover:font-medium transition-all duration-200">
                     <span class="glyphicon glyphicon-log-out text-xl"></span>
                     <span class="text-xl text-red-400 hover:text-red-900">Keluar Aplikasi</span>
