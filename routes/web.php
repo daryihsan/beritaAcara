@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\Export\ExcelController;
 use App\Http\Controllers\Export\PdfController;
+use App\Http\Controllers\PrivateFileController;
 
 // Auth Routes
 Route::get('/', [LoginController::class, 'show'])->middleware('guest')->name('login');
@@ -49,4 +50,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/activity-log', [ActivityLogController::class, 'index'])->name('admin.activity-log');
         Route::get('/activity-log/datatable', [ActivityLogController::class, 'datatableLog'])->name('activity-log.datatable');
     });
+    // Secure Private File Access
+    Route::get('/private/signature/{filename}', [PrivateFileController::class, 'getSignature'])
+        ->name('private.signature');
 });

@@ -8,12 +8,14 @@ import { initSignature } from './components/signature';
 import { initDatatable } from './components/datatable';
 import { initUI } from './components/ui';
 import { initLoader } from './components/loader';
+import { initUnsavedHandler } from './components/unsavedHandler';
 
 $(document).ready(function() {
-    initAuth();        // Jalan di halaman login
-    initUI();          // Jalan di semua halaman (sidebar)
-    initValidation();  // Jalan di form BAP
-    initSignature();   // Jalan di form BAP (modal)
-    initDatatable();   // Jalan di index BAP
-    initLoader();      // Jalan di semua halaman (global)
+    initAuth();           // Jalan di halaman login
+    initUI();             // Jalan di semua halaman (sidebar)
+    initValidation();     // Jalan di form BAP
+    initSignature();      // Jalan di form BAP (modal)
+    initDatatable();      // Jalan di index BAP
+    initLoader();         // Jalan di semua halaman (global)
+    initUnsavedHandler(); // Jalan di semua halaman (form)
 });

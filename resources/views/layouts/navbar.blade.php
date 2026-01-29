@@ -1,4 +1,4 @@
-<header class="h-20 bg-white border-b flex justify-between items-center px-6 sticky top-0 z-30">
+<header class="h-24 bg-white border-b flex justify-between items-center px-6 sticky top-0 z-30">
     <div class="h-full flex text-l items-center font-medium gap-4">
         <button id="btn-open-sidebar"
             class="md:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100 focus:outline-none transition-colors">

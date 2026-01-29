@@ -41,8 +41,8 @@
                 {{-- Tombol Dashboard --}}
                 <a href="{{ route('dashboard') }}" 
                    class="group flex items-center justify-center gap-3 px-6 py-3.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-bold rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all duration-200 shadow-lg hover:shadow-blue-500/30 no-underline transform hover:-translate-y-0.5">
-                    <span class="glyphicon glyphicon-home text-sm"></span>
-                    <span>Ke Dashboard</span>
+                    <span class="glyphicon glyphicon-home text-sm text-white"></span>
+                    <span class="text-white">Ke Dashboard</span>
                 </a>
             </div>
         </div>

@@ -62,7 +62,6 @@ class BeritaAcaraController extends Controller
         ]);
     }
 
-
     public function adminIndex(Request $request)
     {
         if (!auth()->user()->isAdmin())
@@ -245,6 +244,7 @@ class BeritaAcaraController extends Controller
 
     public function pdf($id)
     {
+        set_time_limit(120);
         try{
             $ba = BeritaAcara::with('petugas')->findOrFail($id);
             // Proteksi Akses

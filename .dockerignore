@@ -3,3 +3,14 @@ vendor
 .git
 storage/*.key
 .env
+/public/build
+/public/hot
+/public/storage
+.github
+.idea
+.vscode
+docker-compose.yml
+Dockerfile
+README.md
+phpunit.xml
+tests

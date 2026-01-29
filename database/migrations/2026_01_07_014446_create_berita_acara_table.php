@@ -11,7 +11,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('berita_acara', function (Blueprint $table) {
-            $table->id();
+            $table->ulid('id')->primary();
             $table->string('no_surat_tugas');
             $table->date('tgl_surat_tugas');
             $table->date('tanggal_pemeriksaan');
@@ -23,8 +23,9 @@ return new class extends Migration {
             $table->text('dalam_rangka')->nullable();
             $table->text('hasil_pemeriksaan');
             $table->string('yang_diperiksa')->nullable();
-            $table->foreignId('created_by')->constrained('users')->cascadeOnDelete();
+            $table->foreignUlid('created_by')->constrained('users')->cascadeOnDelete();
             $table->timestamps();
+            $table->softDeletes();
 
             $table->index(['tanggal_pemeriksaan', 'created_at']);
             $table->index(['no_surat_tugas', 'objek_nama', 'tanggal_pemeriksaan'], 'idx_pencarian_utama');

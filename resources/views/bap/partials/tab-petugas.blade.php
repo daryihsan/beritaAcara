@@ -22,7 +22,10 @@
                         } 
                         // Jika File Path (Format Baru Storage)
                         else {
-                            $imgSrc = asset('storage/' . $rawTtd);
+                            $filename = basename($rawTtd);
+            
+                            // Panggil Route Private
+                            $imgSrc = route('private.signature', ['filename' => $filename]);
                         }
                     }
                 @endphp

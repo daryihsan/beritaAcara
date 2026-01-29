@@ -152,7 +152,7 @@
                     </div>
 
                     {{-- 2. INPUT NIP (Auto) --}}
-                    <div class="group">
+                    <div class="group mt-2">
                         <div class="flex justify-between mb-2 ml-1">
                             <label class="text-slate-700 text-xs font-bold uppercase tracking-wider text-shadow-sm">
                                 <i class="fa-solid fa-id-card text-slate-400 mr-1"></i> Nomor Induk Pegawai
@@ -169,7 +169,7 @@
                     </div>
 
                     {{-- 3. INPUT PASSWORD --}}
-                    <div class="group">
+                    <div class="group mt-2">
                         <div class="flex justify-between items-center mb-2 ml-1">
                             <label class="text-slate-700 text-xs font-bold uppercase tracking-wider text-shadow-sm">
                                 <i class="fa-solid fa-lock text-slate-400 mr-1"></i> Password
@@ -193,11 +193,13 @@
                     </div>
 
                     {{-- TOMBOL LOGIN --}}
-                    <button type="submit"
-                        class="w-full text-white bg-slate-900/90 hover:bg-slate-800 backdrop-blur-md focus:ring-4 focus:ring-slate-300/50 font-bold rounded-xl text-sm px-5 py-4 text-center shadow-lg hover:shadow-slate-900/30 transform transition active:scale-[0.98] flex items-center justify-center gap-3 group border border-white/10 mt-2">
-                        <span>Masuk Situs</span>
-                        <i class="fa-solid fa-arrow-right group-hover:translate-x-3 transition-transform"></i>
-                    </button>
+                    <div class="pt-6 mt-4">
+                        <button type="submit"
+                            class="w-full text-white bg-slate-900/90 hover:bg-slate-800 backdrop-blur-md focus:ring-4 focus:ring-slate-300/50 font-bold rounded-xl text-sm px-5 py-4 text-center shadow-lg hover:shadow-slate-900/30 transform transition active:scale-[0.98] flex items-center justify-center gap-3 group border border-white/10 mt-2">
+                            <span>Masuk Situs</span>
+                            <i class="fa-solid fa-arrow-right group-hover:translate-x-3 transition-transform"></i>
+                        </button>
+                    </div>
                 </form>
 
                 <div class="mt-10 text-center">

@@ -16,7 +16,7 @@
     </span>
 </button>
 
-<aside id="sidebar-menu" class="fixed inset-y-0 left-0 z-50 w-72 min-h-screen bg-white text-gray-700 border-r border-gray-200 shadow-2xl 
+<aside id="sidebar-menu" class="fixed inset-y-0 left-0 z-50 w-80 min-h-screen bg-white text-gray-700 border-r border-gray-200 shadow-2xl 
               transform -translate-x-full transition-transform duration-300 ease-in-out
               md:translate-x-0 md:static md:shadow-none">
 
@@ -34,7 +34,7 @@
 
             <!-- LOGO -->
             <img src="{{ asset('assets/img/SIMBAP.png') }}" alt="Logo SIMBAP"
-                class="relative z-10 w-36 h-auto object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]">
+                class="relative z-10 w-40 h-auto object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]">
         </div>
     </div>
 

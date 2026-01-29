@@ -76,7 +76,7 @@ body {
 
 /* hamburger tab */
 .sidebar-open #sidebar-float-toggle {
-    transform: translateX(18rem); 
+    transform: translateX(20rem); 
 }
 #sidebar-float-toggle .line {
     position: absolute;
