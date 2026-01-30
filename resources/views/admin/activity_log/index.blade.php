@@ -17,30 +17,31 @@
             </p>
         </div>
 
-        <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex flex-col md:flex-row items-end md:items-center gap-4 w-full md:w-auto">
-            
+        <div
+            class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex flex-col md:flex-row items-end md:items-center gap-4 w-full md:w-auto">
+
             <div class="flex items-center gap-2 w-full md:w-auto">
                 <div class="relative w-full md:w-56">
-                    <input type="date" id="filter_start"
-                        class="w-full border border-slate-300 text-slate-600 text-sm rounded-xl
-                            focus:ring-blue-500 focus:border-blue-500 p-2.5 transition-all">
+                    <input type="date" id="filter_start" class="w-full border border-slate-300 text-slate-600 text-sm rounded-xl
+                                    focus:ring-blue-500 focus:border-blue-500 p-2.5 transition-all">
                 </div>
 
                 <span class="text-slate-400 font-medium">sampai</span>
 
                 <div class="relative w-full md:w-56">
-                    <input type="date" id="filter_end"
-                        class="w-full border border-slate-300 text-slate-600 text-sm rounded-xl
-                            focus:ring-blue-500 focus:border-blue-500 p-2.5 transition-all">
+                    <input type="date" id="filter_end" class="w-full border border-slate-300 text-slate-600 text-sm rounded-xl
+                                    focus:ring-blue-500 focus:border-blue-500 p-2.5 transition-all">
                 </div>
             </div>
 
             <div class="flex gap-2 w-full md:w-auto">
-                <button id="btn-filter" class="flex-1 md:flex-none bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-5 rounded-xl transition-all transform active:scale-95 shadow-md hover:shadow-lg flex items-center justify-center gap-2">
+                <button id="btn-filter"
+                    class="flex-1 md:flex-none bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-5 rounded-xl transition-all transform active:scale-95 shadow-md hover:shadow-lg flex items-center justify-center gap-2">
                     <i class="fa-solid fa-filter text-white"></i>
                     <span class="text-white">Filter</span>
                 </button>
-                <button id="btn-reset" class="flex-1 md:flex-none bg-slate-100 hover:bg-slate-200 text-slate-600 font-semibold py-2.5 px-5 rounded-xl transition-all border border-slate-200 flex items-center justify-center gap-2">
+                <button id="btn-reset"
+                    class="flex-1 md:flex-none bg-slate-100 hover:bg-slate-200 text-slate-600 font-semibold py-2.5 px-5 rounded-xl transition-all border border-slate-200 flex items-center justify-center gap-2">
                     <i class="fa-solid fa-rotate-left"></i>
                     <span>Reset</span>
                 </button>
@@ -48,10 +49,10 @@
         </div>
     </div>
 
-    {{-- Container Utama (Sama persis dengan BAP Index) --}}
+    <!-- Container utama -->
     <div class="bg-white rounded-2xl shadow-xl border border-slate-200">
 
-        {{-- Spacer Top --}}
+        <!-- Spacer top -->
         <div class="dt-top"></div>
 
         <div class="table-scroll-x" style="overflow-x:auto; -webkit-overflow-scrolling:touch;">
@@ -76,7 +77,7 @@
             </table>
         </div>
 
-        {{-- Spacer Bottom --}}
+        <!-- Spacer bottom  -->
         <div class="dt-bottom"></div>
     </div>
 @endsection

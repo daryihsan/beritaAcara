@@ -1,5 +1,5 @@
 <script>
-    // 1. Notifikasi SUKSES (Hijau) - Dari ->with('success', ...)
+    // Notifikasi sukses (hijau)
     @if(session('success'))
         setTimeout(() => {
             Swal.fire({
@@ -13,7 +13,7 @@
         }, 500);
     @endif
 
-    // 2. Notifikasi SYSTEM ERROR (Merah) - Dari ->with('error', ...)
+    // Notifikasi system error (merah)
     // Kita tangkap session 'error' khusus, bukan $errors validasi
     @if(session('error'))
         setTimeout(() => {
@@ -26,9 +26,8 @@
             });
         }, 500);
     @endif
-    
-    // 3. (OPSIONAL) Validasi System Error dari Controller yang pakai withErrors(['system_error'])
-    // Ini buat nangkep error fatal yang kita lempar dari Controller tadi
+
+    // Validasi system error dari Controller yang pakai withErrors(['system_error'])
     @if($errors->has('system_error'))
         Swal.fire({
             title: 'Terjadi Kesalahan!',
@@ -39,58 +38,54 @@
         });
     @endif
 
-    function confirmDelete(event, formId) {
-        event.preventDefault(); 
-        event.stopPropagation();
-        
-        Swal.fire({
-            title: 'Yakin ingin menghapus?',
-            text: "Data yang dihapus tidak bisa dikembalikan!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Ya, Hapus!',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // 1. Cari Elemen Form & Loader
-                let form = document.getElementById(formId);
-                let loader = document.getElementById('global-loader');
-                let loaderCard = document.getElementById('loader-card');
+        function confirmDelete(event, formId) {
+            event.preventDefault();
+            event.stopPropagation();
 
-                // 2. Validasi Form Ada
-                if (!form) {
-                    Swal.fire('Error!', 'Form hapus tidak ditemukan (ID Salah). Hubungi Developer.', 'error');
-                    return;
+            Swal.fire({
+                title: 'Yakin ingin menghapus?',
+                text: "Data yang dihapus tidak bisa dikembalikan!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Cari elemen form & loader
+                    let form = document.getElementById(formId);
+                    let loader = document.getElementById('global-loader');
+                    let loaderCard = document.getElementById('loader-card');
+
+                    // Validasi form 
+                    if (!form) {
+                        Swal.fire('Error!', 'Form hapus tidak ditemukan (ID Salah). Hubungi Developer.', 'error');
+                        return;
+                    }
+
+                    if (loader) {
+                        loader.classList.remove('hidden');
+                        loader.classList.add('flex');
+
+                        setTimeout(() => {
+                            loader.classList.remove('opacity-0'); 
+                            if (loaderCard) loaderCard.classList.remove('scale-95'); 
+                        }, 10);
+                    }
+
+                    if (form) {
+                        setTimeout(function () {
+                            form.submit();
+                        }, 300);
+                    }
                 }
-
-                if (loader) {
-                    // 1. Hapus class 'hidden' & tambah 'flex' (Biar ada di layout dulu)
-                    loader.classList.remove('hidden');
-                    loader.classList.add('flex');
-
-                    // 2. Trik Timeout Kecil: Biar browser sadar elemennya sudah ada, baru kita fade-in
-                    setTimeout(() => {
-                        loader.classList.remove('opacity-0'); // Efek Fade In
-                        if(loaderCard) loaderCard.classList.remove('scale-95'); // Efek Pop Up
-                    }, 10);
-                }
-
-                if (form) {
-                    // 3. Jeda sedikit lebih lama (300ms) agar animasi loader kelihatan user dulu
-                    // baru form dikirim. Ini menghilangkan "Jeda Canggung".
-                    setTimeout(function() {
-                        form.submit();
-                    }, 300);
-                }
-            }
-        });
-    }
+            });
+        }
 
     function confirmLogout(event) {
         event.preventDefault();
-        
+
         Swal.fire({
             title: 'Keluar Aplikasi?',
             text: "Sesi Anda akan diakhiri.",
@@ -102,14 +97,14 @@
             cancelButtonText: 'Batal'
         }).then((result) => {
             if (result.isConfirmed) {
-                // Tampilkan Loading
+                // Tampilkan loading
                 Swal.fire({
                     title: 'Logging out...',
                     allowOutsideClick: false,
                     didOpen: () => { Swal.showLoading(); }
                 });
-                // Submit form logout (sesuaikan ID form logoutmu)
-                document.getElementById('logout-form').submit(); 
+                // Submit form logout
+                document.getElementById('logout-form').submit();
             }
         });
     }

@@ -1,7 +1,7 @@
 import "./bootstrap";
 const $ = window.jQuery;
 
-// Import Module Components
+// Import module components
 import { initAuth } from './components/auth';
 import { initValidation } from './components/validation';
 import { initSignature } from './components/signature';

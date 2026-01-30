@@ -19,7 +19,7 @@ class PdfController extends Controller
 
     public function exportPdfList(Request $request)
     {
-        try{
+        try {
             $tahun = $request->tahun ?? date('Y');
             $filterNip = $request->filter_petugas;
             $judul = $tahun == 'semua' ? "SEMUA DATA" : "TAHUN " . $tahun;
@@ -35,6 +35,7 @@ class PdfController extends Controller
                 if ($p)
                     $infoPetugas = "Nama Petugas: " . $p->name;
             }
+            
             $data = $this->beritaAcaraService->getBapData($tahun, auth()->user(), $filterNip);
             $pdf = Pdf::loadView('exports.bap_rekap_pdf', [
                 'data' => $data,

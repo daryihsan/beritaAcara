@@ -9,15 +9,14 @@ use Illuminate\Support\Str;
 class ImageService
 {
     /**
-     * Handle penyimpanan Base64 ke Storage
-     * Logic asli dari baris 944-962
+     * Handle penyimpanan Base64 ke Storage (private)
      */
     public function saveSignature($ttdInput, $nip)
     {
-        // Generate Nama File Unik (Logic asli baris 949)
+        // Generate nama file unik 
         $filename = 'signatures/' . $nip . '_' . time() . '_' . Str::random(5) . '.png';
 
-        // Resize & Encode (Logic asli baris 954-959)
+        // Resize & encode
         $image = Image::make($ttdInput)
             ->resize(300, null, function ($c) {
                 $c->aspectRatio();
@@ -27,11 +26,10 @@ class ImageService
 
         $disk = Storage::build([
             'driver' => 'local',
-            'root'   => storage_path('app/private'), // Target Kunci
+            'root' => storage_path('app/private'), // Target Kunci
         ]);
 
-        // Simpan file. Karena root sudah di 'app/private', 
-        // maka $dbFilename 'signatures/...' akan masuk ke 'app/private/signatures/...'
+        // Simpan file
         $disk->put($filename, $image);
 
         return $filename;
@@ -39,7 +37,6 @@ class ImageService
 
     /**
      * Helper untuk convert Image Path ke Base64 (Untuk PDF)
-     * Logic asli baris 1104-1114
      */
     public function imgBase64($file)
     {
@@ -48,21 +45,21 @@ class ImageService
         }
 
         $path = public_path('assets/img/' . $file);
-        
+
         if (!is_file($path)) {
             return '';
         }
 
         $type = pathinfo($path, PATHINFO_EXTENSION);
         $data = @file_get_contents($path);
-        if ($data === false) return '';
-        
+        if ($data === false)
+            return '';
+
         return 'data:image/' . $type . ';base64,' . base64_encode($data);
     }
-    
+
     /**
      * Helper proses TTD Petugas untuk PDF
-     * Logic asli baris 1060-1074
      */
     public function processTtdForPdf($ttdPath)
     {
@@ -73,10 +70,10 @@ class ImageService
         if (Str::contains($ttdPath, 'data:image')) {
             return $ttdPath; // Sudah base64
         }
-        
-        // Ubah path storage ke absolute path
+
+        // Absolute path
         $fullPath = storage_path('app/private/' . $ttdPath);
-        
+
         if (file_exists($fullPath) && is_file($fullPath)) {
             $type = pathinfo($fullPath, PATHINFO_EXTENSION);
             $imgData = @file_get_contents($fullPath);
@@ -84,7 +81,7 @@ class ImageService
                 return 'data:image/' . $type . ';base64,' . base64_encode($imgData);
             }
         }
-        
+
         return null;
     }
 }

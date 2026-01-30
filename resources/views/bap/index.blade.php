@@ -25,14 +25,14 @@
             </p>
         </div>
 
-        <!-- AREA TOMBOL & FILTER -->
+        <!-- Area tombol & filter -->
         <div class="flex flex-wrap gap-2 items-center">
 
-            <!-- FORM FILTER REKAP -->
+            <!-- Form filter rekap -->
             <form method="GET"
                 class="flex flex flex-col md:flex-row gap-2 bg-white p-2 rounded-xl shadow-lg border border-slate-200 w-full md:w-auto">
 
-                <!-- Dropdown Pilih Tahun -->
+                <!-- Dropdown pilih tahun -->
                 <select name="tahun"
                     class="form-select border-0 focus:ring-0 text-sm font-semibold text-slate-600 bg-transparent py-2 pl-3 pr-8 cursor-pointer outline-none">
                     <option value="{{ date('Y') }}" selected>Tahun Ini ({{ date('Y') }})</option>
@@ -44,7 +44,7 @@
 
                 <div class="w-px h-13 bg-slate-300 mx-1"></div>
 
-                <!-- Dropdown Petugas -->
+                <!-- Dropdown petugas -->
                 @if(auth()->user()->isAdmin())
                     <select name="filter_petugas"
                         class="form-select border-0 focus:ring-0 text-sm font-semibold text-slate-600 bg-transparent py-2 pl-3 pr-8 cursor-pointer outline-none"
@@ -57,7 +57,7 @@
                 @endif
 
                 <div class="flex gap-2 justify-center w-full md:w-auto">
-                    <!-- Tombol Excel -->
+                    <!-- Tombol excel -->
                     <button type="submit" formaction="{{ route('berita-acara.export.excel') }}"
                         style="color: #fff !important"
                         class="bg-green-500 hover:bg-green-700 px-6 py-3 rounded-xl transition-all ring-1 ring-black/5 hover:shadow-xl transition-all transform hover:-translate-y-1 font-bold no-underline flex items-center gap-2"
@@ -77,10 +77,10 @@
                 </div>
             </form>
 
-            <!-- PEMISAH -->
+            <!-- Pemisah -->
             <div class="w-px h-8 bg-slate-300 mx-1"></div>
 
-            <!-- TOMBOL TAMBAH DATA -->
+            <!-- Tombol tambah data -->
             <div class="btn-tambah-wrapper">
                 <a href="/berita-acara/create"
                     class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl shadow-lg transition-all ring-1 ring-black/5 hover:shadow-xl transition-all transform hover:-translate-y-1 font-bold no-underline flex items-center gap-2">
@@ -92,7 +92,6 @@
     </div>
 
     <div class="bg-white rounded-2xl shadow-xl border border-slate-200">
-        <!-- HORIZONTAL SCROLL CONTAINER -->
         <div class="dt-top"></div>
 
         <div class="table-scroll-x" style="overflow-x:auto; -webkit-overflow-scrolling:touch;">
@@ -124,17 +123,17 @@
 
 @endsection
 
-@push('scripts') 
+@push('scripts')
     @if(session('print_pdf_id'))
         <script>
             $(document).ready(function () {
                 // URL PDF 
                 var url = "{{ route('berita-acara.pdf', session('print_pdf_id')) }}";
 
-                // Buka di Tab Baru
+                // Buka di tab baru
                 window.open(url, '_blank');
 
-                // Tampilkan notifikasi (Toast)
+                // Tampilkan notifikasi (toast)
                 toastr.success('PDF sedang dibuka di tab baru...');
             });
         </script>

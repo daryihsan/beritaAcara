@@ -28,8 +28,6 @@ class BeritaAcara extends Model
         'yang_diperiksa'
     ];
 
-    // app/Models/BeritaAcara.php
-
     public function petugas()
     {
         return $this->belongsToMany(
@@ -51,7 +49,7 @@ class BeritaAcara extends Model
     {
         return LogOptions::defaults()
             ->logOnly(['no_surat_tugas', 'objek_nama', 'hasil_pemeriksaan', 'tanggal_pemeriksaan']) // Kolom yang dipantau
-            ->logOnlyDirty() // Hanya catat yang berubah
+            ->logOnlyDirty() // Catat yang berubah
             ->dontSubmitEmptyLogs()
             ->setDescriptionForEvent(fn(string $eventName) => "Berita Acara telah di-{$eventName}");
     }

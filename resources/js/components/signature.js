@@ -1,12 +1,12 @@
-const $ = window.jQuery; 
-import SignaturePad from 'signature_pad';
+const $ = window.jQuery;
+import SignaturePad from "signature_pad";
 
 export function initSignature() {
     let activeRow = null;
     let signaturePad = null;
     const canvas = document.getElementById("signature-pad");
 
-    // Fungsi Resize Canvas
+    // Fungsi resize canvas
     function resizeCanvas() {
         // Jika tinggi terbaca 0 (karena modal belum full load), paksa tinggi default 200px
         const width = canvas.offsetWidth > 0 ? canvas.offsetWidth : 500;
@@ -29,17 +29,17 @@ export function initSignature() {
 
         // Kembalikan konten stroke (garis) lama jika ada
         if (signaturePad && data) {
-            signaturePad.clear(); 
-            signaturePad.fromData(data); 
+            signaturePad.clear();
+            signaturePad.fromData(data);
         }
     }
 
-    // Inisialisasi Saat Modal Terbuka
+    // Inisialisasi saat modal terbuka
     $(document).on("shown.bs.modal", "#modalSignature", function () {
-        // Paksa Tab "Draw" aktif
+        // Paksa tab "Draw" aktif
         $('.nav-tabs a[href="#tab-draw"]').tab("show");
 
-        // Setup Library SignaturePad
+        // Setup library SignaturePad
         if (!signaturePad) {
             signaturePad = new SignaturePad(canvas, {
                 backgroundColor: "rgb(255, 255, 255)",
@@ -47,41 +47,41 @@ export function initSignature() {
             });
         }
 
-        // Resize Canvas
+        // Resize canvas
         resizeCanvas();
         window.addEventListener("resize", resizeCanvas);
 
-        // Restore Data TTD dari Database
+        // Restore data TTD dari database
         let existingSignature = activeRow.find(".input-ttd-base64").val();
 
-        // Reset Form
+        // Reset form
         signaturePad.clear();
         $("#upload-signature").val("");
         $("#image-preview").attr("src", "");
         $("#image-preview-container").hide();
 
         if (existingSignature && existingSignature.trim() !== "") {
-            // data adalah BASE64 (Data Lama atau Baru Digambar)
-            // diawali "data:image" atau string sangat panjang tanpa spasi
+            // Data adalah BASE64 (data lama atau baru digambar)
+            // Diawali "data:image" atau string sangat panjang
             if (existingSignature.includes("data:image")) {
                 // Hitung rasio layar saat ini
                 const ratio = Math.max(window.devicePixelRatio || 1, 1);
 
                 signaturePad.fromDataURL(existingSignature, {
                     ratio: ratio,
-                    width: canvas.width / ratio, // Gunakan ukuran CSS (Logis), bukan Pixel Fisik
+                    width: canvas.width / ratio, // Gunakan ukuran CSS (logis), bukan Pixel fisik
                     height: canvas.height / ratio,
                 });
             } else {
-                // Pindah ke Tab Image (Karena file PNG flat tidak bisa diedit garisnya)
+                // Pindah ke tab image (Karena file PNG flat tidak bisa diedit garisnya)
                 $('.nav-tabs a[href="#tab-image"]').tab("show");
-                
-                // Format URL agar bisa dibaca browser
+
+                // Format URL bisa dibaca browser
                 // Jika belum ada prefix '/storage/', tambahkan.
-                let fullPath = existingSignature.includes('storage') 
-                               ? existingSignature 
-                               : '/storage/' + existingSignature;
-                
+                let fullPath = existingSignature.includes("storage")
+                    ? existingSignature
+                    : "/storage/" + existingSignature;
+
                 // Tampilkan di preview
                 $("#image-preview").attr("src", fullPath);
                 $("#image-preview-container").show();
@@ -92,12 +92,11 @@ export function initSignature() {
         }
     });
 
-    // Resize Saat Pindah Tab
+    // Resize saat pindah tab
     $(document).on("shown.bs.tab", 'a[data-toggle="tab"]', function (e) {
         if ($(e.target).attr("href") === "#tab-draw") {
             resizeCanvas();
 
-            // Jika canvas terlihat kosong tapi ada data di database, muat ulang
             let existingSignature = activeRow.find(".input-ttd-base64").val();
             if (existingSignature && signaturePad.isEmpty()) {
                 const ratio = Math.max(window.devicePixelRatio || 1, 1);
@@ -110,18 +109,18 @@ export function initSignature() {
         }
     });
 
-    // Tombol Buka Modal
+    // Tombol buka modal
     $(document).on("click", ".btn-open-signature", function () {
         activeRow = $(this).closest(".petugas-row");
         $("#modalSignature").modal("show");
     });
 
-    // Tombol Bersihkan
+    // Tombol bersihkan
     $(document).on("click", "#clear-signature", function () {
         if (signaturePad) signaturePad.clear();
     });
 
-    // Upload Gambar
+    // Upload gambar
     $(document).on("change", "#upload-signature", function (e) {
         const file = e.target.files[0];
         if (file) {
@@ -134,7 +133,7 @@ export function initSignature() {
         }
     });
 
-    // Simpan Tanda Tangan
+    // Simpan tanda tangan
     $(document).on("click", "#save-signature", function () {
         let base64String = null;
         const activeTab = $("#modalSignature .nav-tabs .active a").attr("href");
@@ -159,7 +158,7 @@ export function initSignature() {
             activeRow.find(".input-ttd-base64").val(base64String);
             activeRow.find(".img-ttd-preview").attr("src", base64String).show();
             activeRow.find(".text-placeholder").hide();
-            activeRow.closest('form').trigger('change');
+            activeRow.closest("form").trigger("change");
         }
 
         $("#modalSignature").modal("hide");

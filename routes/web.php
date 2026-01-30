@@ -7,17 +7,17 @@ use App\Http\Controllers\Export\ExcelController;
 use App\Http\Controllers\Export\PdfController;
 use App\Http\Controllers\PrivateFileController;
 
-// Auth Routes
+// Auth routes
 Route::get('/', [LoginController::class, 'show'])->middleware('guest')->name('login');
 Route::post('/login', [LoginController::class, 'login'])->middleware('throttle:5,1');
 Route::post('/logout', [LoginController::class, 'logout']);
 
-// Main Routes (Protected)
+// Main routes (protected)
 Route::middleware(['auth'])->group(function () {
 
     Route::get('/dashboard', [BeritaAcaraController::class, 'index'])->name('dashboard');
 
-    // Grouping Berita Acara Routes
+    // Grouping berita acara routes
     Route::prefix('berita-acara')->name('berita-acara.')->group(function () {
         Route::get('/create', [BeritaAcaraController::class, 'create'])->name('create');
         Route::post('/', [BeritaAcaraController::class, 'store'])->name('store');
@@ -26,9 +26,9 @@ Route::middleware(['auth'])->group(function () {
 
         Route::get('/{id}/pdf', [BeritaAcaraController::class, 'pdf'])
             ->name('pdf')
-            ->middleware('throttle:5,1'); 
+            ->middleware('throttle:5,1');
 
-        // Server-Side DataTables Routes
+        // Server-side DataTables routes
         Route::get('/datatable', [BeritaAcaraController::class, 'datatableBap'])->name('berita-acara.datatable');
 
         Route::get('/export/excel', [ExcelController::class, 'exportExcel'])
@@ -39,10 +39,10 @@ Route::middleware(['auth'])->group(function () {
             ->name('export.pdflist')
             ->middleware('throttle:5,1');
 
-        // Admin Only Actions
+        // Admin only actions
         Route::middleware(['role:admin'])->group(function () {
             Route::delete('/{id}', [BeritaAcaraController::class, 'destroy'])->name('destroy');
-            Route::post('/assign', [BeritaAcaraController::class, 'assignPetugas'])->name('assign'); 
+            Route::post('/assign', [BeritaAcaraController::class, 'assignPetugas'])->name('assign');
         });
     });
     Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
@@ -50,7 +50,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/activity-log', [ActivityLogController::class, 'index'])->name('admin.activity-log');
         Route::get('/activity-log/datatable', [ActivityLogController::class, 'datatableLog'])->name('activity-log.datatable');
     });
-    // Secure Private File Access
+    // Secure private file access
     Route::get('/private/signature/{filename}', [PrivateFileController::class, 'getSignature'])
         ->name('private.signature');
 });

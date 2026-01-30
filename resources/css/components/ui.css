@@ -74,7 +74,7 @@ body {
     font-weight: bold;
 }
 
-/* hamburger tab */
+/* Hamburger tab */
 .sidebar-open #sidebar-float-toggle {
     transform: translateX(20rem); 
 }

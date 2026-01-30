@@ -4,7 +4,7 @@ export function initUI() {
     const sidebar = $("#sidebar-menu");
     const overlay = $("#sidebar-overlay");
     const btnOpen = $("#btn-open-sidebar");
-    const floatBtn = $("#sidebar-float-toggle"); 
+    const floatBtn = $("#sidebar-float-toggle");
 
     function openSidebar() {
         sidebar.removeClass("-translate-x-full");
@@ -22,18 +22,18 @@ export function initUI() {
         $("body").removeClass("overflow-hidden sidebar-open");
     }
 
-    // buka dari navbar
+    // Buka dari navbar
     btnOpen.on("click", function (e) {
         e.preventDefault();
         openSidebar();
     });
 
-    // tutup dari floating button
+    // Tutup dari floating button
     floatBtn.on("click", function () {
         closeSidebar();
     });
 
-    // tutup dari overlay
+    // Tutup dari overlay
     overlay.on("click", function () {
         closeSidebar();
     });
@@ -43,7 +43,7 @@ export function initUI() {
     const icon = $("#berita-acara-icon");
     const storageKey = "berita-acara-open";
 
-    // Cek keberadaan tombol 
+    // Cek keberadaan tombol
     if (toggleButton.length) {
         const currentPath = window.location.pathname;
         const currentSearch = window.location.search;
@@ -56,14 +56,14 @@ export function initUI() {
         const storedState = localStorage.getItem(storageKey);
 
         if (isSubActive || storedState === "true") {
-            //Gunakan .css() dan .prop() karena objek jQuery
+            // Gunakan .css() dan .prop() karena objek jQuery
             let scrollHeight = submenu.prop("scrollHeight");
             submenu.css("max-height", scrollHeight + "px");
             submenu.css("transition", "none");
             icon.addClass("rotate-180");
-            
-            setTimeout(() => { 
-                submenu.css("transition", "max-height 0.3s ease-in-out"); 
+
+            setTimeout(() => {
+                submenu.css("transition", "max-height 0.3s ease-in-out");
             }, 50);
         }
 
@@ -93,7 +93,7 @@ export function initUI() {
         "#formBeritaAcara input, #formBeritaAcara textarea, #formBeritaAcara select",
         function () {
             formChanged = true;
-        }
+        },
     );
 
     window.onbeforeunload = function (e) {

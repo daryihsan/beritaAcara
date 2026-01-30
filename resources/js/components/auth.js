@@ -1,7 +1,7 @@
 import $ from "jquery";
 
 export function initAuth() {
-    // Auto Fill NIP
+    // Auto fill NIP
     $("#input-nama").on("input", function () {
         var val = $(this).val();
         var list = $("#list-users option");
@@ -26,7 +26,7 @@ export function initAuth() {
         }
     });
 
-    // Toggle Password
+    // Toggle password
     $("#toggle-password").on("click", function () {
         var passwordInput = $("#password");
         var icon = $(this).find("i");

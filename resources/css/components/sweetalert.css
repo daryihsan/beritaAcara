@@ -1,52 +1,52 @@
-/* 1. Z-INDEX TERTINGGI (Agar tidak ketutup loader) */
+/* Z-index tertinggi */
 .swal2-container {
-    z-index: 2000000000 !important; /* Angka gila biar aman */
+    z-index: 2000000000 !important; 
 }
 
-/* 2. BODY POPUP LEBIH BESAR & MODERN */
+/* Body popup */
 .swal2-popup {
-    font-size: 1.4rem !important; /* Memperbesar ukuran text base */
-    width: 25em !important;       /* Memperlebar kotak alert */
-    padding: 1.8em !important;    /* Memberi ruang napas (whitespace) */
-    border-radius: 20px !important; /* Sudut membulat modern (Rounded-3xl) */
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important; /* Bayangan lembut */
+    font-size: 1.4rem !important; 
+    width: 25em !important;
+    padding: 1.8em !important; 
+    border-radius: 20px !important; 
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important; 
 }
 
-/* 3. JUDUL (TITLE) */
+/* Judul */
 .swal2-title {
-    font-size: 2.0rem !important; /* Judul lebih besar */
-    color: #1e293b !important;    /* Warna Slate-800 (Dark Grey) */
-    font-weight: 700 !important;  /* Lebih tebal (Extra Bold) */
+    font-size: 2rem !important;
+    color: #1e293b !important;
+    font-weight: 700 !important;
     margin-bottom: 0.5em !important;
 }
 
-/* 4. ISI PESAN (CONTENT) */
+/* Isi */
 .swal2-html-container {
-    font-size: 1.2rem !important; /* Teks isi lebih terbaca */
-    color: #64748b !important;    /* Warna Slate-500 (Soft Grey) */
+    font-size: 1.2rem !important; 
+    color: #64748b !important; 
     line-height: 1.2 !important;
 }
 
-/* 5. TOMBOL (BUTTONS) */
-.swal2-confirm, .swal2-cancel {
-    padding: 12px 28px !important; /* Tombol lebih gendut */
-    font-size: 1.0rem !important;
-    border-radius: 12px !important; /* Tombol rounded */
+/* Tombol */
+.swal2-confirm,
+.swal2-cancel {
+    padding: 12px 28px !important; 
+    font-size: 1rem !important;
+    border-radius: 12px !important;
     font-weight: 500 !important;
-    text-transform: none !important; /* Jangan uppercase kaku */
+    text-transform: none !important; 
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
-    margin: 0 8px !important;      /* Jarak antar tombol */
+    margin: 0 8px !important; 
     transition: all 0.2s ease !important;
 }
 
-/* Warna Tombol Custom (Opsional - biar match sama Tailwind) */
 .swal2-confirm {
     background-color: #2563eb !important; /* Blue-600 */
 }
 .swal2-confirm:hover {
     background-color: #1d4ed8 !important; /* Blue-700 */
-    transform: translateY(-2px) !important; /* Efek tombol naik */
-    box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.4) !important; /* Bayangan makin tebal */
+    transform: translateY(-2px) !important; 
+    box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.4) !important; 
 }
 
 .swal2-cancel {
@@ -58,10 +58,10 @@
     box-shadow: 0 10px 15px -3px rgba(239, 68, 68, 0.4) !important;
 }
 
-/* 6. IKON (ICONS) */
+/* Ikon */
 .swal2-icon {
-    width: 5em !important;        /* Ikon lebih besar */
+    width: 5em !important; 
     height: 5em !important;
-    border-width: 0.25em !important; /* Garis ikon lebih tebal dikit */
+    border-width: 0.25em !important;
     margin-bottom: 1.5em !important;
 }

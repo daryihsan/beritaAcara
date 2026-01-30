@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\Log;
 
 class BapException extends Exception
 {
-    // Kamu bisa menambah method report() jika ingin log khusus
     public function report()
     {
         Log::error("BAP Error: " . $this->getMessage());

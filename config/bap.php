@@ -6,7 +6,7 @@ return [
         'Plh. Kepala Balai' => 'Plh. Kepala Balai',
         'Plt. Kepala Balai' => 'Plt. Kepala Balai',
     ],
-    
-    // format tanggal default 
+
+    // Format tanggal default 
     'format_tanggal' => 'd M Y',
 ];

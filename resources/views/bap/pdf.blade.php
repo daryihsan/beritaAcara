@@ -2,38 +2,62 @@
 <html>
 
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>BAP - {{ $data['no_surat_tugas'] ?? 'Dokumen' }}</title>
     <style>
-        @page { margin: 4.5cm 2.54cm 2.54cm 2.54cm; }       
+        @page {
+            margin: 4.5cm 2.54cm 2.54cm 2.54cm;
+        }
+
         header {
-            position: fixed; top: -4.2cm;
-            left: 0cm; right: 0cm; height: 4cm;
+            position: fixed;
+            top: -4.2cm;
+            left: 0cm;
+            right: 0cm;
+            height: 4cm;
         }
+
         footer {
-            position: fixed; bottom: 2cm;
-            left: 0cm; right: -1.4cm; height: 4cm;
+            position: fixed;
+            bottom: 2cm;
+            left: 0cm;
+            right: -1.4cm;
+            height: 4cm;
         }
+
         body {
             font-family: "Times New Roman", serif;
-            font-size: 12pt; line-height: 1.5;
+            font-size: 12pt;
+            line-height: 1.5;
         }
+
         table {
-            width: 100%; border-collapse: collapse;
+            width: 100%;
+            border-collapse: collapse;
         }
+
         .kop-img {
-            width: 130%; height: auto;
+            width: 130%;
+            height: auto;
         }
+
         .judul {
-            text-align: center; font-weight: bold;
-            text-decoration: underline; font-size: 14pt;
-            margin-top: -25px; margin-bottom: 40px;
+            text-align: center;
+            font-weight: bold;
+            text-decoration: underline;
+            font-size: 14pt;
+            margin-top: -25px;
+            margin-bottom: 40px;
         }
+
         .ttd-table {
-            margin-top: 30px; width: 100%;
+            margin-top: 30px;
+            width: 100%;
         }
+
         .content {
-            width: 100%; line-height: 1;
+            width: 100%;
+            line-height: 1;
         }
     </style>
 </head>
@@ -145,21 +169,21 @@
                                     style="position: relative; vertical-align: top; padding-bottom: 6px;">
 
                                     <div style="
-                                                width: 60%; padding-left: 16px;
-                                                text-indent: -16px; line-height: 1.15;">
+                                                    width: 60%; padding-left: 16px;
+                                                    text-indent: -16px; line-height: 1.15;">
                                         {{ $i + 1 }}. {{ $p['nama'] }}
                                     </div>
 
                                     <div style="
-                                                position: absolute;
-                                                right: -40px;
-                                                top: 0;">
+                                                    position: absolute;
+                                                    right: -40px;
+                                                    top: 0;">
                                         @if(isset($p['ttd']) && !empty($p['ttd']))
                                             <img src="{{ $p['ttd'] }}" style="height: 50px; max-width: 150px;">
                                         @else
                                             <div style="
-                                                        height: 50px; width: 150px;
-                                                        border-bottom: 1px dotted #000;">
+                                                                height: 50px; width: 150px;
+                                                                border-bottom: 1px dotted #000;">
                                             </div>
                                         @endif
                                     </div>

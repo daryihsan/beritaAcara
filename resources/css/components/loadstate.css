@@ -1,4 +1,4 @@
-/* Container Utama (Overlay Full Screen) */
+/* Container utama (overlay full screen) */
 div.dataTables_processing {
     position: fixed !important;
     top: 0 !important;
@@ -23,7 +23,7 @@ div.dataTables_processing {
 div.dataTables_processing[style*="display: none"] {
     display: none !important;
 }
-/* Card Container */
+/* Card container */
 div.dataTables_processing > div {
     background-color: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);

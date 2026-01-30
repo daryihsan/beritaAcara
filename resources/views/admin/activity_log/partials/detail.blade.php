@@ -7,7 +7,7 @@
                         {{ ucwords(str_replace('_', ' ', $key)) }}:
                     </span>
                     <span class="break-all">
-                        {{Str::limit((string)$val, 150)}}
+                        {{Str::limit((string) $val, 150)}}
                     </span>
                 </div>
             @endif

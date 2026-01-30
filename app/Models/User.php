@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -55,11 +54,11 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(
             BeritaAcara::class,
-            'berita_acara_user',          // nama tabel pivot
-            'user_nip',         // foreign key di tabel pivot untuk model ini
-            'berita_acara_id',  // foreign key di tabel pivot untuk model lawan
-            'nip',                    // local key di tabel users
-            'id'                     // local key di tabel berita_acara
+            'berita_acara_user',          // Nama tabel pivot
+            'user_nip',         // Foreign key di tabel pivot untuk model ini
+            'berita_acara_id',  // Foreign key di tabel pivot untuk model lawan
+            'nip',                    // Local key di tabel users
+            'id'                     // Local key di tabel berita_acara
         );
     }
 

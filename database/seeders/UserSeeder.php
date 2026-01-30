@@ -9,7 +9,7 @@ class UserSeeder extends Seeder
 {
     public function run()
     {
-        // Admin Utama
+        // Admin utama
         User::create([
             'nip' => 'admin',
             'name' => 'Administrator Utama',

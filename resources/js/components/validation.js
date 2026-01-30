@@ -26,7 +26,7 @@ export function initValidation() {
         return isValid;
     }
 
-    // Tombol Next Tab
+    // Tombol next tab
     $(document).on("click", ".btn-next", function () {
         var currentTabId = "#" + $(this).closest(".tab-pane").attr("id");
 
@@ -34,7 +34,7 @@ export function initValidation() {
             $("#formAlert").hide();
             var nextTab = $(this).data("next");
             $('.nav-tabs a[href="' + nextTab + '"]').tab("show");
-            $('html, body').animate({ scrollTop: 0 }, 300);
+            $("html, body").animate({ scrollTop: 0 }, 300);
         } else {
             $("#formAlert").fadeIn();
             setTimeout(function () {
@@ -52,7 +52,7 @@ export function initValidation() {
         }
     });
 
-    // Validasi saat Submit Form
+    // Validasi saat submit form
     $("#formBeritaAcara").on("submit", function (e) {
         let formIsValid = true;
         let firstErrorTab = null;
@@ -88,7 +88,7 @@ export function initValidation() {
         window.onbeforeunload = null;
     });
 
-    // Auto-fill Petugas
+    // Auto-fill petugas
     $(document).on("input", ".input-nama", function () {
         var val = $(this).val();
         var row = $(this).closest(".petugas-row");
@@ -105,13 +105,13 @@ export function initValidation() {
         }
     });
 
-    // Tambah Baris Petugas
+    // Tambah baris petugas
     $(document).on("click", "#btn-tambah-petugas", function () {
         var newRow = $(".petugas-row").first().clone();
         newRow.removeAttr("id");
         newRow.find("input").val("");
         newRow.find("textarea").val("");
-        // Reset Tanda Tangan UI
+        // Reset tanda tangan UI
         newRow.find(".img-ttd-preview").attr("src", "").hide();
         newRow.find(".text-placeholder").show();
         newRow.find(".input-ttd-base64").val("");
@@ -119,12 +119,12 @@ export function initValidation() {
         $("#petugas-container").append(newRow);
     });
 
-    // Hapus Baris Petugas
+    // Hapus baris petugas
     $(document).on("click", ".btn-hapus", function () {
         $(this).closest(".petugas-row").remove();
     });
 
-    // Validasi: Tanggal Periksa tidak boleh sebelum Tanggal Surat
+    // Tanggal Periksa tidak boleh sebelum Tanggal Surat
     $(document).on("change", "#tgl_surat", function () {
         var minDate = $(this).val();
         var tglPeriksa = $("#tgl_periksa");
@@ -134,17 +134,19 @@ export function initValidation() {
 
         // Jika user terlanjur isi tanggal periksa yang salah, reset
         if (tglPeriksa.val() && tglPeriksa.val() < minDate) {
-            alert("Tanggal Pemeriksaan tidak boleh sebelum Tanggal Surat Tugas!");
-            tglPeriksa.val(""); 
-            $("#hari_periksa").val(""); 
+            alert(
+                "Tanggal Pemeriksaan tidak boleh sebelum Tanggal Surat Tugas!",
+            );
+            tglPeriksa.val("");
+            $("#hari_periksa").val("");
         }
     });
 
-    // Trigger saat halaman load 
+    // Trigger saat halaman load
     if ($("#tgl_surat").val()) {
         $("#tgl_periksa").attr("min", $("#tgl_surat").val());
     }
-    // Auto-fill Hari saat Tanggal Periksa dipilih
+    // Auto-fill hari saat Tanggal Periksa dipilih
     $(document).on("change", "#tgl_periksa", function () {
         var dateVal = $(this).val();
         if (dateVal) {
@@ -160,7 +162,7 @@ export function initValidation() {
             ];
             var dayName = days[date.getDay()];
 
-            $("#hari_periksa").val(dayName); 
+            $("#hari_periksa").val(dayName);
         }
     });
 }

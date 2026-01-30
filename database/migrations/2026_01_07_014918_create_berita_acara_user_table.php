@@ -18,7 +18,7 @@ return new class extends Migration {
             $table->foreign('user_nip')->references('nip')->on('users')->cascadeOnDelete();
             $table->string('pangkat')->nullable();
             $table->string('jabatan')->nullable();
-            $table->longText('ttd')->nullable(); 
+            $table->longText('ttd')->nullable();
 
             $table->index(['berita_acara_id', 'user_nip']);
         });

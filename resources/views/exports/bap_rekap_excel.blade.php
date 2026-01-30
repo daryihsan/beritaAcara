@@ -1,13 +1,13 @@
 <table>
     <thead>
-        <!-- JUDUL UTAMA -->
+        <!-- Judul utama -->
         <tr>
             <th colspan="7" style="text-align: center; font-weight: bold; font-size: 14pt;">
                 REKAPITULASI BERITA ACARA - {{ $labelHeader }}
             </th>
         </tr>
 
-        <!-- INFO PETUGAS -->
+        <!-- Info petugas -->
         @if(!empty($infoPetugas))
             <tr>
                 <th colspan="7" class="no-border"
@@ -17,10 +17,9 @@
             </tr>
         @endif
 
-        <!-- Spasi -->
         <tr></tr>
 
-        <!-- HEADER TABEL -->
+        <!-- Header tabel -->
         <tr>
             <th style="border: 1px solid #000000; font-weight:bold; text-align: center;">No</th>
             <th style="border: 1px solid #000000; font-weight:bold; text-align: center;">No. Surat Tugas</th>

@@ -15,7 +15,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Import Components */
+/* Import components */
 @import "./components/auth.css";
 @import "./components/ui.css";
 @import "./components/datatables.css";

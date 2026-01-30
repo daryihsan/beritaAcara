@@ -2,16 +2,16 @@
 <html>
 
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
     <title>{{ $judulTab ?? 'Rekapitulasi BAP' }}</title>
     <style>
-        /* CSS KHUSUS PDF */
         table {
             width: 100%;
             border-collapse: collapse;
             font-family: sans-serif;
         }
+
         th,
         td {
             border: 1px solid #000000;
@@ -19,13 +19,13 @@
             vertical-align: top;
             font-size: 10pt;
         }
-        /* KHUSUS HEADER KOLOM */
+
         .bg-abu {
             background-color: #d3d3d3 !important;
             font-weight: bold;
             text-align: center;
         }
-        /* KHUSUS JUDUL */
+
         .no-border {
             border: none !important;
             background-color: #ffffff !important;
@@ -36,7 +36,7 @@
 <body>
     <table>
         <thead>
-            <!-- JUDUL UTAMA -->
+            <!-- Judul utama -->
             <tr>
                 <th colspan="7" class="no-border"
                     style="text-align: center; font-weight: bold; font-size: 14pt; padding-bottom: 5px;">
@@ -44,7 +44,7 @@
                 </th>
             </tr>
 
-            <!-- INFO PETUGAS -->
+            <!-- Info petugas -->
             @if(!empty($infoPetugas))
                 <tr>
                     <th colspan="7" class="no-border"
@@ -54,7 +54,7 @@
                 </tr>
             @endif
 
-            <!-- HEADER KOLOM -->
+            <!-- Header kolom -->
             <tr>
                 <th class="bg-abu" style="width: 30px;">No</th>
                 <th class="bg-abu" style="width: 120px;">No. Surat Tugas</th>

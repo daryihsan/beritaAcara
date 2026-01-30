@@ -15,14 +15,14 @@ class PdfService
     }
 
     /**
-     * Logic asli baris 1035-1101
+     * Menggenerate PDF BAP
      */
     public function generateBapPdf($data, $listPetugas)
     {
-        // Memory Limit (Logic asli baris 1037)
+        // Memory limit
         ini_set('memory_limit', '512M');
 
-        // 1. Sanitasi (Logic asli baris 1038-1053)
+        // Sanitasi
         $fieldsToSanitize = [
             'no_surat_tugas', 'objek_nama', 'objek_alamat',
             'hasil_pemeriksaan', 'objek_kota', 'dalam_rangka', 'yang_diperiksa'
@@ -34,8 +34,7 @@ class PdfService
             }
         }
 
-        // 2. Persiapkan Petugas (Logic asli baris 1055-1077)
-        // Kita delegasikan konversi gambarnya ke ImageService biar rapi
+        // Petugas
         if (is_object($listPetugas) && method_exists($listPetugas, 'toArray')) {
             $listPetugas = $listPetugas->toArray();
         }
@@ -45,7 +44,7 @@ class PdfService
             $listPetugas[$key]['ttd'] = $this->imageService->processTtdForPdf($ttdPath);
         }
 
-        // 3. Mapping Data (Logic asli baris 1078-1087)
+        // Mapping data
         $pdfData = [
             'data' => $data,
             'list_petugas' => $listPetugas,
@@ -55,14 +54,14 @@ class PdfService
             'footer'   => $this->imageService->imgBase64('footerpdf.png')
         ];
 
-        // 4. Load View & Stream (Logic asli baris 1088-1094)
+        // Load view & stream 
         $pdf = Pdf::loadView('bap.pdf', $pdfData);
 
         $pdf->setOptions([
-            'isRemoteEnabled' => true,      // Wajib true agar bisa baca gambar base64/path
+            'isRemoteEnabled' => true,      // Bisa baca gambar base64/path
             'defaultFont' => 'sans-serif',  
             'isHtml5ParserEnabled' => true, 
-            'isFontSubsettingEnabled' => true // PENTING: Hanya load huruf yang dipakai saja ke memori
+            'isFontSubsettingEnabled' => true // Hanya load huruf yang dipakai ke memori
         ]);
         
         $safeSurat = str_replace(['/', '\\'], '-', $data['no_surat_tugas']);

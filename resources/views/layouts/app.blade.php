@@ -15,14 +15,15 @@
 <body class="bg-slate-50 font-sans antialiased text-slate-900">
     <div class="flex min-h-screen">
         <div class="flex min-h-screen w-screen overflow-hidden">
-            {{-- SIDEBAR --}}
+            <!-- Sidebar -->
             @include('layouts.sidebar')
 
-            {{-- KONTEN --}}
-            <div class="flex-1 flex flex-col min-w-0 overflow-hidden"> {{-- NAVBAR --}}
+            <!-- Konten -->
+            <div class="flex-1 flex flex-col min-w-0 overflow-hidden"> 
+                <!-- Navbar -->
                 @include('layouts.navbar')
 
-                {{-- PAGE CONTENT --}}
+                <!-- Page content -->
                 <main class="flex-1 p-8 py-4 overflow-y-auto">
                     @yield('content')
                 </main>
@@ -34,18 +35,18 @@
     <div id="global-loader"
         class="fixed inset-0 z-[999999] bg-slate-900/30 backdrop-blur-[4px] hidden items-center justify-center transition-all duration-300 opacity-0"
         style="z-index: 2147483647 !important; transition: opacity 0.3s ease-in-out;">
-        <!-- Card Container -->
+        <!-- Card container -->
         <div class="bg-white/95 backdrop-blur-xl p-8 rounded-3xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.15)] flex flex-col items-center justify-center gap-5 border border-white/50 transform scale-95 transition-transform duration-300"
             id="loader-card">
 
-            <!-- Custom Modern Spinner (Dual Ring) -->
+            <!-- Custom modern spinner -->
             <div class="relative w-24 h-24">
-                <!-- Ring Luar (Abu-abu tipis) -->
+                <!-- Ring luar (abu-abu tipis) -->
                 <div class="absolute inset-0 border-4 border-slate-100 rounded-full"></div>
-                <!-- Ring Dalam (Biru Berputar) -->
+                <!-- Ring dalam (biru berputar) -->
                 <div class="absolute inset-0 border-4 border-blue-600 rounded-full border-t-transparent animate-spin">
                 </div>
-                <!-- Icon Tengah -->
+                <!-- Icon tengah -->
                 <div class="absolute inset-0 flex items-center justify-center">
                     <span class="glyphicon glyphicon-hourglass text-blue-600/80 text-3xl animate-pulse"></span>
                 </div>

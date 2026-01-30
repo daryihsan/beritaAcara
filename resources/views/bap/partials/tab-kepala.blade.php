@@ -6,8 +6,7 @@
             <option value="" disabled selected>-- Pilih Jabatan --</option>
 
             @foreach(config('bap.pejabat_penandatangan') as $value => $label)
-                <option value="{{ $value }}" 
-                    {{ (old('kepala_balai_text', $ba->kepala_balai_text ?? '') == $value) ? 'selected' : '' }}>
+                <option value="{{ $value }}" {{ (old('kepala_balai_text', $ba->kepala_balai_text ?? '') == $value) ? 'selected' : '' }}>
                     {{ $label }}
                 </option>
             @endforeach

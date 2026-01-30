@@ -4,15 +4,11 @@ namespace App\Http\Controllers;
 use App\Models\BeritaAcara;
 use App\Models\User;
 use App\Services\BeritaAcaraService;
-use App\Exports\BeritaAcaraExport;
 use App\Http\Requests\StoreBeritaAcaraRequest;
-use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Http\Request;
-use App\Helpers\DateHelper;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
-
 
 class BeritaAcaraController extends Controller
 {
@@ -24,6 +20,9 @@ class BeritaAcaraController extends Controller
         $this->beritaAcaraService = $beritaAcaraService;
     }
 
+    /**
+     * Memproses tampilan data BAP untuk petugas 
+     */
     public function index(Request $request)
     {
         // Cek Parameter Tahun (Redirect jika kosong)
@@ -32,9 +31,9 @@ class BeritaAcaraController extends Controller
         }
         // Request Ajax (Server-Side DataTables)
         if ($request->ajax() || $request->has('draw')) {
-            try{
+            try {
                 $user = auth()->user();
-                // Ambil Query dari Service (Tanpa ->get)
+                // Ambil Query dari Servic
                 $query = $this->beritaAcaraService->getBapQuery(
                     $request->tahun,
                     $user,
@@ -43,18 +42,16 @@ class BeritaAcaraController extends Controller
                 return $this->dataTableConfig($query, $user);
             } catch (\Throwable $e) {
                 Log::error('Gagal mengambil data BAP: ' . $e->getMessage());
-
                 return response()->json([
                     'message' => 'Gagal mengambil data BAP. Silakan coba beberapa saat lagi atau hubungi admin.'
                 ], 500);
             }
         }
-
-        // Tampilan Awal (Bukan Ajax)
+        // Tampilan Awal 
         $tahun = $request->tahun ?? date('Y');
         $allPetugas = User::where('role', '!=', 'admin')->orderBy('name')->get();
 
-        // Kirim data kosong [], karena diisi otomatis oleh Ajax
+        // Kirim data kosong [], karena diisi oleh Ajax
         return view('bap.index', [
             'data' => [],
             'tahun' => $tahun,
@@ -62,15 +59,18 @@ class BeritaAcaraController extends Controller
         ]);
     }
 
+    /**
+     * Memproses tampilan data BAP untuk admin
+     */
     public function adminIndex(Request $request)
     {
         if (!auth()->user()->isAdmin())
             abort(403);
         // Logika AJAX
         if ($request->ajax() || $request->has('draw')) {
-            try{
+            try {
                 $user = auth()->user();
-                // ambil semua tahun
+                // Ambil semua tahun
                 $query = $this->beritaAcaraService->getBapQuery(null, $user, $request->filter_petugas);
                 return $this->dataTableConfig($query, $user);
             } catch (\Throwable $e) {
@@ -81,7 +81,7 @@ class BeritaAcaraController extends Controller
                 ], 500);
             }
         }
-        // Tampilan Awal Admin
+        // Tampilan awal Admin
         $allPetugas = User::where('role', '!=', 'admin')->orderBy('name')->get();
         return view('bap.index', ['data' => [], 'allPetugas' => $allPetugas]);
     }
@@ -92,16 +92,16 @@ class BeritaAcaraController extends Controller
         return view('bap.form', compact('petugas'));
     }
 
+    /**
+     * Menyimpan data BAP
+     */
     public function store(Request $request)
     {
-        try{
+        try {
             // Mapping data untuk database
             $dbData = $this->getCommonData($request);
-
             $dbData['created_by'] = auth()->id();
-
             $petugasData = $this->getPetugasData($request);
-
             $ba = $this->beritaAcaraService->storeBap($dbData, $petugasData);
 
             return $this->redirectAfterSave($request->tanggal, $ba->id, 'Data Berita Acara berhasil disimpan.');
@@ -114,31 +114,34 @@ class BeritaAcaraController extends Controller
         }
     }
 
+    /**
+     * Mengedit data BAP
+     */
     public function edit($id)
     {
         $ba = $this->beritaAcaraService->getBapById($id);
 
         // Hanya admin atau pembuat dokumen/petugas terkait yang boleh edit
         $isPetugasTerlibat = $ba->petugas->contains('nip', auth()->user()->nip);
-
         if (!auth()->user()->isAdmin() && !$isPetugasTerlibat) {
             abort(403, 'Anda tidak memiliki akses untuk mengedit dokumen ini karena nama Anda tidak tercantum sebagai petugas.');
         }
-
         $petugas = User::whereNotNull('pangkat')->whereNotNull('jabatan')->get();
 
         // Kirim variabel $ba ke view agar form terisi
         return view('bap.form', compact('petugas', 'ba'));
     }
 
+    /**
+     * Mengupdate data BAP
+     */
     public function update(Request $request, $id)
     {
-        try{
+        try {
             $dbData = $this->getCommonData($request);
             // 'created_by' tidak di update agar history pembuat tetap ada
 
             $petugasData = $this->getPetugasData($request);
-
             $this->beritaAcaraService->updateBap($id, $dbData, $petugasData);
 
             return $this->redirectAfterSave($request->tanggal, $id, 'Perubahan berhasil disimpan!');
@@ -157,18 +160,10 @@ class BeritaAcaraController extends Controller
     private function getCommonData(Request $request)
     {
         $data = $request->only([
-            'no_surat_tugas',
-            'tgl_surat_tugas',
-            'hari',
-            'objek_nama',
-            'objek_alamat',
-            'hasil_pemeriksaan',
-            'kepala_balai_text',
-            'objek_kota',
-            'dalam_rangka',
-            'yang_diperiksa'
+            'no_surat_tugas', 'tgl_surat_tugas', 'hari',
+            'objek_nama', 'objek_alamat', 'hasil_pemeriksaan',
+            'kepala_balai_text', 'objek_kota', 'dalam_rangka','yang_diperiksa'
         ]);
-
         // Override nama field tanggal
         $data['tanggal_pemeriksaan'] = $request->tanggal;
         return $data;
@@ -180,10 +175,8 @@ class BeritaAcaraController extends Controller
     private function getPetugasData(Request $request)
     {
         return [
-            'nip' => $request->petugas_nip,
-            'pangkat' => $request->petugas_pangkat,
-            'jabatan' => $request->petugas_jabatan,
-            'ttd' => $request->petugas_ttd,
+            'nip' => $request->petugas_nip, 'pangkat' => $request->petugas_pangkat,
+            'jabatan' => $request->petugas_jabatan, 'ttd' => $request->petugas_ttd,
         ];
     }
 
@@ -205,27 +198,25 @@ class BeritaAcaraController extends Controller
     {
         return DataTables::of($query)
             ->filter(function ($instance) {
-                $request = request(); 
+                $request = request();
 
                 if (!empty($request->get('search')['value'])) {
                     $keyword = $request->get('search')['value'];
-
-                    // override cara pencarian
-                    $instance->where(function($w) use ($keyword) {
+                    // Override cara pencarian
+                    $instance->where(function ($w) use ($keyword) {
                         // Cari di No Surat
                         $w->where('no_surat_tugas', 'LIKE', "%{$keyword}%")
-                          // Cari di Nama Objek
-                          ->orWhere('objek_nama', 'LIKE', "%{$keyword}%")
-                          // Cari di Nama Petugas (Relasi)
-                          ->orWhereHas('petugas', function($q) use ($keyword) {
-                              $q->where('name', 'LIKE', "%{$keyword}%");
-                          });
+                            // Cari di Nama Objek
+                            ->orWhere('objek_nama', 'LIKE', "%{$keyword}%")
+                            // Cari di Nama Petugas (relasi)
+                            ->orWhereHas('petugas', function ($q) use ($keyword) {
+                            $q->where('name', 'LIKE', "%{$keyword}%");
+                        });
                     });
                 }
             })
-            ->addIndexColumn() // Kolom No (DT_RowIndex)
+            ->addIndexColumn()
             ->addColumn('petugas_names', function ($row) {
-                // Render List Petugas
                 return view('bap.tablePartials.datatable-petugas', compact('row'))->render();
             })
             ->editColumn('tanggal_pemeriksaan', function ($row) {
@@ -242,56 +233,53 @@ class BeritaAcaraController extends Controller
             ->make(true);
     }
 
+    /**
+     * Membuat pdf untuk BAP
+     */
     public function pdf($id)
     {
         set_time_limit(120);
-        try{
+        try {
             $ba = BeritaAcara::with('petugas')->findOrFail($id);
-            // Proteksi Akses
+            // Proteksi akses
             if (!auth()->user()->isAdmin() && !$ba->petugas->contains('nip', auth()->user()->nip)) {
                 abort(403, 'Anda tidak memiliki akses ke dokumen ini.');
             }
             // Format data agar sesuai dengan struktur view PDF
             $list_petugas = $ba->petugas->map(function ($p) {
                 return [
-                    'nama' => $p->name,
-                    'pangkat' => $p->pivot->pangkat ?? '-',
-                    'jabatan' => $p->pivot->jabatan ?? '-',
-                    'nip' => $p->nip,
+                    'nama' => $p->name, 'pangkat' => $p->pivot->pangkat ?? '-',
+                    'jabatan' => $p->pivot->jabatan ?? '-', 'nip' => $p->nip,
                     'ttd' => $p->pivot->ttd ?? null,
                 ];
             });
-            // Mapping Data untuk PDF
+            // Mapping data untuk PDF
             $data = [
-                'tanggal' => $ba->tanggal_pemeriksaan,
-                'hari' => $ba->hari,
-                'no_surat_tugas' => $ba->no_surat_tugas,
-                'tgl_surat_tugas' => $ba->tgl_surat_tugas,
-                'kepala_balai_text' => $ba->kepala_balai_text,
-                'objek_nama' => $ba->objek_nama,
-                'objek_alamat' => $ba->objek_alamat,
-                'objek_kota' => $ba->objek_kota,
-                'dalam_rangka' => $ba->dalam_rangka,
-                'hasil_pemeriksaan' => $ba->hasil_pemeriksaan,
+                'tanggal' => $ba->tanggal_pemeriksaan, 'hari' => $ba->hari,
+                'no_surat_tugas' => $ba->no_surat_tugas, 'tgl_surat_tugas' => $ba->tgl_surat_tugas,
+                'kepala_balai_text' => $ba->kepala_balai_text, 'objek_nama' => $ba->objek_nama,
+                'objek_alamat' => $ba->objek_alamat, 'objek_kota' => $ba->objek_kota,
+                'dalam_rangka' => $ba->dalam_rangka, 'hasil_pemeriksaan' => $ba->hasil_pemeriksaan,
                 'yang_diperiksa' => $ba->yang_diperiksa,
             ];
             return $this->beritaAcaraService->generatePdf($data, $list_petugas);
         } catch (\Throwable $e) {
             Log::error('Gagal generate PDF BAP ID ' . $id . ': ' . $e->getMessage());
-            
+
             return response()->view('errors.custom', [
                 'message' => 'Gagal membuat PDF. Pastikan memori server cukup atau hubungi admin.'
             ], 500);
-            // Atau redirect simpel:
-            // return redirect()->route('dashboard')->withErrors(['pdf_error' => 'Gagal membuat PDF.']);
         }
     }
 
+    /**
+     * Menghapus BAP
+     */
     public function destroy($id)
     {
         if (!auth()->user()->isAdmin())
             abort(403);
-        try{
+        try {
             $this->beritaAcaraService->deleteBap($id);
             return back()->with('success', 'Berita Acara berhasil dihapus.');
         } catch (\Throwable $e) {

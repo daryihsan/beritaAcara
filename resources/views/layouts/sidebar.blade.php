@@ -23,27 +23,27 @@
     <div class="h-auto py-6 flex items-center justify-between px-6 mb-2">
         <div
             class="flex items-center justify-center w-full p-5 rounded-xl bg-gradient-to-br from-[#0b1a33] via-[#102a4e] to-[#020617] border border-blue-500/20 shadow-lg relative overflow-hidden group">
-            <!-- Hiasan Glow Biru -->
+            <!-- Hiasan glow biru -->
             <div
                 class="absolute -top-10 -right-10 w-24 h-24 bg-blue-600/20 blur-[40px] rounded-full pointer-events-none">
             </div>
-            <!-- Hiasan Glow Ungu -->
+            <!-- Hiasan glow ungu -->
             <div
                 class="absolute -bottom-10 -left-10 w-24 h-24 bg-indigo-600/20 blur-[40px] rounded-full pointer-events-none">
             </div>
 
-            <!-- LOGO -->
+            <!-- Logo -->
             <img src="{{ asset('assets/img/SIMBAP.png') }}" alt="Logo SIMBAP"
                 class="relative z-10 w-40 h-auto object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]">
         </div>
     </div>
 
-    <!-- DIVIDER -->
+    <!-- Divider -->
     <div class="px-6 mb-2">
         <div class="h-[1px] w-full bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
     </div>
 
-    <!-- MENU NAVIGASI -->
+    <!-- Menu navigasi -->
     <nav class="px-4 py-2 space-y-2 text-base overflow-y-auto h-[calc(100vh-150px)]">
 
         <a href="/dashboard" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 no-underline
@@ -92,17 +92,14 @@
 
             <a href="{{ route('admin.activity-log') }}"
                 class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 no-underline {{ request()->is('admin/activity-log*') ? 'bg-amber-50 border-l-4 border-amber-500 font-semibold text-amber-700' : 'text-gray-700 hover:!bg-amber-200 hover:!text-amber-900 hover:font-medium hover:no-underline' }}">
-                <span class="glyphicon glyphicon-eye-open text-xl"></span> {{-- Ikon Mata/Jejak --}}
+                <span class="glyphicon glyphicon-eye-open text-xl"></span> <!-- Ikon Mata/Jejak -->
                 <span class="text-xl">Log Aktivitas</span>
             </a>
         @endif
 
         <div class="pt-10 pb-10">
-            {{-- PERUBAHAN 1: Tambahkan id="logout-form" --}}
             <form id="logout-form" method="POST" action="/logout" data-no-loader="true">
                 @csrf
-                
-                {{-- PERUBAHAN 2: Tambah type="button" dan onclick="confirmLogout(event)" --}}
                 <button type="button" onclick="confirmLogout(event)"
                     class="flex items-center gap-3 w-full px-4 py-3 rounded-lg text-gray-600 hover:bg-red-200 hover:text-red-900 hover:font-medium transition-all duration-200">
                     <span class="glyphicon glyphicon-log-out text-xl"></span>

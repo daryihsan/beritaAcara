@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 
 class PrivateFileController extends Controller
@@ -12,21 +11,19 @@ class PrivateFileController extends Controller
      */
     public function getSignature($filename)
     {
-        // 1. Pastikan User Login (Double check selain middleware)
+        // Pastikan User login (Double check selain middleware)
         if (!Auth::check()) {
             abort(403, 'Unauthorized action.');
         }
 
-        // 2. Cek File di Disk Local (Private)
+        // 2. Cek file di disk local (private)
         $path = storage_path('app/private/signatures/' . $filename);
 
-        // dd($path);
-
         if (!file_exists($path)) {
-            abort(404); // File tidak ketemu
+            abort(404); // File tidak ada
         }
 
-        // 3. Return File
+        // Return file
         return response()->file($path);
     }
 }

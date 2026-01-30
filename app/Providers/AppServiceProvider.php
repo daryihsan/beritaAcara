@@ -22,7 +22,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Tanggal Carbon otomatis bahasa Indonesia (Senin, 20 Januari...)
+        // Tanggal Carbon otomatis (Senin, 20 Januari...)
         config(['app.locale' => 'id']);
         Carbon::setLocale('id');
         date_default_timezone_set('Asia/Jakarta');

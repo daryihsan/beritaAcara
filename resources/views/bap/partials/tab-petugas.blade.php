@@ -10,36 +10,35 @@
             <div class="petugas-row" id="row-{{ $index }}"
                 style="margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 15px;">
 
-                {{-- LOGIC DATA TTD --}}
+                <!-- Data ttd -->
                 @php
-                    $rawTtd = old('petugas_ttd.'.$index, optional($petugasExisting)->pivot->ttd ?? '');
+                    $rawTtd = old('petugas_ttd.' . $index, optional($petugasExisting)->pivot->ttd ?? '');
                     $imgSrc = '';
-                    
+
                     if ($rawTtd) {
-                        // Jika base64 (Format Lama/Baru Gambar)
+                        // Jika base64 (format lama/baru gambar)
                         if (Str::contains($rawTtd, 'data:image')) {
                             $imgSrc = $rawTtd;
-                        } 
-                        // Jika File Path (Format Baru Storage)
+                        }
+                        // Jika file path (format storage)
                         else {
                             $filename = basename($rawTtd);
-            
-                            // Panggil Route Private
+
+                            // Panggil route private
                             $imgSrc = route('private.signature', ['filename' => $filename]);
                         }
                     }
                 @endphp
-                
-                {{-- INPUT HIDDEN TTD --}}
+
+                <!-- Input hidden TTD -->
                 <input type="hidden" name="petugas_ttd[]" class="input-ttd-base64" value="{{ $rawTtd }}">
 
                 <div class="row">
 
-                    {{-- BAGIAN 1: DATA DIRI (KIRI) --}}
-                    {{-- Added col-xs-12 to stretch full width on mobile --}}
+                    <!-- Data Diri -->
                     <div class="col-md-7 col-xs-12" style="margin-bottom: 15px;">
 
-                        {{-- Baris Atas: Nama & NIP --}}
+                        <!-- Nama & NIP -->
                         <div class="row">
                             <div class="col-md-8 col-xs-12" style="margin-bottom: 10px;">
                                 <label class="text">Nama Petugas</label>
@@ -56,7 +55,7 @@
                             </div>
                         </div>
 
-                        {{-- Baris Bawah: Jabatan & Pangkat --}}
+                        <!-- Jabatan & Pangkat -->
                         <div class="row">
                             <div class="col-md-8 col-xs-12" style="margin-bottom: 10px;">
                                 <label class="text">Jabatan</label>
@@ -73,31 +72,28 @@
                         </div>
                     </div>
 
-                    {{-- BAGIAN 2 & 3: TANDA TANGAN & HAPUS (MERGED RIGHT COLUMN) --}}
-                    {{-- Merged col-md-4 and col-md-1 into col-md-5. Used Flexbox for layout. --}}
+                    <!-- Tanda Tangan & Hapus -->
                     <div class="col-md-5 col-xs-12">
                         <div style="display: flex; gap: 10px; align-items: flex-end;">
 
-                            {{-- Container Tanda Tangan --}}
+                            <!-- Container tanda tangan -->
                             <div style="flex-grow: 1;">
                                 <label class="text" style="display:block; text-align:center;">Tanda Tangan</label>
 
-                                {{-- Increased height to 120px for larger pad --}}
                                 <div class="ttd-preview-area"
                                     style="border: 1px solid #e5e7eb; height: 120px; border-radius: 6px; display: flex; align-items: center; justify-content: center; background: #fff; position: relative;">
 
-                                    {{-- Gambar Preview TTD --}}
-                                    <img src="{{ $imgSrc }}"
-                                        class="img-ttd-preview"
+                                    <!-- Gambar preview TTD -->
+                                    <img src="{{ $imgSrc }}" class="img-ttd-preview"
                                         style="max-height: 100px; max-width: 90%; {{ empty($imgSrc) ? 'display:none;' : '' }}">
 
-                                    {{-- Placeholder Text --}}
+                                    <!-- Placeholder text -->
                                     <span class="text-placeholder text-gray-400 small"
                                         style="font-size: 14px; color: #999; {{ !empty($imgSrc) ? 'display:none;' : '' }}">
                                         (Kosong)
                                     </span>
 
-                                    {{-- TOMBOL PEN --}}
+                                    <!-- Tombol pen -->
                                     @php
                                         $user = auth()->user();
                                         $isMyRow = (optional($petugasExisting)->nip == $user->nip);
@@ -118,7 +114,7 @@
                                 @endif
                             </div>
 
-                            {{-- Tombol Hapus (Now integrated flex-end) --}}
+                            <!-- Tombol hapus -->
                             <div>
                                 <button type="button" class="btn btn-danger btn-sm btn-hapus"
                                     style="height: 120px; width: 40px;" {{ $loop->count <= 1 ? 'disabled' : '' }}
@@ -129,12 +125,12 @@
                         </div>
                     </div>
 
-                </div> {{-- End Row --}}
+                </div>
             </div>
         @endforeach
     </div>
 
-    {{-- DATALIST --}}
+    <!-- Datalist -->
     <datalist id="list-petugas">
         @foreach($petugas as $p)
             <option value="{{ $p->name }}" data-nip="{{ $p->nip }}" data-pangkat="{{ $p->pangkat }}"
@@ -143,7 +139,6 @@
     </datalist>
 
     <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
-        {{-- Changed to btn-sm for smaller size --}}
         <div style="padding-top: 20px;">
             <button type="button" class="btn btn-success btn-sm" id="btn-tambah-petugas">
                 <span class="glyphicon glyphicon-plus"></span> Tambah Petugas
@@ -156,7 +151,7 @@
     </div>
 </div>
 
-{{-- MODAL DI LUAR (PUSH STACK) --}}
+<!-- Modal di luar -->
 @push('modals')
     <div class="modal fade" id="modalSignature" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">

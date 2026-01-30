@@ -27,26 +27,22 @@ class BeritaAcaraService
     public function getBapQuery($tahun, $user, $filterNip = null)
     {
         $query = BeritaAcara::with([
-            'petugas' => function ($q) {
-                $q->select('users.nip', 'users.name'); 
-            },
-            'pembuat' => function ($q) {
-                $q->select('id', 'name', 'nip');
-            }
+            'petugas' => function ($q) { $q->select('users.nip', 'users.name'); },
+            'pembuat' => function ($q) { $q->select('id', 'name', 'nip'); }
         ])
         ->select('berita_acara.*');
 
-        // Filter Tahun
+        // Filter tahun
         if ($tahun && $tahun !== 'semua') {
             $query->whereYear('tanggal_pemeriksaan', $tahun);
         }
 
-        // Filter Hak Akses (Jika bukan admin, hanya lihat yang ditugaskan)
+        // Filter hak akses (Jika bukan admin, hanya lihat yang ditugaskan)
         if (!$user->isAdmin()) {
             $query->whereHas('petugas', fn($q) =>
                 $q->where('users.nip', $user->nip));
         } elseif ($filterNip && $filterNip !== 'semua') {
-            // Jika Admin DAN memilih filter NIP tertentu
+            // Jika admin DAN memilih filter NIP tertentu
             $query->whereHas('petugas', fn($q) =>
                 $q->where('users.nip', $filterNip));
         }
@@ -80,10 +76,9 @@ class BeritaAcaraService
         return DB::transaction(function () use ($data, $petugasData) {
             try{
                 $ba = activity()->withoutLogs(function () use ($data, $petugasData) {
-                    // Buat Data Utama
+                    // Buat data utama
                     $newInstance = BeritaAcara::create($data);
-
-                    // Sync Petugas
+                    // Sync petugas
                     $this->syncPetugas($newInstance, $petugasData);
                     return $newInstance;
                 });
@@ -102,15 +97,14 @@ class BeritaAcaraService
     public function updateBap($id, array $data, array $petugasData)
     {
         $ba = BeritaAcara::findOrFail($id);
-        // data lama 
+        // Data lama 
         $oldData = $ba->only(array_keys($data));
         $oldPetugas = $ba->petugas->pluck('name')->toArray();
 
         return DB::transaction(function () use ($id, $ba, $data, $petugasData, $oldData, $oldPetugas) {
             try{
-                // Lakukan Update tanpa Log Otomatis
                 activity()->withoutLogs(function () use ($ba, $data, $petugasData) {
-                    // Update Data Utama
+                    // Update data utama
                     $ba->update($data);
                     $this->syncPetugas($ba, $petugasData);
                 });
@@ -124,13 +118,13 @@ class BeritaAcaraService
     }
 
     /**
-     * Hapus Data dengan Log Detail (Snapshot sebelum hapus)
+     * Hapus data dengan log detail (Snapshot sebelum hapus)
      */
     public function deleteBap($id)
     {
         return DB::transaction(function() use ($id) {
             try{
-                // data lengkap beserta relasi
+                // Data lengkap beserta relasi
                 $ba = BeritaAcara::with('petugas')->findOrFail($id);
 
                 $this->logDeteletion($ba);
@@ -167,10 +161,7 @@ class BeritaAcaraService
      */
     private function syncPetugas($ba, $petugasData)
     {
-        if (!isset($petugasData['nip']) || !is_array($petugasData['nip'])) {
-            // Jika kosong/null, jangan lakukan apapun
-            return;
-        }
+        if (!isset($petugasData['nip']) || !is_array($petugasData['nip'])) { return; }
         $syncData = [];
         foreach ($petugasData['nip'] as $i => $nip) {
             if ($nip) {
@@ -196,13 +187,13 @@ class BeritaAcaraService
                         // Jika NIP di nama file BEDA dengan NIP petugas baris ini
                         if ($nipDiFile !== $nip) {
                             Log::warning("Mencegah duplikat TTD! NIP Petugas ($nip) beda dengan NIP File ($nipDiFile)");
-                            // Kosongkan TTD (Lebih aman daripada salah orang)
+                            // Kosongkan TTD 
                             $dataPivot['ttd'] = null; 
                         } else {
                             $dataPivot['ttd'] = $ttdInput;
                         }
                     } else {
-                        // Jika format file tidak mengandung NIP (file legacy/lama), biarkan saja
+                        // Jika format file tidak mengandung NIP (file legacy), biarkan
                         $dataPivot['ttd'] = $ttdInput;
                     }
                 }
@@ -213,13 +204,11 @@ class BeritaAcaraService
     }
 
     /**
-     * log Creation Helper
+     * Log creation helper
      */
     private function logCreation($ba, $data)
     {
-        // Data untuk Log Lengkap
-        // Refresh agar relasi petugas termuat dengan benar
-        $ba->refresh();
+        $ba->refresh(); // Refresh agar relasi petugas termuat dengan benar
         // Ambil semua atribut data utama yang baru dibuat
         $logAttributes = $ba->only(array_keys($data));
         // Ambil nama-nama petugas
@@ -235,15 +224,14 @@ class BeritaAcaraService
     }
 
     /**
-     * log Update Helper
+     * Log update helper
      */
     private function logUpdate($ba, $data, $oldData, $oldPetugas)
     {
-        // Ambil Data setelah update
         $ba->refresh(); // Refresh agar relasi petugas terupdate
         $newData = $ba->only(array_keys($data));
         $newPetugas = $ba->petugas->pluck('name')->toArray();
-        // Bandingkan Manual & Buat satu log gabungan
+        // Bandingkan manual & buat satu log gabungan
         $changes = [];
         // Cek perubahan data utama
         foreach ($newData as $key => $value) {
@@ -267,7 +255,7 @@ class BeritaAcaraService
     }
 
     /**
-     * log Deletion Helper
+     * Log deletion helper
      */
     private function logDeteletion($ba)
     {
@@ -278,7 +266,7 @@ class BeritaAcaraService
             'objek_nama' => $ba->objek_nama,
             'petugas' => $ba->petugas->pluck('name')->implode(', '),
         ];
-        // Catat Log Manual
+        // Catat log manual
         activity()
             ->performedOn($ba)
             ->causedBy(auth()->user()) // Pelaku hapus
