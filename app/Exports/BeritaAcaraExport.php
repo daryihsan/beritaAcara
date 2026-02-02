@@ -30,7 +30,7 @@ class BeritaAcaraExport implements FromView, WithColumnWidths, WithStyles
         ]);
     }
 
-    // Lebar Kolom Excel
+    // Lebar kolom excel
     public function columnWidths(): array
     {
         return [

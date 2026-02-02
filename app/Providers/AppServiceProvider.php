@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Gate;
 use Carbon\Carbon;
 
 class AppServiceProvider extends ServiceProvider
@@ -29,6 +30,12 @@ class AppServiceProvider extends ServiceProvider
 
         // Mencegah error key too long pada MySQL versi lama
         Schema::defaultStringLength(191);
+
+        // Regist policy
+        Gate::policy(
+            \App\Models\BeritaAcara::class, 
+            \App\Policies\BeritaAcaraPolicy::class
+        );
 
         // Mode Strict (Local environment)
         Model::shouldBeStrict(!app()->isProduction());

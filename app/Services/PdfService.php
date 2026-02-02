@@ -50,8 +50,8 @@ class PdfService
             'list_petugas' => $listPetugas,
             'teks_tgl' => DateHelper::teksTanggal($data['tanggal']),
             'tgl_st'   => DateHelper::indoLengkap($data['tgl_surat_tugas']),
-            'logo'     => $this->imageService->imgBase64('headerpdf.png'),
-            'footer'   => $this->imageService->imgBase64('footerpdf.png')
+            'logo'     => $this->imageService->imgPath('headerpdf.png'),
+            'footer'   => $this->imageService->imgPath('footerpdf.png')
         ];
 
         // Load view & stream 
@@ -59,6 +59,10 @@ class PdfService
 
         $pdf->setOptions([
             'isRemoteEnabled' => true,      // Bisa baca gambar base64/path
+            'chroot' => [ // Izinkan DomPDF akses folder ini
+                public_path(), 
+                storage_path('app/private')
+            ],
             'defaultFont' => 'sans-serif',  
             'isHtml5ParserEnabled' => true, 
             'isFontSubsettingEnabled' => true // Hanya load huruf yang dipakai ke memori

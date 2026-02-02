@@ -2,12 +2,15 @@
 
 namespace App\Services;
 
+use App\Models\User;
+use App\DataTransferObjects\BapDto;
+use App\DataTransferObjects\PetugasDto;
 use App\Models\BeritaAcara;
 use App\Exceptions\BapException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-use App\Services\ImageService; 
+use App\Services\ImageService;
 use App\Services\PdfService;
 
 class BeritaAcaraService
@@ -27,10 +30,12 @@ class BeritaAcaraService
     public function getBapQuery($tahun, $user, $filterNip = null)
     {
         $query = BeritaAcara::with([
-            'petugas' => function ($q) { $q->select('users.nip', 'users.name'); },
-            'pembuat' => function ($q) { $q->select('id', 'name', 'nip'); }
+            'petugas' => function ($q) {
+                $q->select('users.nip', 'users.name'); },
+            'pembuat' => function ($q) {
+                $q->select('id', 'name', 'nip'); }
         ])
-        ->select('berita_acara.*');
+            ->select('berita_acara.*');
 
         // Filter tahun
         if ($tahun && $tahun !== 'semua') {
@@ -59,7 +64,7 @@ class BeritaAcaraService
             ->orderBy('created_at', 'desc')
             ->get();
     }
-        
+
     /**
      * Ambil data BAP beserta relasi petugas berdasarkan ID
      */
@@ -71,50 +76,52 @@ class BeritaAcaraService
     /**
      * Simpan data BAP baru beserta relasi petugas dengan log baru
      */
-    public function storeBap(array $data, array $petugasData)
+    public function storeBap(BapDto $bapDto)
     {
-        return DB::transaction(function () use ($data, $petugasData) {
-            try{
-                $ba = activity()->withoutLogs(function () use ($data, $petugasData) {
+        return DB::transaction(function () use ($bapDto) {
+            try {
+                $ba = activity()->withoutLogs(function () use ($bapDto) {
                     // Buat data utama
-                    $newInstance = BeritaAcara::create($data);
+                    $newInstance = BeritaAcara::create($bapDto->toArray());
                     // Sync petugas
-                    $this->syncPetugas($newInstance, $petugasData);
+                    $this->syncPetugas($newInstance, $bapDto->listPetugas);
                     return $newInstance;
                 });
-                $this->logCreation($ba, $data);
+                $this->logCreation($ba, $bapDto->toArray());
                 return $ba;
             } catch (\Throwable $e) {
                 Log::error("CRITICAL ERROR Store BAP: " . $e->getMessage() . " | Line: " . $e->getLine());
                 throw new BapException("Gagal menyimpan Berita Acara : " . $e->getMessage() . "Silakan coba lagi.");
-            }                
+            }
         });
     }
 
     /**
      * Perbarui data BAP beserta relasi petugas dengan log detail perubahan
      */
-    public function updateBap($id, array $data, array $petugasData)
+    public function updateBap($id, BapDto $bapDto)
     {
         $ba = BeritaAcara::findOrFail($id);
         // Data lama 
-        $oldData = $ba->only(array_keys($data));
+        $oldData = $ba->only(array_keys($bapDto->toArray()));
         $oldPetugas = $ba->petugas->pluck('name')->toArray();
 
-        return DB::transaction(function () use ($id, $ba, $data, $petugasData, $oldData, $oldPetugas) {
-            try{
-                activity()->withoutLogs(function () use ($ba, $data, $petugasData) {
+        return DB::transaction(function () use ($id, $ba, $bapDto, $oldData, $oldPetugas) {
+            try {
+                activity()->withoutLogs(function () use ($ba, $bapDto) {
                     // Update data utama
-                    $ba->update($data);
-                    $this->syncPetugas($ba, $petugasData);
+                    $dataToUpdate = $bapDto->toArray();
+                    unset($dataToUpdate['created_by']); // Jangan update created_by
+                    $ba->update($dataToUpdate);
+                    $this->syncPetugas($ba, $bapDto->listPetugas);
                 });
-                $this->logUpdate($ba, $data, $oldData, $oldPetugas);
+                $this->logUpdate($ba, $bapDto->toArray(), $oldData, $oldPetugas);
                 return $ba;
             } catch (\Throwable $e) {
                 Log::error("CRITICAL ERROR Update BAP ID $id: " . $e->getMessage() . " | Line: " . $e->getLine());
                 throw new BapException("Gagal memperbarui Berita Acara: " . $e->getMessage() . " Silakan coba lagi.");
             }
-        } );
+        });
     }
 
     /**
@@ -122,8 +129,8 @@ class BeritaAcaraService
      */
     public function deleteBap($id)
     {
-        return DB::transaction(function() use ($id) {
-            try{
+        return DB::transaction(function () use ($id) {
+            try {
                 // Data lengkap beserta relasi
                 $ba = BeritaAcara::with('petugas')->findOrFail($id);
 
@@ -148,59 +155,86 @@ class BeritaAcaraService
      */
     public function generatePdf($data, $listPetugas)
     {
-        try{
+        try {
             return $this->pdfService->generateBapPdf($data, $listPetugas);
         } catch (\Throwable $e) {
             Log::error("CRITICAL ERROR PDF Generation: " . $e->getMessage() . " | Line: " . $e->getLine());
-            throw new BapException(message: 'Gagal membuat PDF Berita Acara. Pastikan memori server cukup atau hubungi admin.'); 
+            throw new BapException(message: 'Gagal membuat PDF Berita Acara. Pastikan memori server cukup atau hubungi admin.');
         }
     }
 
     /**
      * Sinkronisasi Petugas
+     * @param BeritaAcara $ba
+     * @param PetugasDto[] $listPetugasDto
      */
-    private function syncPetugas($ba, $petugasData)
+    private function syncPetugas($ba, array $listPetugasDto)
     {
-        if (!isset($petugasData['nip']) || !is_array($petugasData['nip'])) { return; }
-        $syncData = [];
-        foreach ($petugasData['nip'] as $i => $nip) {
-            if ($nip) {
-                $dataPivot = [
-                    'pangkat' => $petugasData['pangkat'][$i] ?? '-',
-                    'jabatan' => $petugasData['jabatan'][$i] ?? '-',
-                ];
-                $ttdInput = $petugasData['ttd'][$i] ?? null;
+        if (empty($listPetugasDto)) {
+            return;
+        }
 
-                if (!empty($ttdInput) && is_string($ttdInput) && Str::contains($ttdInput, 'data:image')) {
-                    try {
-                        $filename = $this->imageService->saveSignature($ttdInput, $nip);
-                        $dataPivot['ttd'] = $filename;
-                    } catch (\Throwable $e) {
-                        Log::error("CRITICAL ERROR PDF Generation: " . $e->getMessage() . " | Line: " . $e->getLine());
-                        // tanpa TTD      
-                        $dataPivot['ttd'] = null;   
-                        throw new BapException(message: 'Gagal menyimpan Tanda Tangan digital. Silakan coba lagi.');
-                    }
-                } else{
-                    if ($ttdInput && preg_match('/signatures\/(\d+)_/', $ttdInput, $matches)) {
-                        $nipDiFile = $matches[1];
-                        // Jika NIP di nama file BEDA dengan NIP petugas baris ini
-                        if ($nipDiFile !== $nip) {
-                            Log::warning("Mencegah duplikat TTD! NIP Petugas ($nip) beda dengan NIP File ($nipDiFile)");
-                            // Kosongkan TTD 
-                            $dataPivot['ttd'] = null; 
-                        } else {
-                            $dataPivot['ttd'] = $ttdInput;
-                        }
+        // --- FIX N+1 START ---
+        // Ambil semua NIP dari list object DTO
+        $allNips = array_map(fn($dto) => $dto->nip, $listPetugasDto);
+
+        // Query User Batch
+        $usersInvolved = User::whereIn('nip', $allNips)->get()->keyBy('nip');
+        // --- FIX N+1 END ---
+
+        $syncData = [];
+        foreach ($listPetugasDto as $petugasDto) {
+            // Cek user ada di DB gak
+            if (!$usersInvolved->has($petugasDto->nip)) {
+                continue;
+            }
+
+            $dataPivot = [
+                'pangkat' => $petugasDto->pangkat ?? '-',
+                'jabatan' => $petugasDto->jabatan ?? '-',
+            ];
+
+            // Logic Tanda Tangan (Akses properti object pakai -> )
+            $ttdInput = $petugasDto->ttd;
+
+            if (!empty($ttdInput) && is_string($ttdInput) && Str::contains($ttdInput, 'data:image')) {
+                try {
+                    $filename = $this->imageService->saveSignature($ttdInput, $petugasDto->nip);
+                    $dataPivot['ttd'] = $filename;
+                } catch (\Throwable $e) {
+                    Log::error("CRITICAL ERROR PDF Generation: " . $e->getMessage() . " | Line: " . $e->getLine());
+                    // tanpa TTD      
+                    $dataPivot['ttd'] = null;
+                    throw new BapException(message: 'Gagal menyimpan Tanda Tangan digital. Silakan coba lagi.');
+                }
+            } else {
+                if ($ttdInput && preg_match('/signatures\/(\d+)_/', $ttdInput, $matches)) {
+                    $nipDiFile = $matches[1];
+                    // Jika NIP di nama file BEDA dengan NIP petugas baris ini
+                    if ($nipDiFile !== $petugasDto->nip) {
+                        Log::warning("Mencegah duplikat TTD! NIP Petugas ({$petugasDto->nip}) beda dengan NIP File ($nipDiFile)");
+                        // Kosongkan TTD 
+                        $dataPivot['ttd'] = null;
                     } else {
-                        // Jika format file tidak mengandung NIP (file legacy), biarkan
                         $dataPivot['ttd'] = $ttdInput;
                     }
+                } else {
+                    // Jika format file tidak mengandung NIP (file legacy), biarkan
+                    $dataPivot['ttd'] = $ttdInput;
                 }
-                $syncData[$nip] = $dataPivot;
+            }
+            $user = $usersInvolved[$petugasDto->nip];
+            $syncData[$user->id] = $dataPivot;
+        }
+        $syncDataByNip = [];
+        foreach ($syncData as $userId => $pivot) {
+            $user = $usersInvolved->firstWhere('id', $userId);
+            if ($user) {
+                $syncDataByNip[$user->nip] = $pivot;
             }
         }
-        $ba->petugas()->sync($syncData);
+
+        $ba->petugas()->sync($syncDataByNip);
     }
 
     /**
@@ -213,12 +247,12 @@ class BeritaAcaraService
         $logAttributes = $ba->only(array_keys($data));
         // Ambil nama-nama petugas
         $petugasNames = $ba->petugas->pluck('name')->toArray();
-        $logAttributes['petugas'] = implode(', ', $petugasNames); 
+        $logAttributes['petugas'] = implode(', ', $petugasNames);
         // Catat Log "Created" dengan detail lengkap
         activity()
             ->performedOn($ba)
             ->causedBy(auth()->user())
-            ->withProperties(['attributes' => $logAttributes]) 
+            ->withProperties(['attributes' => $logAttributes])
             ->event('created')
             ->log('Membuat Berita Acara Baru');
     }

@@ -1,6 +1,20 @@
 const $ = window.jQuery;
 
 export function initValidation() {
+    function checkRowLimit() {
+        var rowCount = $(".petugas-row").length; // Hitung jumlah class .petugas-row
+
+        if (rowCount <= 1) {
+            $(".btn-hapus").hide(); // Sembunyikan semua tombol hapus jika sisa 1
+        } else {
+            $(".btn-hapus").show(); // Munculkan kembali jika lebih dari 1
+        }
+    }
+
+    // --- 2. PANGGIL SAAT AWAL LOAD ---
+    // Agar saat halaman edit dibuka, logika ini langsung jalan
+    checkRowLimit();
+    
     function validateTab(tabId) {
         let isValid = true;
         let tabPane = $(tabId);
@@ -117,11 +131,17 @@ export function initValidation() {
         newRow.find(".input-ttd-base64").val("");
         newRow.find(".btn-hapus").removeAttr("disabled");
         $("#petugas-container").append(newRow);
+        checkRowLimit();
     });
 
     // Hapus baris petugas
     $(document).on("click", ".btn-hapus", function () {
-        $(this).closest(".petugas-row").remove();
+        if ($(".petugas-row").length > 1) {
+            $(this).closest(".petugas-row").remove();
+            
+            // --- 4. PANGGIL SAAT HAPUS BARIS ---
+            checkRowLimit();
+        }
     });
 
     // Tanggal Periksa tidak boleh sebelum Tanggal Surat

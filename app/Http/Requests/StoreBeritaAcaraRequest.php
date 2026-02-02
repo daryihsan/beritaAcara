@@ -22,19 +22,22 @@ class StoreBeritaAcaraRequest extends FormRequest
     public function rules()
     {
         return [
-            'no_surat_tugas'    => 'required',
+            'no_surat_tugas'    => 'required|string',
             'tgl_surat_tugas'   => 'required|date',
             'tanggal'           => 'required|date',
-            'hari'              => 'required',
-            'objek_nama'        => 'required',
-            'objek_alamat'      => 'required',
-            'hasil_pemeriksaan' => 'required',
-            'petugas_nip'       => 'required|array',
-            'petugas_nip.*'     => 'exists:users,nip',
-            'kepala_balai_text' => 'required',
-            'objek_kota'        => 'required',
-            'dalam_rangka'      => 'required',
-            'yang_diperiksa'    => 'required',
+            'hari'              => 'required|string',
+            'objek_nama'        => 'required|string',
+            'objek_alamat'      => 'required|string',
+            'hasil_pemeriksaan' => 'required|string',
+            'petugas_nip'       => 'required|array|min:1',
+            'petugas_nip.*'     => 'required|string|exists:users,nip',
+            'kepala_balai_text' => 'required|string',
+            'objek_kota'        => 'required|string',
+            'dalam_rangka'      => 'required|string',
+            'yang_diperiksa'    => 'required|string',
+            'petugas_nama'      => 'required|array',
+            'petugas_pangkat'   => 'nullable|array',
+            'petugas_jabatan'   => 'nullable|array',
             'ttd'               => 'image|mimes:png,jpg|max:300',
         ];
     }
@@ -42,8 +45,10 @@ class StoreBeritaAcaraRequest extends FormRequest
     public function messages()
     {
         return [
-            'petugas_nip.*.exists' => 'NIP Petugas tidak terdaftar di sistem!',
             'required' => ':attribute wajib diisi.',
+            'petugas_nip.required' => 'Data petugas belum ditambahkan.',
+            'petugas_nip.min'      => 'Harus ada minimal 1 petugas dalam Berita Acara.',
+            'petugas_nip.*.exists' => 'Salah satu NIP petugas tidak valid atau tidak terdaftar.',
         ];
     }
 }

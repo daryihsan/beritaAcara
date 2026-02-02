@@ -38,24 +38,13 @@ class ImageService
     /**
      * Helper untuk convert Image Path ke Base64 (Untuk PDF)
      */
-    public function imgBase64($file)
+    public function imgPath($file)
     {
-        if (empty($file)) {
-            return '';
-        }
-
         $path = public_path('assets/img/' . $file);
-
-        if (!is_file($path)) {
-            return '';
-        }
-
-        $type = pathinfo($path, PATHINFO_EXTENSION);
-        $data = @file_get_contents($path);
-        if ($data === false)
-            return '';
-
-        return 'data:image/' . $type . ';base64,' . base64_encode($data);
+         if (file_exists($path)) {
+             return 'file://' . $path;
+         }
+         return '';
     }
 
     /**
@@ -75,11 +64,9 @@ class ImageService
         $fullPath = storage_path('app/private/' . $ttdPath);
 
         if (file_exists($fullPath) && is_file($fullPath)) {
-            $type = pathinfo($fullPath, PATHINFO_EXTENSION);
-            $imgData = @file_get_contents($fullPath);
-            if ($imgData) {
-                return 'data:image/' . $type . ';base64,' . base64_encode($imgData);
-            }
+            // RETURN PATH FISIK, BUKAN BASE64
+            // Format: "file:///C:/path/to/project/storage/app/private/signatures/file.png"
+            return 'file://' . $fullPath; 
         }
 
         return null;

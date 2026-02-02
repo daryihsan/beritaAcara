@@ -12,7 +12,7 @@ class BapException extends Exception
         Log::error("BAP Error: " . $this->getMessage());
     }
 
-    // Render exception ke HTTP Response
+    // Render exception ke HTTP response
     public function render($request)
     {
         if ($request->expectsJson()) {
