@@ -64,7 +64,7 @@ class ImageService
         $fullPath = storage_path('app/private/' . $ttdPath);
 
         if (file_exists($fullPath) && is_file($fullPath)) {
-            // RETURN PATH FISIK, BUKAN BASE64
+            // Return path untuk PDF
             // Format: "file:///C:/path/to/project/storage/app/private/signatures/file.png"
             return 'file://' . $fullPath; 
         }

@@ -28,7 +28,7 @@ class ExcelController extends Controller
         $infoPetugas = null;
         // Cek yang request
         if (!auth()->user()->isAdmin()) {
-            // Petugas: Otomatis namanya
+            // Petugas otomatis 
             $infoPetugas = "Petugas: " . auth()->user()->name;
         } elseif ($filterNip && $filterNip !== 'semua') {
             // Kalau Admin pilih filter: nama petugas yang dipilih

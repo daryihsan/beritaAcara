@@ -174,17 +174,15 @@ class BeritaAcaraService
             return;
         }
 
-        // --- FIX N+1 START ---
         // Ambil semua NIP dari list object DTO
         $allNips = array_map(fn($dto) => $dto->nip, $listPetugasDto);
 
-        // Query User Batch
+        // Query user batch
         $usersInvolved = User::whereIn('nip', $allNips)->get()->keyBy('nip');
-        // --- FIX N+1 END ---
 
         $syncData = [];
         foreach ($listPetugasDto as $petugasDto) {
-            // Cek user ada di DB gak
+            // Cek user di DB 
             if (!$usersInvolved->has($petugasDto->nip)) {
                 continue;
             }
@@ -194,7 +192,7 @@ class BeritaAcaraService
                 'jabatan' => $petugasDto->jabatan ?? '-',
             ];
 
-            // Logic Tanda Tangan (Akses properti object pakai -> )
+            // Logic tanda tangan 
             $ttdInput = $petugasDto->ttd;
 
             if (!empty($ttdInput) && is_string($ttdInput) && Str::contains($ttdInput, 'data:image')) {

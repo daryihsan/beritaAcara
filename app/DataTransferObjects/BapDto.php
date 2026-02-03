@@ -22,17 +22,16 @@ class BapDto
         public ?string $yangDiperiksa,
         public ?string $kepalaBalaiText,
         public ?string $createdBy,
-        public array $listPetugas = [] // <-- Tambahan baru
+        public array $listPetugas = [] 
     ) {}
 
     public static function fromRequest(Request $request): self
     {
-        // --- LOGIC MAPPING PETUGAS (Parallel Array ke Object List) ---
+        // Mapping petugas (Parallel Array ke Object List) 
         $listPetugasObj = [];
         $nips = $request->petugas_nip ?? []; // Array dari form
         
         foreach ($nips as $index => $nip) {
-            // Pastikan NIP tidak kosong
             if (empty($nip)) continue;
 
             $listPetugasObj[] = new PetugasDto(
@@ -43,7 +42,6 @@ class BapDto
                 ttd: $request->petugas_ttd[$index] ?? null
             );
         }
-        // -----------------------------------------------------------
 
         return new self(
             noSuratTugas: $request->no_surat_tugas,
@@ -58,13 +56,12 @@ class BapDto
             yangDiperiksa: $request->yang_diperiksa,
             kepalaBalaiText: $request->kepala_balai_text,
             createdBy: auth()->id(),
-            listPetugas: $listPetugasObj // <-- Masukkan list object tadi
+            listPetugas: $listPetugasObj 
         );
     }
 
     public function toArray(): array
     {
-        // Sama seperti sebelumnya...
         return [
             'no_surat_tugas' => $this->noSuratTugas,
             'tgl_surat_tugas' => $this->tglSuratTugas,
@@ -78,7 +75,6 @@ class BapDto
             'yang_diperiksa' => $this->yangDiperiksa,
             'kepala_balai_text' => $this->kepalaBalaiText,
             'created_by' => $this->createdBy,
-            // Petugas tidak perlu masuk toArray ini karena masuk tabel terpisah
         ];
     }
 }

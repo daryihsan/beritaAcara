@@ -15,7 +15,7 @@ class BeritaAcaraController extends Controller
 {
     protected $beritaAcaraService;
 
-    // Inject Service
+    // Inject service
     public function __construct(BeritaAcaraService $beritaAcaraService)
     {
         $this->beritaAcaraService = $beritaAcaraService;
@@ -26,15 +26,15 @@ class BeritaAcaraController extends Controller
      */
     public function index(Request $request)
     {
-        // Cek Parameter Tahun (Redirect jika kosong)
+        // Cek parameter tahun 
         if (!$request->has('tahun') && !$request->ajax()) {
             return view('dashboard.menu');
         }
-        // Request Ajax (Server-Side DataTables)
+        // Request ajax (server-side dataTables)
         if ($request->ajax() || $request->has('draw')) {
             try {
                 $user = auth()->user();
-                // Ambil Query dari Servic
+                // Ambil query dari service
                 $query = $this->beritaAcaraService->getBapQuery(
                     $request->tahun,
                     $user,
@@ -48,7 +48,7 @@ class BeritaAcaraController extends Controller
                 ], 500);
             }
         }
-        // Tampilan Awal 
+        // Tampilan awal 
         $tahun = $request->tahun ?? date('Y');
         $allPetugas = User::where('role', '!=', 'admin')->orderBy('name')->get();
 

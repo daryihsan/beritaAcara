@@ -6,9 +6,9 @@ class PetugasDto
 {
     public function __construct(
         public string $nip,
-        public string $nama, // Opsional, kadang cuma butuh NIP
+        public string $nama, 
         public string $pangkat,
         public string $jabatan,
-        public mixed $ttd // Bisa string base64, path, atau null
+        public mixed $ttd 
     ) {}
 }

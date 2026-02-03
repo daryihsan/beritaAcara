@@ -58,14 +58,14 @@ class PdfService
         $pdf = Pdf::loadView('bap.pdf', $pdfData);
 
         $pdf->setOptions([
-            'isRemoteEnabled' => true,      // Bisa baca gambar base64/path
-            'chroot' => [ // Izinkan DomPDF akses folder ini
+            'isRemoteEnabled' => true,              // Bisa baca gambar base64/path
+            'chroot' => [                           // Izinkan DomPDF akses folder ini
                 public_path(), 
                 storage_path('app/private')
             ],
             'defaultFont' => 'sans-serif',  
             'isHtml5ParserEnabled' => true, 
-            'isFontSubsettingEnabled' => true // Hanya load huruf yang dipakai ke memori
+            'isFontSubsettingEnabled' => true       // Hanya load huruf yang dipakai ke memori
         ]);
         
         $safeSurat = str_replace(['/', '\\'], '-', $data['no_surat_tugas']);

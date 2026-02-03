@@ -3,7 +3,18 @@
 
     <div id="petugas-container">
         @php
-            $listPetugas = (isset($ba) && $ba->petugas->count() > 0) ? $ba->petugas : [null];
+            if (old('petugas_nip')) {
+                // Dummy array sejumlah baris inputan user agar loop foreach jalan N kali
+                $listPetugas = array_fill(0, count(old('petugas_nip')), null);
+            }
+            // Update (Ada data $ba dari Controller)
+            elseif (isset($ba) && $ba->petugas->count() > 0) {
+                $listPetugas = $ba->petugas;
+            }
+            // Create baru 
+            else {
+                $listPetugas = [auth()->user()];
+            }
         @endphp
 
         @foreach($listPetugas as $index => $petugasExisting)
