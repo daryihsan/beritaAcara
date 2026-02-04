@@ -10,7 +10,7 @@
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
 
-        <a href="/berita-acara/create"
+        <a href="{{ route('berita-acara.create') }}"
             class="block no-underline transform transition hover:scale-105 hover:no-underline group">
             <div class="bg-blue-500 rounded-xl shadow-lg overflow-hidden border-b-8 border-blue-700">
                 <div class="p-12 flex items-center justify-between text-white">

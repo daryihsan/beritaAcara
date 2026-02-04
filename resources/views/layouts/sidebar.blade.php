@@ -46,8 +46,8 @@
     <!-- Menu navigasi -->
     <nav class="px-4 py-2 space-y-2 text-base overflow-y-auto h-[calc(100vh-150px)]">
 
-        <a href="/dashboard" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 no-underline
-           {{ request()->is('dashboard') && !request()->has('tahun')
+        <a href="{{ route('dashboard') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 no-underline
+           {{ request()->routeIs('dashboard') && !request()->has('tahun')
                 ? 'bg-blue-50 border-l-4 border-blue-500 font-semibold text-blue-700'
                 : 'text-gray-700 hover:!bg-blue-200 hover:!text-blue-900 hover:font-medium hover:no-underline' }}">
             <span class="glyphicon glyphicon-home text-xl"></span>
@@ -56,7 +56,7 @@
 
         <button id="berita-acara-toggle"
             class="flex items-center justify-between w-full px-4 py-3 rounded-lg transition-all duration-200 no-underline text-gray-700 hover:!bg-blue-200 hover:!text-blue-900 hover:font-medium hover:no-underline
-                {{ request()->is('berita-acara*') || request()->has('tahun') ? 'bg-blue-50 border-l-4 border-blue-500 font-semibold text-blue-700' : '' }}">
+                {{ request()->routeIs('berita-acara.*') || request()->has('tahun') ? 'bg-blue-50 border-l-4 border-blue-500 font-semibold text-blue-700' : '' }}">
             <a class="flex items-center gap-3">
                 <span class="glyphicon glyphicon-file text-xl"></span>
                 <span class="text-xl">Berita Acara</span>
@@ -66,8 +66,8 @@
         </button>
 
         <div id="berita-acara-submenu" class="overflow-hidden transition-all duration-300 ease-in-out max-h-0">
-            <a href="/berita-acara/create"
-                class="flex items-center gap-3 px-8 py-3 rounded-lg transition-all duration-200 no-underline {{ request()->is('berita-acara/create') ? 'bg-blue-50 border-l-4 border-blue-500 font-semibold text-blue-700' : 'text-gray-700 hover:!bg-blue-200 hover:!text-blue-900 hover:font-medium hover:no-underline' }}">
+            <a href="{{ route('berita-acara.create') }}"
+                class="flex items-center gap-3 px-8 py-3 rounded-lg transition-all duration-200 no-underline {{ request()->routeIs('berita-acara.create') ? 'bg-blue-50 border-l-4 border-blue-500 font-semibold text-blue-700' : 'text-gray-700 hover:!bg-blue-200 hover:!text-blue-900 hover:font-medium hover:no-underline' }}">
                 <span class="glyphicon glyphicon-plus-sign text-xl"></span>
                 <span class="text-xl">Berita Acara Baru</span>
             </a>
@@ -84,21 +84,21 @@
 
         @if(auth()->user()->isAdmin())
             <div class="mt-4 px-8 text-sm font-semibold text-gray-500 uppercase tracking-widest">Panel Kontrol Admin</div>
-            <a href="/admin/berita-acara"
-                class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 no-underline {{ request()->is('admin/berita-acara*') ? 'bg-amber-50 border-l-4 border-amber-500 font-semibold text-amber-700' : 'text-gray-700 hover:!bg-amber-200 hover:!text-amber-900 hover:font-medium hover:no-underline' }}">
+            <a href="{{ route('admin.bap.index') }}"
+                class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 no-underline {{ request()->routeIs('admin.bap.index*') ? 'bg-amber-50 border-l-4 border-amber-500 font-semibold text-amber-700' : 'text-gray-700 hover:!bg-amber-200 hover:!text-amber-900 hover:font-medium hover:no-underline' }}">
                 <span class="glyphicon glyphicon-lock text-xl"></span>
                 <span class="text-xl">Semua Berita Acara</span>
             </a>
 
             <a href="{{ route('admin.activity-log') }}"
-                class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 no-underline {{ request()->is('admin/activity-log*') ? 'bg-amber-50 border-l-4 border-amber-500 font-semibold text-amber-700' : 'text-gray-700 hover:!bg-amber-200 hover:!text-amber-900 hover:font-medium hover:no-underline' }}">
+                class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 no-underline {{ request()->routeIs('admin.activity-log*') ? 'bg-amber-50 border-l-4 border-amber-500 font-semibold text-amber-700' : 'text-gray-700 hover:!bg-amber-200 hover:!text-amber-900 hover:font-medium hover:no-underline' }}">
                 <span class="glyphicon glyphicon-eye-open text-xl"></span> <!-- Ikon Mata/Jejak -->
                 <span class="text-xl">Log Aktivitas</span>
             </a>
         @endif
 
         <div class="pt-10 pb-10">
-            <form id="logout-form" method="POST" action="/logout" data-no-loader="true">
+            <form id="logout-form" method="POST" action="{{ route('logout') }}" data-no-loader="true">
                 @csrf
                 <button type="button" onclick="confirmLogout(event)"
                     class="flex items-center gap-3 w-full px-4 py-3 rounded-lg text-gray-600 hover:bg-red-200 hover:text-red-900 hover:font-medium transition-all duration-200">

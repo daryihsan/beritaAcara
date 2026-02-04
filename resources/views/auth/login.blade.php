@@ -116,7 +116,7 @@
                 </div>
 
                 <!-- Form -->
-                <form method="POST" action="/login" class="space-y-6 p-2 md:space-y-5">
+                <form method="POST" action="{{ route('login') }}" class="space-y-6 p-2 md:space-y-5">
                     @csrf
 
                     @error('login')

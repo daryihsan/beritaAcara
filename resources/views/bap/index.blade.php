@@ -82,7 +82,7 @@
 
             <!-- Tombol tambah data -->
             <div class="btn-tambah-wrapper">
-                <a href="/berita-acara/create"
+                <a href="{{ route('berita-acara.create') }}"
                     class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl shadow-lg transition-all ring-1 ring-black/5 hover:shadow-xl transition-all transform hover:-translate-y-1 font-bold no-underline flex items-center gap-2">
                     <span class="glyphicon glyphicon-plus mr-2"></span>
                     <span>Tambah</span>
