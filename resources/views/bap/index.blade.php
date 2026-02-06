@@ -95,26 +95,37 @@
         <div class="dt-top"></div>
 
         <div class="table-scroll-x" style="overflow-x:auto; -webkit-overflow-scrolling:touch;">
-            <table id="tableBap" class="w-full">
+            <table id="tableBap" class="w-full table-auto md:table-fixed border-collapse">
                 <thead class="bg-slate-50">
                     <tr class="text-slate-700">
-                        <th style="min-width: 180px;"
-                            class="text-xl font-bold uppercase tracking-wider border-r border-slate-100">No. Surat Tugas
+                        
+                        <th class="min-w-[180px] md:w-[18%] p-3 text-left text-xl font-bold uppercase tracking-wider border-r border-slate-100 break-words">
+                            No. Surat Tugas
                         </th>
-                        <th style="min-width: 300px;"
-                            class="text-xl font-bold uppercase tracking-wider border-r border-slate-100">Nama Petugas</th>
-                        <th style="min-width: 200px;"
-                            class="text-xl font-bold uppercase tracking-wider border-r border-slate-100">Objek</th>
-                        <th style="min-width: 120px;"
-                            class="text-xl font-bold uppercase tracking-wider border-r border-slate-100">Tanggal Periksa
+                        
+                        <th class="min-w-[250px] md:w-[25%] p-3 text-left text-xl font-bold uppercase tracking-wider border-r border-slate-100 break-words">
+                            Nama Petugas
                         </th>
-                        <th style="min-width: 120px;"
-                            class="text-xl font-bold uppercase tracking-wider border-r border-slate-100">Tanggal BAP</th>
-                        <th style="min-width: 100px;" class="text-xl font-bold uppercase tracking-wider">Aksi</th>
+                        
+                        <th class="min-w-[200px] md:w-[19%] p-3 text-left text-xl font-bold uppercase tracking-wider border-r border-slate-100 break-words">
+                            Objek
+                        </th>
+                        
+                        <th class="min-w-[120px] md:w-[10%] p-3 text-left text-xl font-bold uppercase tracking-wider border-r border-slate-100">
+                            Tanggal Periksa
+                        </th>
+                        
+                        <th class="min-w-[120px] md:w-[10%] p-3 text-left text-xl font-bold uppercase tracking-wider border-r border-slate-100">
+                            Tanggal BAP
+                        </th>
+                        
+                        <th class="min-w-[100px] md:w-[18%] p-3 text-center text-xl font-bold uppercase tracking-wider">
+                            Aksi
+                        </th>
                     </tr>
                 </thead>
                 <tbody class="text-slate-700">
-                </tbody>
+                    </tbody>
             </table>
         </div>
 

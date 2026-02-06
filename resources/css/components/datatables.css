@@ -37,6 +37,19 @@ table.dataTable tbody td {
     background-color: #ffffff; 
     border: 1px solid #e5e7eb;
 }
+/* Memaksa semua sel di dalam tabel BAP untuk wrapping text */
+#tableBap tbody td {
+    white-space: normal !important; /* Izinkan teks turun ke bawah */
+    word-wrap: break-word;          /* Potong kata jika terlalu panjang */
+    overflow-wrap: break-word;      /* Dukungan browser modern */
+    vertical-align: top;            /* Agar teks dimulai dari atas sel */
+    padding: 0.75rem;               /* Memberi jarak biar tidak sumpek */
+}
+
+/* Khusus untuk kode "AAAA..." yang tidak ada spasinya */
+#tableBap tbody td:first-child {
+    word-break: break-all; /* Paksa potong string panjang tanpa spasi */
+}
 #tableBap tbody tr:nth-child(even), #tableLog tbody tr:nth-child(even) { background-color: #ffffff; }
 #tableBap tbody tr:nth-child(odd), #tableLog tbody tr:nth-child(odd) { background-color: #f1f5f9; }
 #tableBap tbody tr:hover, #tableLog tbody tr:hover {
