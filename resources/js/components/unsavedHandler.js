@@ -5,8 +5,8 @@ export function initUnsavedHandler() {
     let isFormDirty = false;
 
     // Deteksi perubahan di form (ketik/pilih)
-    // Abaikan form search atau delete
-    $('form:not([id^="delete-form"]):not(#logout-form)').on(
+    // Abaikan form search atau delete atau filter dashboard admin
+    $('form:not([id^="delete-form"]):not(#logout-form):not(#filter-form)').on(
         "change input",
         function () {
             isFormDirty = true;

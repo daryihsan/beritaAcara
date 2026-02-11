@@ -10,6 +10,7 @@ use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
 class BeritaAcaraController extends Controller
 {
@@ -22,13 +23,77 @@ class BeritaAcaraController extends Controller
     }
 
     /**
-     * Memproses tampilan data BAP untuk petugas 
+     * Memproses tampilan data BAP untuk petugas + dashboard
      */
     public function index(Request $request)
     {
         // Cek parameter tahun 
         if (!$request->has('tahun') && !$request->ajax()) {
-            return view('dashboard.menu');
+
+            $user = auth()->user();
+
+            // Data filter (khusus admin) 
+            $targetUserId = $user->id;
+            $targetName = "Saya";
+
+            if ($user->isAdmin() && $request->filled('filter_petugas')) {
+                $targetUser = User::where('nip', $request->filter_petugas)->first();
+                if ($targetUser) {
+                    $targetUserId = $targetUser->id;
+                    $targetName = $targetUser->name;
+                }
+            }
+
+            // Query statistik 
+            $statsPersonal = BeritaAcara::whereHas('petugas', function ($q) use ($targetUserId) {
+                $q->where('users.id', $targetUserId);
+            })
+                ->selectRaw('YEAR(tanggal_pemeriksaan) as tahun, count(*) as total')
+                ->groupBy('tahun')
+                ->orderBy('tahun', 'asc')
+                ->pluck('total', 'tahun')->toArray();
+
+            $statsGlobal = BeritaAcara::selectRaw('YEAR(tanggal_pemeriksaan) as tahun, count(*) as total')
+                ->groupBy('tahun')
+                ->orderBy('tahun', 'asc')
+                ->pluck('total', 'tahun')->toArray();
+
+            $totalPersonalAllTime = array_sum($statsPersonal);
+            $totalGlobalAllTime = array_sum($statsGlobal);
+            // Formating data untuk chart 
+            $startYear = 2020;
+            $endYear = date('Y');
+            $allYears = range($startYear, $endYear); // [2020, 2021, ..., 2026]
+
+            $chartData = [
+                'labels' => $allYears,
+                'personal' => [],
+                'global' => []
+            ];
+
+            foreach ($allYears as $year) {
+                // 0 jika tidak ada data di tahun tersebut
+                $chartData['personal'][] = $statsPersonal[$year] ?? 0;
+                $chartData['global'][] = $statsGlobal[$year] ?? 0;
+            }
+
+            // Data pendukung
+            $allPetugas = [];
+            if ($user->isAdmin()) {
+                $allPetugas = User::where('role', '!=', 'admin')->orderBy('name')->get();
+            }
+
+            // Return ke view dashboard Menu
+            return view('dashboard.menu', compact(
+                'user',
+                'allPetugas',
+                'chartData',
+                'targetName',
+                'statsPersonal',
+                'statsGlobal',
+                'totalPersonalAllTime',
+                'totalGlobalAllTime'
+            ));
         }
         // Request ajax (server-side dataTables)
         if ($request->ajax() || $request->has('draw')) {
@@ -168,15 +233,45 @@ class BeritaAcaraController extends Controller
                 $request = request();
 
                 if (!empty($request->get('search')['value'])) {
-                    $keyword = $request->get('search')['value'];
-                    // Override cara pencarian
-                    $instance->where(function ($w) use ($keyword) {
-                        // Cari di No Surat
+                    $keyword = $request->get('search')['value']; 
+                    
+                    $keywordTranslated = $keyword;
+                    $bulanMap = [
+                        'januari' => 'January', 'februari' => 'February', 'maret' => 'March', 
+                        'april' => 'April', 'mei' => 'May', 'juni' => 'June', 
+                        'juli' => 'July', 'agustus' => 'August', 'september' => 'September', 
+                        'oktober' => 'October', 'november' => 'November', 'desember' => 'December',
+                        'jan' => 'Jan', 'feb' => 'Feb', 'mar' => 'Mar', 'apr' => 'Apr', 
+                        'jun' => 'Jun', 'jul' => 'Jul', 'agu' => 'Aug', 'sep' => 'Sep', 
+                        'okt' => 'Oct', 'nov' => 'Nov', 'des' => 'Dec'
+                    ];
+
+                    foreach ($bulanMap as $indo => $inggris) {
+                        // Cek case-insensitive 
+                        if (stripos($keyword, $indo) !== false) {
+                            $keywordTranslated = str_ireplace($indo, $inggris, $keyword);
+                            break; 
+                        }
+                    }
+
+                    // Query pencarian
+                    $instance->where(function ($w) use ($keyword, $keywordTranslated) {
+                        // Cari di Nomor Surat Tugas dan Objek Nama 
                         $w->where('no_surat_tugas', 'LIKE', "%{$keyword}%")
-                            // Cari di Nama Objek
-                            ->orWhere('objek_nama', 'LIKE', "%{$keyword}%")
-                            // Cari di Nama Petugas (relasi)
-                            ->orWhereHas('petugas', function ($q) use ($keyword) {
+                          ->orWhere('objek_nama', 'LIKE', "%{$keyword}%");
+
+                        // Cek tanggal pemeriksaan
+                        $w->orWhereRaw("DATE_FORMAT(tanggal_pemeriksaan, '%d %M %Y') LIKE ?", ["%{$keywordTranslated}%"]) 
+                          ->orWhereRaw("DATE_FORMAT(tanggal_pemeriksaan, '%d %b %Y') LIKE ?", ["%{$keywordTranslated}%"])
+                          ->orWhereRaw("DATE_FORMAT(tanggal_pemeriksaan, '%d-%m-%Y') LIKE ?", ["%{$keyword}%"]); // Format angka 04-02-2026
+
+                        // Cek Tanggal BAP 
+                        $w->orWhereRaw("DATE_FORMAT(COALESCE(created_at, tanggal_pemeriksaan), '%d %M %Y') LIKE ?", ["%{$keywordTranslated}%"])
+                          ->orWhereRaw("DATE_FORMAT(COALESCE(created_at, tanggal_pemeriksaan), '%d %b %Y') LIKE ?", ["%{$keywordTranslated}%"])
+                          ->orWhereRaw("DATE_FORMAT(COALESCE(created_at, tanggal_pemeriksaan), '%d-%m-%Y') LIKE ?", ["%{$keyword}%"]);
+
+                        // Cari di nama petugas
+                        $w->orWhereHas('petugas', function ($q) use ($keyword) {
                             $q->where('name', 'LIKE', "%{$keyword}%");
                         });
                     });
@@ -186,17 +281,18 @@ class BeritaAcaraController extends Controller
             ->addColumn('petugas_names', function ($row) {
                 return view('bap.tablePartials.datatable-petugas', compact('row'))->render();
             })
+            // Format tampilan tanggal 
             ->editColumn('tanggal_pemeriksaan', function ($row) {
-                return Carbon::parse($row->tanggal_pemeriksaan)->format('d M Y');
+                return Carbon::parse($row->tanggal_pemeriksaan)->translatedFormat('d F Y');
             })
             ->addColumn('tanggal_bap', function ($row) {
                 $tgl = $row->tanggal_berita_acara ?? $row->created_at ?? $row->tanggal_pemeriksaan;
-                return Carbon::parse($tgl)->format('d M Y');
+                return Carbon::parse($tgl)->translatedFormat('d F Y');
             })
             ->addColumn('action', function ($row) use ($user) {
                 return view('bap.tablePartials.datatable-action', compact('row', 'user'))->render();
             })
-            ->rawColumns(['petugas_names', 'action']) // Izinkan HTML
+            ->rawColumns(['petugas_names', 'action'])
             ->make(true);
     }
 
@@ -213,18 +309,25 @@ class BeritaAcaraController extends Controller
             // Format data agar sesuai dengan struktur view PDF
             $list_petugas = $ba->petugas->map(function ($p) {
                 return [
-                    'nama' => $p->name, 'pangkat' => $p->pivot->pangkat ?? '-',
-                    'jabatan' => $p->pivot->jabatan ?? '-', 'nip' => $p->nip,
+                    'nama' => $p->name,
+                    'pangkat' => $p->pivot->pangkat ?? '-',
+                    'jabatan' => $p->pivot->jabatan ?? '-',
+                    'nip' => $p->nip,
                     'ttd' => $p->pivot->ttd ?? null,
                 ];
             });
             // Mapping data untuk PDF
             $data = [
-                'tanggal' => $ba->tanggal_pemeriksaan, 'hari' => $ba->hari,
-                'no_surat_tugas' => $ba->no_surat_tugas, 'tgl_surat_tugas' => $ba->tgl_surat_tugas,
-                'kepala_balai_text' => $ba->kepala_balai_text, 'objek_nama' => $ba->objek_nama,
-                'objek_alamat' => $ba->objek_alamat, 'objek_kota' => $ba->objek_kota,
-                'dalam_rangka' => $ba->dalam_rangka, 'hasil_pemeriksaan' => $ba->hasil_pemeriksaan,
+                'tanggal' => $ba->tanggal_pemeriksaan,
+                'hari' => $ba->hari,
+                'no_surat_tugas' => $ba->no_surat_tugas,
+                'tgl_surat_tugas' => $ba->tgl_surat_tugas,
+                'kepala_balai_text' => $ba->kepala_balai_text,
+                'objek_nama' => $ba->objek_nama,
+                'objek_alamat' => $ba->objek_alamat,
+                'objek_kota' => $ba->objek_kota,
+                'dalam_rangka' => $ba->dalam_rangka,
+                'hasil_pemeriksaan' => $ba->hasil_pemeriksaan,
                 'yang_diperiksa' => $ba->yang_diperiksa,
             ];
             return $this->beritaAcaraService->generatePdf($data, $list_petugas);
