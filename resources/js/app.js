@@ -7,6 +7,7 @@ import { initDashboard } from './components/dashboard';
 import { initValidation } from './components/validation';
 import { initSignature } from './components/signature';
 import { initDatatable } from './components/datatable';
+import { initBapUpload } from './components/bapUpload';
 import { initUI } from './components/ui';
 import { initLoader } from './components/loader';
 import { initUnsavedHandler } from './components/unsavedHandler';
@@ -18,6 +19,7 @@ $(document).ready(function() {
     initValidation();     // Jalan di form BAP
     initSignature();      // Jalan di form BAP (modal)
     initDatatable();      // Jalan di index BAP
+    initBapUpload();      // Jalan di index BAP (modal upload)
     initLoader();         // Jalan di semua halaman (global)
     initUnsavedHandler(); // Jalan di semua halaman (form)
 });

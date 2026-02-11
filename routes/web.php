@@ -48,6 +48,9 @@ Route::middleware(['auth'])->group(function () {
             Route::delete('/{id}', [BeritaAcaraController::class, 'destroy'])->name('destroy');
             Route::post('/assign', [BeritaAcaraController::class, 'assignPetugas'])->name('assign');
         });
+
+        // Route untuk upload dokumen sah
+        Route::post('/{id}/upload', [BeritaAcaraController::class, 'uploadPengesahan'])->name('upload');
     });
     Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
         Route::get('/berita-acara', [BeritaAcaraController::class, 'adminIndex'])->name('admin.bap.index');

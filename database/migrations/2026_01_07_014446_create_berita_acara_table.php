@@ -23,6 +23,7 @@ return new class extends Migration {
             $table->text('dalam_rangka');
             $table->text('hasil_pemeriksaan');
             $table->string('yang_diperiksa');
+            $table->string('file_pengesahan')->nullable();
             $table->foreignUlid('created_by')->constrained('users')->cascadeOnDelete();
             $table->timestamps();
             $table->softDeletes();

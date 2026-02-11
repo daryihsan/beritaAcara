@@ -25,7 +25,8 @@ class BeritaAcara extends Model
         'kepala_balai_text',
         'objek_kota',
         'dalam_rangka',
-        'yang_diperiksa'
+        'yang_diperiksa',
+        'file_pengesahan'
     ];
 
     public function petugas()

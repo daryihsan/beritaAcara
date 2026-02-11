@@ -289,10 +289,21 @@ class BeritaAcaraController extends Controller
                 $tgl = $row->tanggal_berita_acara ?? $row->created_at ?? $row->tanggal_pemeriksaan;
                 return Carbon::parse($tgl)->translatedFormat('d F Y');
             })
+            ->addColumn('status', function ($row) {
+                if ($row->file_pengesahan) {
+                    return '<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xl font-semibold bg-green-200 text-green-800 border border-green-300">
+                                SAH
+                            </span>';
+                } else {
+                    return '<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xl font-semibold bg-slate-100 text-slate-600 border border-slate-200">
+                                DRAF
+                            </span>';
+                }
+            })
             ->addColumn('action', function ($row) use ($user) {
                 return view('bap.tablePartials.datatable-action', compact('row', 'user'))->render();
             })
-            ->rawColumns(['petugas_names', 'action'])
+            ->rawColumns(['petugas_names', 'status', 'action'])
             ->make(true);
     }
 
@@ -354,6 +365,45 @@ class BeritaAcaraController extends Controller
             Log::error('Gagal menghapus BAP ID ' . $id . ': ' . $e->getMessage());
 
             return back()->withErrors(['system_error' => 'Gagal menghapus data. Terjadi kesalahan sistem.']);
+        }
+    }
+
+    /**
+     * Menangani upload dokumen pengesahan
+     */
+    public function uploadPengesahan(Request $request, $id)
+    {
+        $request->validate([
+            'file_pengesahan' => 'required|mimes:pdf,jpg,jpeg,png|max:5120', // Max 5MB, boleh PDF atau Gambar
+        ]);
+
+        try {
+            $ba = BeritaAcara::findOrFail($id);
+            
+            // Hapus file lama jika ada (biar ga numpuk sampah)
+            if ($ba->file_pengesahan && file_exists(public_path('uploads/pengesahan/' . $ba->file_pengesahan))) {
+                unlink(public_path('uploads/pengesahan/' . $ba->file_pengesahan));
+            }
+
+            // Proses Upload File Baru
+            if ($request->hasFile('file_pengesahan')) {
+                $file = $request->file('file_pengesahan');
+                // Nama file unik: ID_NoSurat_Timestamp.ext
+                $filename = $ba->id . '_SIGNED_' . time() . '.' . $file->getClientOriginalExtension();
+                
+                // Simpan ke folder public/uploads/pengesahan
+                $file->move(public_path('uploads/pengesahan'), $filename);
+
+                // Update Database
+                $ba->file_pengesahan = $filename;
+                $ba->save();
+            }
+
+            return back()->with('success', 'Dokumen Sah berhasil diupload!');
+
+        } catch (\Throwable $e) {
+            Log::error('Gagal upload pengesahan: ' . $e->getMessage());
+            return back()->withErrors(['file' => 'Gagal mengupload file. Silakan coba lagi.']);
         }
     }
 }

@@ -9,7 +9,7 @@ export function initDatatable() {
             ordering: true,
             info: true,
             pagingType: "full_numbers",
-            columnDefs: [{ orderable: false, targets: [1, 5] }],
+            columnDefs: [{ orderable: false, targets: [1, 5, 6] }],
             search: {
                 smart: false,
             },
@@ -104,6 +104,13 @@ export function initDatatable() {
                     data: "tanggal_bap",
                     name: "created_at",
                     className: "p-5 text-left",
+                },
+                {
+                    data: "status",
+                    name: "status",
+                    className: "p-5 text-center",
+                    orderable: false,
+                    searchable: false,
                 },
 
                 // Kolom aksi
