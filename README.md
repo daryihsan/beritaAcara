@@ -351,7 +351,6 @@ Dikelola otomatis oleh `spatie/laravel-activitylog`. Menyimpan event `created`, 
 | Cetak PDF per BAP | ✅ (jika terdaftar) | ✅ |
 | Ekspor Excel/PDF rekap | ✅ | ✅ |
 | Hapus BAP | ❌ | ✅ |
-| Assign petugas ke BAP | ❌ | ✅ |
 | Lihat activity log | ❌ | ✅ |
 | Filter BAP berdasarkan petugas | ❌ | ✅ |
 
