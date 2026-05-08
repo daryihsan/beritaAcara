@@ -572,9 +572,44 @@ LOG_LEVEL=debug
 1. Di halaman daftar BAP, gunakan tombol **Export Excel** atau **Export PDF List**.
 2. File akan diunduh otomatis sesuai filter tahun yang sedang aktif.
 
+### Upload File Pengesahan
+**Pengesahan** adalah dokumen approval yang menunjukkan BAP telah disahkan oleh kepala balai atau pejabat berwenang lainnya (bisa berupa surat, TTD digital, atau scan dokumen).
+
+#### Untuk Petugas/Admin:
+1. Buka BAP yang ingin dipengesahan (dari daftar, klik **Edit** atau **Lihat**).
+2. Navigasi ke tab **Kelengkapan** (atau bagian upload dokumen).
+3. Klik area upload atau tombol **Pilih File Pengesahan**.
+4. Pilih file dari komputer (mendukung format: `.pdf`, `.png`, `.jpg`, `.jpeg`).
+5. Klik tombol **Upload** atau **Unggah**.
+6. Sistem akan:
+   - Validasi file (maksimal ukuran dan format diizinkan)
+   - Menyimpan file ke `public/uploads/pengesahan/` dengan nama unik berbasis **ULID**
+   - Menyimpan path file ke database (kolom `file_pengesahan`)
+   - Menampilkan preview atau link untuk download file pengesahan
+7. Setelah upload berhasil, informasi pengesahan akan ditampilkan di halaman BAP.
+
+#### Apa yang Terjadi Saat Pengesahan Diupload:
+- **File disimpan dengan nama unik**: Sistem menggunakan ULID + timestamp untuk mencegah nama duplikat. Contoh: `01kh5navq0w6400gzefte096gt_SIGNED_1770793957.png`
+- **Path tersimpan di database**: Field `file_pengesahan` di tabel `berita_acara` akan diisi dengan path relatif file.
+- **Dapat didownload/dilihat**: Petugas atau admin dapat mengakses file pengesahan dengan klik link/tombol download di halaman BAP.
+- **Dicatat di Activity Log**: Upload pengesahan akan dicatat dalam activity log (hanya admin yang dapat melihatnya).
+
+#### Validasi Pengesahan:
+- **Format file**: Hanya `.pdf`, `.png`, `.jpg`, `.jpeg` yang diizinkan
+- **Ukuran maksimal**: Sesuai konfigurasi aplikasi (umumnya 5-10 MB)
+- **Opsional**: Upload pengesahan tidak wajib, tapi sangat direkomendasikan untuk kelengkapan administrasi
+
+---
+
 ### Activity Log (Admin)
 1. Buka menu **Log Aktivitas** di sidebar (hanya muncul untuk admin).
 2. Lihat seluruh riwayat perubahan data BAP secara kronologis.
+3. Log mencatat detail:
+   - **Waktu kejadian** (tanggal dan jam)
+   - **Siapa** (nama petugas/admin) yang melakukan perubahan
+   - **Apa** (jenis event): created, updated, deleted
+   - **Perubahan** (untuk update): field mana saja yang berubah, nilai lama, nilai baru
+   - Contoh log update: "Berita Acara telah di-updated. Perubahan: hasil_pemeriksaan (dari '...' ke '...')"
 
 ---
 
